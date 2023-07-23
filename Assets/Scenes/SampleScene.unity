@@ -440,6 +440,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c106e2136f563d44b44cb9b06af81ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  apiKey: 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
+  prompt: 
+  numberOfLines: 5
+  genre: romance
+  setting: an alien planet
+  stringDelimiter: 124
+  characters:
+  - Space Marine
+  - Nurgle Cultist
+  - Narrator
 --- !u!4 &1106142307
 Transform:
   m_ObjectHideFlags: 0

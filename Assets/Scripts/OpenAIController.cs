@@ -5,16 +5,21 @@ using UnityEngine;
 
 public class OpenAIController : Singleton<OpenAIController>
 {
+    [SerializeField] private string apiKey;
+    [SerializeField] private string prompt;
+    [SerializeField] private int numberOfLines;
+    [SerializeField] private string genre;
+    [SerializeField] private string setting;
+    [SerializeField] private char stringDelimiter;
+    [SerializeField] private List<string> characters;
     private OpenAIAPI api;
-    private List<ChatMessage> messages;
     private Conversation chat;
-    private string prompt = "Write a 5 line play set in a fantasy setting. The characters are a young man and young woman, as well as a third person omnipotent narrator.";
-    private string apiKey = "";
 
     private void Start()
     {
         api = new OpenAIAPI(apiKey);
         chat = api.Chat.CreateConversation();
+        prompt = CreatePrompt();
 
         chat.AppendSystemMessage(prompt);
         GetResponse();
@@ -24,5 +29,24 @@ public class OpenAIController : Singleton<OpenAIController>
     {
         string response = await chat.GetResponseFromChatbotAsync();
         Debug.Log(response);
+    }
+
+    private string CreatePrompt()
+    {
+        string newPrompt = $"Write a {numberOfLines} line {genre} visual novel script, set in {setting}. Dialogue lines should be outputted in the format CharacterName{stringDelimiter}DialogueText{stringDelimiter}Mood{stringDelimiter}BackgroundScene.";
+
+        if (characters.Count > 0)
+        {
+            newPrompt += " The cast consists of the characters: ";
+
+            foreach (string characterName in characters)
+            {
+                newPrompt += $"{characterName}, ";
+            }
+
+            newPrompt += ".";
+        }
+
+        return newPrompt;
     }
 }
