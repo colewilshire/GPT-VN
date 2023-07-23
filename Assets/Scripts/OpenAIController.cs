@@ -13,27 +13,27 @@ public class OpenAIController : Singleton<OpenAIController>
     [SerializeField] private char stringDelimiter;
     [SerializeField] private List<string> characters;
     private OpenAIAPI api;
-    private Conversation chat;
+    public Conversation Chat { get; private set; }
 
     private void Start()
     {
         api = new OpenAIAPI(apiKey);
-        chat = api.Chat.CreateConversation();
+        Chat = api.Chat.CreateConversation();
         prompt = CreatePrompt();
 
-        chat.AppendSystemMessage(prompt);
+        Chat.AppendSystemMessage(prompt);
         GetResponse();
     }
 
     private async void GetResponse()
     {
-        string response = await chat.GetResponseFromChatbotAsync();
+        string response = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(response);
     }
 
     private string CreatePrompt()
     {
-        string newPrompt = $"Write a {numberOfLines} line {genre} visual novel script, set in {setting}. Dialogue lines should be outputted in the format CharacterName{stringDelimiter}DialogueText{stringDelimiter}Mood{stringDelimiter}BackgroundScene.";
+        string newPrompt = $"Write a {numberOfLines} line {genre} genre visual novel script, set in {setting}. Dialogue lines should be outputted in the format CharacterName{stringDelimiter}DialogueText{stringDelimiter}Mood{stringDelimiter}BackgroundScene.";
 
         if (characters.Count > 0)
         {
