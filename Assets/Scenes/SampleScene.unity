@@ -960,16 +960,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c106e2136f563d44b44cb9b06af81ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  apiKey: 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
+  apiKey: 
   prompt: 
   numberOfLines: 5
   genre: romance
   setting: an alien planet
-  stringDelimiter: 124
   characters:
   - Space Marine
   - Nurgle Cultist
   - Narrator
+  stringDelimiter: 124
 --- !u!4 &621874267
 Transform:
   m_ObjectHideFlags: 0
@@ -1265,9 +1265,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dee248e24d776bc43abec72d977d055e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stepForwardButton: {fileID: 0}
-  stepBackwardButton: {fileID: 0}
-  repeatLineButton: {fileID: 0}
+  stepForwardButton: {fileID: 660127440}
+  stepBackwardButton: {fileID: 2050658980}
+  repeatLineButton: {fileID: 1442078858}
 --- !u!4 &888371920
 Transform:
   m_ObjectHideFlags: 0
@@ -1825,6 +1825,7 @@ GameObject:
   - component: {fileID: 1526163597}
   - component: {fileID: 1526163599}
   - component: {fileID: 1526163598}
+  - component: {fileID: 1526163600}
   m_Layer: 0
   m_Name: NameDisplay
   m_TagString: Untagged
@@ -1949,6 +1950,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1526163596}
   m_CullTransparentMesh: 1
+--- !u!114 &1526163600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526163596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b876302658184c44bec9d65a5be3506, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2050658978
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,10 +10,10 @@ public class OpenAIController : Singleton<OpenAIController>
     [SerializeField] private int numberOfLines;
     [SerializeField] private string genre;
     [SerializeField] private string setting;
-    [SerializeField] private char stringDelimiter;
     [SerializeField] private List<string> characters;
     private OpenAIAPI api;
     public Conversation Chat { get; private set; }
+    public char stringDelimiter;
 
     protected override void Awake()
     {
@@ -24,7 +24,6 @@ public class OpenAIController : Singleton<OpenAIController>
         prompt = CreatePrompt();
 
         Chat.AppendSystemMessage(prompt);
-        //GetResponse();
     }
 
     private string CreatePrompt()
@@ -44,31 +43,5 @@ public class OpenAIController : Singleton<OpenAIController>
         }
 
         return newPrompt;
-    }
-
-    public async void GetResponse()
-    {
-        string response = await Chat.GetResponseFromChatbotAsync();
-        //Debug.Log(response);
-    }
-
-    private void CreateDialogue(string response)
-    {
-        List<string> lines = new List<string>();
-
-        foreach(ChatMessage message in OpenAIController.Instance.Chat.Messages)
-        {
-            string[] splitLine = message.Content.Split('\n');
-            
-            foreach (string line in splitLine)
-            {
-                lines.Add(line);
-            }
-        }
-
-        foreach (string line in lines)
-        {
-            Debug.Log("Line");
-        }
     }
 }

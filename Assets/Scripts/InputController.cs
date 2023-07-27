@@ -67,17 +67,17 @@ public class InputController : Singleton<InputController>
     {
         if (stepForwardButton)
         {
-            //stepForwardButton.onClick.AddListener(DialogueController.Instance.StepForward);
+            stepForwardButton.onClick.AddListener(DialogueController.Instance.StepForward);
         }
 
         if (stepBackwardButton)
         {
-            //stepBackwardButton.onClick.AddListener(DialogueController.Instance.StepBackward);
+            stepBackwardButton.onClick.AddListener(DialogueController.Instance.StepBackward);
         }
 
         if (repeatLineButton)
         {
-            //repeatLineButton.onClick.AddListener(DialogueController.Instance.RepeatLine);
+            repeatLineButton.onClick.AddListener(DialogueController.Instance.RepeatLine);
         }
     }
 
@@ -85,33 +85,33 @@ public class InputController : Singleton<InputController>
     {
         if (stepForwardButton)
         {
-            //stepForwardButton.onClick.RemoveListener(DialogueController.Instance.StepForward);
+            stepForwardButton.onClick.RemoveListener(DialogueController.Instance.StepForward);
         }
 
         if (stepBackwardButton)
         {
-            //stepBackwardButton.onClick.RemoveListener(DialogueController.Instance.StepBackward);
+            stepBackwardButton.onClick.RemoveListener(DialogueController.Instance.StepBackward);
         }
 
         if (repeatLineButton)
         {
-            //repeatLineButton.onClick.RemoveListener(DialogueController.Instance.RepeatLine);
+            repeatLineButton.onClick.RemoveListener(DialogueController.Instance.RepeatLine);
         }
     }
 
     private void OnStepForward(InputAction.CallbackContext context)
     {
-        //DialogueController.Instance.StepForward();
+        DialogueController.Instance.StepForward();
     }
 
     private void OnStepBackward(InputAction.CallbackContext context)
     {
-        //DialogueController.Instance.StepBackward();
+        DialogueController.Instance.StepBackward();
     }
 
     private void OnRepeatLine(InputAction.CallbackContext context)
     {
-        //DialogueController.Instance.RepeatLine();
+        DialogueController.Instance.RepeatLine();
     }
 
     private void OnQuicksave(InputAction.CallbackContext context)
@@ -121,6 +121,6 @@ public class InputController : Singleton<InputController>
 
     private void OnQuickload(InputAction.CallbackContext context)
     {
-        SaveController.Instance.Quickload();
+        //SaveController.Instance.Quickload();
     }
 }
