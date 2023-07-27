@@ -34,15 +34,12 @@ public class DialogueController : Singleton<DialogueController>
     {
         Debug.Log(chatbotResponse);
 
-        foreach (ChatMessage message in OpenAIController.Instance.Chat.Messages)
-        {
-            string[] splitMessage = message.Content.Split('\n');
+        string[] deserializedResponse = chatbotResponse.Split('\n', System.StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (string serializedLine in splitMessage)
-            {
-                DialogueLine dialogueLine = DeserializeLine(serializedLine);
-                DialoguePath.Add(dialogueLine);
-            }
+        foreach (string serializedLine in deserializedResponse)
+        {
+            DialogueLine dialogueLine = DeserializeLine(serializedLine);
+            DialoguePath.Add(dialogueLine);
         }
     }
 
