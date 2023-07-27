@@ -15,20 +15,16 @@ public class OpenAIController : Singleton<OpenAIController>
     private OpenAIAPI api;
     public Conversation Chat { get; private set; }
 
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
+
         api = new OpenAIAPI(apiKey);
         Chat = api.Chat.CreateConversation();
         prompt = CreatePrompt();
 
         Chat.AppendSystemMessage(prompt);
-        GetResponse();
-    }
-
-    private async void GetResponse()
-    {
-        string response = await Chat.GetResponseFromChatbotAsync();
-        Debug.Log(response);
+        //GetResponse();
     }
 
     private string CreatePrompt()
@@ -48,5 +44,31 @@ public class OpenAIController : Singleton<OpenAIController>
         }
 
         return newPrompt;
+    }
+
+    public async void GetResponse()
+    {
+        string response = await Chat.GetResponseFromChatbotAsync();
+        //Debug.Log(response);
+    }
+
+    private void CreateDialogue(string response)
+    {
+        List<string> lines = new List<string>();
+
+        foreach(ChatMessage message in OpenAIController.Instance.Chat.Messages)
+        {
+            string[] splitLine = message.Content.Split('\n');
+            
+            foreach (string line in splitLine)
+            {
+                lines.Add(line);
+            }
+        }
+
+        foreach (string line in lines)
+        {
+            Debug.Log("Line");
+        }
     }
 }
