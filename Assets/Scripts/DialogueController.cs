@@ -34,9 +34,9 @@ public class DialogueController : Singleton<DialogueController>
     {
         Debug.Log(chatbotResponse);
 
-        string[] deserializedResponse = chatbotResponse.Split('\n', System.StringSplitOptions.RemoveEmptyEntries);
+        string[] serializedLines = chatbotResponse.Split('\n', System.StringSplitOptions.RemoveEmptyEntries);
 
-        foreach (string serializedLine in deserializedResponse)
+        foreach (string serializedLine in serializedLines)
         {
             DialogueLine dialogueLine = DeserializeLine(serializedLine);
             DialoguePath.Add(dialogueLine);
@@ -65,13 +65,14 @@ public class DialogueController : Singleton<DialogueController>
 
     public void StepBackward()
     {
-        if (!(currentLineIndex - 1 > 0)) return;
+        if (!(currentLineIndex - 1 >= 0)) return;
         currentLineIndex -= 1;
         ReadDialogueLine(currentLineIndex);
     }
 
     public void RepeatLine()
     {
+        if (!(DialoguePath.Count > 0)) return;
         ReadDialogueLine(currentLineIndex);
     }
 }

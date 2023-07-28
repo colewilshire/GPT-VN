@@ -28,7 +28,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private string CreatePrompt()
     {
-        string newPrompt = $"Write a {numberOfLines} line {genre} genre visual novel script, set in {setting}. Dialogue lines should be outputted in the format CharacterName{stringDelimiter}DialogueText{stringDelimiter}Mood{stringDelimiter}BackgroundScene.";
+        string newPrompt = $"Write a {numberOfLines} line {genre} genre visual novel script, set in {setting}. Dialogue lines should be outputted in the format CharacterName{stringDelimiter}DialogueText{stringDelimiter}Mood{stringDelimiter}BackgroundScene, followed by a newline character. Every line provided must fit that format exactly.";
 
         if (characters.Count > 0)
         {
