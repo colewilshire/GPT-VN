@@ -1,5 +1,6 @@
 using OpenAI_API;
 using OpenAI_API.Chat;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +14,6 @@ public class OpenAIController : Singleton<OpenAIController>
     [SerializeField] private List<string> characters;
     private OpenAIAPI api;
     public Conversation Chat { get; private set; }
-    public char stringDelimiter;
 
     protected override void Awake()
     {
@@ -28,8 +28,9 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private string CreatePrompt()
     {
-        string newPrompt = $"Write a {numberOfLines} line {genre} genre visual novel script, set in {setting}. Dialogue lines should be outputted in the format CharacterName{stringDelimiter}DialogueText{stringDelimiter}Mood{stringDelimiter}BackgroundScene, followed by a newline character. Every line provided must fit that format exactly.";
+        string newPrompt = $"Write a {numberOfLines} line {genre} genre visual novel script, set in {setting}. EEvery line should be delivered in Pipe-Separated Values (PSV) format. Lines must include characterName, dialogueText, mood, and backgroundImageTag, in that order.";
 
+        // Prompt AI with cast of characters
         if (characters.Count > 0)
         {
             newPrompt += " The cast consists of the characters: ";
@@ -41,6 +42,17 @@ public class OpenAIController : Singleton<OpenAIController>
 
             newPrompt += ".";
         }
+
+        // Prompt AI with available image tags
+        newPrompt += " The possible values for BackgroundImageTag are: ";
+        BackgroundImageTag[] tags = (BackgroundImageTag[]) Enum.GetValues(typeof(BackgroundImageTag));
+
+        foreach (BackgroundImageTag tag in tags)
+        {
+            newPrompt += $"{tag}, ";
+        }
+
+        newPrompt += ".";
 
         return newPrompt;
     }

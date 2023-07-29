@@ -1,4 +1,4 @@
-using OpenAI_API.Chat;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,7 +24,7 @@ public class DialogueController : Singleton<DialogueController>
     {
         DialogueLine currentLineIndex = DialoguePath[index];
 
-        //BackgroundController.Instance.SetBackground(currentLineIndex.backgroundImage);
+        BackgroundController.Instance.SetBackground(currentLineIndex.backgroundImage);//BackgroundController.Instance.GetImageWithTags(new List<ImageTag>() {ImageTag.House, ImageTag.Sky}));
         NameDisplayController.Instance.SetDisplayName(currentLineIndex.characterName);
         TextController.Instance.SetText(currentLineIndex.dialogueText);
         AudioController.Instance.PlaySound(currentLineIndex.voiceLine);
@@ -45,13 +45,35 @@ public class DialogueController : Singleton<DialogueController>
 
     private DialogueLine DeserializeLine(string serializedLine)
     {
-        string[] splitLine = serializedLine.Split(OpenAIController.Instance.stringDelimiter);
+        string[] splitLine = serializedLine.Split('|');
         DialogueLine dialogueLine = DialogueLine.CreateInstance<DialogueLine>();
 
-        dialogueLine.characterName = splitLine[0];
-        dialogueLine.dialogueText = splitLine[1];
-        dialogueLine.mood = splitLine[2];
-        dialogueLine.backgroundName = splitLine[3];
+        if (splitLine.Length > 0)
+        {
+            dialogueLine.characterName = splitLine[0];
+        }
+
+        if (splitLine.Length > 1)
+        {
+            dialogueLine.dialogueText = splitLine[1];
+        }
+
+        if (splitLine.Length > 2)
+        {
+            dialogueLine.mood = splitLine[2];
+        }
+
+        if (splitLine.Length > 3)
+        {
+            if(Enum.TryParse(splitLine[3], true, out BackgroundImageTag tag))
+            {
+                dialogueLine.backgroundImage = BackgroundController.Instance.GetBackgroundImageWithTags(new List<BackgroundImageTag>() { tag });
+            }
+            else
+            {
+                Debug.Log(serializedLine);
+            }
+        }
 
         return dialogueLine;
     }

@@ -7,7 +7,6 @@ public class DialogueLine : ScriptableObject
     public string characterName;
     public string dialogueText;
     public string mood;
-    public string backgroundName;
-    public AudioClip voiceLine;
     public Sprite backgroundImage;
+    public AudioClip voiceLine;
 }
