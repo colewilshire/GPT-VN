@@ -13,25 +13,10 @@ public class BackgroundController : Singleton<BackgroundController>
     {
         base.Awake();
 
-        OrganizeBackgroundsByTag();
-    }
-
-    private void OrganizeBackgroundsByTag()
-    {
         backgroundImage = GetComponent<Image>();
         backgroundImages.AddRange(Resources.LoadAll<BackgroundImage>(""));
 
-        foreach (BackgroundImage bgImage in backgroundImages)
-        {
-            foreach (BackgroundImageTag tag in bgImage.tags)
-            {
-                if (!tagDictionary.ContainsKey(tag))
-                {
-                    tagDictionary[tag] = new List<Sprite>();
-                }
-                tagDictionary[tag].Add(bgImage.image);
-            }
-        }
+        TagImageUtility.OrganizeImagesByTag(backgroundImages, tagDictionary);
     }
 
     public Sprite GetBackgroundImageWithTags(List<BackgroundImageTag> desiredTags)

@@ -44,4 +44,19 @@ public static class TagImageUtility
 
         return selectedGroup.Key;
     }
+
+    public static void OrganizeImagesByTag<T>(IEnumerable<TaggedImage<T>> taggedImages, Dictionary<T, List<Sprite>> tagDictionary) where T : Enum
+    {
+        foreach (TaggedImage<T> taggedImage in taggedImages)
+        {
+            foreach (T tag in taggedImage.tags)
+            {
+                if (!tagDictionary.ContainsKey(tag))
+                {
+                    tagDictionary[tag] = new List<Sprite>();
+                }
+                tagDictionary[tag].Add(taggedImage.image);
+            }
+        }
+    }
 }
