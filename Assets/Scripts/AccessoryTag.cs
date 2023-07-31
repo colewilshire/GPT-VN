@@ -1,4 +1,7 @@
 public enum AccessoryTag
 {
-    Bow
+    Bow,
+    Glasses,
+    HairClip,
+    Headband
 }

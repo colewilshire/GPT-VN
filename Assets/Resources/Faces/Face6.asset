@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9200b2d98adb5f4f9ce735364c538fa, type: 3}
+  m_Name: Face6
+  m_EditorClassIdentifier: 
+  image: {fileID: 21300000, guid: a93263ee50079e54aab73958c48c7856, type: 3}
+  tags: 01000000
+  image1: {fileID: 21300000, guid: 7755beae2b2bda540989627110d26bb8, type: 3}
+  image2: {fileID: 21300000, guid: b695fedc29c79fc4d9a5556487ba69eb, type: 3}
+  image3: {fileID: 21300000, guid: f03b9735224a81d47b0e67b697b54a54, type: 3}
+  image4: {fileID: 21300000, guid: 344c9b8b710ec9749849ad4754d84dc0, type: 3}
+  image5: {fileID: 21300000, guid: 4c4727088de86c94facd025544c5b229, type: 3}

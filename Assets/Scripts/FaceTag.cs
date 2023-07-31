@@ -1,4 +1,8 @@
 public enum FaceTag
 {
-    Happy
+    BrownEyes,
+    BlueEyes,
+    GreenEyes,
+    RedEyes,
+    YellowEyes
 }

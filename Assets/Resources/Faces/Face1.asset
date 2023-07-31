@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9200b2d98adb5f4f9ce735364c538fa, type: 3}
+  m_Name: Face1
+  m_EditorClassIdentifier: 
+  image: {fileID: 21300000, guid: dc41c21e64a0cf54586b8c498927ba85, type: 3}
+  tags: 00000000
+  image1: {fileID: 21300000, guid: 4b4115235194c93429bccb8ec8211802, type: 3}
+  image2: {fileID: 21300000, guid: d8cf7284e38b23449a1e792cdf2a8984, type: 3}
+  image3: {fileID: 21300000, guid: 382cc1792de414845a5d612616f6bf0e, type: 3}
+  image4: {fileID: 21300000, guid: 4a4594dcb382eca4283490a70a3cd799, type: 3}
+  image5: {fileID: 21300000, guid: adca5791f1e433d4b915927d5f07bc62, type: 3}

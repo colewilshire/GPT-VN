@@ -1,4 +1,10 @@
 public enum HairTag
 {
-    Brunette
+    ShortHaired,
+    LongHaired,
+    Brown,
+    Blonde,
+    Red,
+    Pink,
+    Blue
 }
