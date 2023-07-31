@@ -28,6 +28,8 @@ public static class TaggedImageUtility
 
     public static U GetImageWithTags<T, U>(List<T> desiredTags, Dictionary<T, List<U>> tagDictionary, Dictionary<string, U> imageCache = null) where T : Enum where U : TaggedImage<T>
     {
+        if (desiredTags.Count == 0) return null;
+
         U cachedImage = GetCachedImage(desiredTags, imageCache);
 
         if (cachedImage != null)
@@ -37,12 +39,18 @@ public static class TaggedImageUtility
 
         IEnumerable<U> candidateImages = desiredTags.SelectMany(tag => tagDictionary[tag]);
         IEnumerable<IGrouping<U, U>> groupedCandidates = candidateImages.GroupBy(i => i);
+
+        if (!groupedCandidates.Any()) return null;
+
         int maxCount = groupedCandidates.Max(g => g.Count());
         List<IGrouping<U, U>> maxGroups = groupedCandidates.Where(g => g.Count() == maxCount).ToList();
         IGrouping<U, U> selectedGroup = maxGroups[UnityEngine.Random.Range(0, maxGroups.Count)];
         string key = GetKeyFromTags(desiredTags);
 
-        imageCache[key] = selectedGroup.Key;
+        if (imageCache != null)
+        {
+            imageCache[key] = selectedGroup.Key;
+        }
 
         return selectedGroup.Key;
     }

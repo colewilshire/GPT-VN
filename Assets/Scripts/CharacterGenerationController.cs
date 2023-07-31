@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterSpritesController : Singleton<CharacterSpritesController>
+public class CharacterGenerationController : Singleton<CharacterGenerationController>
 {
     [SerializeField] CharacterPortraitController characterPortaitPrefab;
 
@@ -14,6 +14,8 @@ public class CharacterSpritesController : Singleton<CharacterSpritesController>
     private Dictionary<HairTag, List<Hair>> hairDictionary = new Dictionary<HairTag, List<Hair>>();
     private Dictionary<OutfitTag, List<Outfit>> outfitDictionary = new Dictionary<OutfitTag, List<Outfit>>();
     private Dictionary<FaceTag, List<Face>> faceDictionary = new Dictionary<FaceTag, List<Face>>();
+
+    private Dictionary<string, CharacterPortraitController> characters = new Dictionary<string, CharacterPortraitController>();
 
     protected override void Awake()
     {
@@ -49,17 +51,40 @@ public class CharacterSpritesController : Singleton<CharacterSpritesController>
         TaggedImageUtility.OrganizeImagesByTag(faces, faceDictionary);
     }
 
-    public void GenerateCharacterPortrait(List<AccessoryTag> accessoryTags, List<HairTag> hairTags, List<OutfitTag> outfitTags, List <FaceTag> faceTags)
+    public void GenerateCharacterPortrait(string characterName, List<AccessoryTag> accessoryTags, List<HairTag> hairTags, List<OutfitTag> outfitTags, List <FaceTag> faceTags)
     {
+        if (characters.ContainsKey(characterName)) return;
+
+        CharacterPortraitController characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
+        characters[characterName] = characterPortrait;
+
         CharacterAppearance characterAppearance = CharacterAppearance.CreateInstance<CharacterAppearance>();
-        CharacterPortraitController characterPortrait = Instantiate(characterPortaitPrefab);
+        Accessory accessory = TaggedImageUtility.GetImageWithTags(accessoryTags, accessoryDictionary);
+        Hair hair = TaggedImageUtility.GetImageWithTags(hairTags, hairDictionary);
+        Outfit outfit = TaggedImageUtility.GetImageWithTags(outfitTags, outfitDictionary);
+        Face face = TaggedImageUtility.GetImageWithTags(faceTags, faceDictionary);
 
-        characterAppearance.accessory = TaggedImageUtility.GetImageWithTags(accessoryTags, accessoryDictionary).image;
-        characterAppearance.hairFront = TaggedImageUtility.GetImageWithTags(hairTags, hairDictionary).image;
-        characterAppearance.outfit = TaggedImageUtility.GetImageWithTags(outfitTags, outfitDictionary).image;
-        characterAppearance.face = TaggedImageUtility.GetImageWithTags(faceTags, faceDictionary).image;
+        if (accessory)
+        {
+            characterAppearance.accessory = accessory.image;
+        }
 
+        if (hair)
+        {
+            characterAppearance.hairFront = hair.image;
+        }
+
+        if (outfit)
+        {
+            characterAppearance.outfit = outfit.image;
+        }
+
+        if (face)
+        {
+            characterAppearance.face = face.image;
+        }
+
+        characterPortrait.name = characterName;
         characterPortrait.SetAppearance(characterAppearance);
-        characterPortrait.transform.parent = Instance.transform;
     }
 }

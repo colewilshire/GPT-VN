@@ -135,7 +135,6 @@ MonoBehaviour:
   hairFront: {fileID: 8366215354548441982}
   outfit: {fileID: 2342027759172796028}
   face: {fileID: 1568212279222467858}
-  head: {fileID: 1064922490293242026}
   hairBack: {fileID: 6301348817739726560}
 --- !u!1 &6877326381722937461
 GameObject:

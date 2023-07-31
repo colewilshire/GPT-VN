@@ -9,13 +9,13 @@ public class CharacterPortraitController : MonoBehaviour
     [SerializeField] private Image face;
     [SerializeField] private Image hairBack;
 
-    public void SetAppearance(CharacterAppearance characterPortrait)
+    public void SetAppearance(CharacterAppearance characterAppearance)
     {
-        accessory.sprite = characterPortrait.accessory;
-        hairFront.sprite = characterPortrait.hairFront;
-        outfit.sprite = characterPortrait.outfit;
-        face.sprite = characterPortrait.face;
-        hairBack.sprite = characterPortrait.hairBack;
+        accessory.sprite = characterAppearance.accessory;
+        hairFront.sprite = characterAppearance.hairFront;
+        outfit.sprite = characterAppearance.outfit;
+        face.sprite = characterAppearance.face;
+        hairBack.sprite = characterAppearance.hairBack;
 
         accessory.gameObject.SetActive(accessory.sprite);
         hairFront.gameObject.SetActive(hairFront.sprite);

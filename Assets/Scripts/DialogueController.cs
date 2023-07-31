@@ -50,7 +50,7 @@ public class DialogueController : Singleton<DialogueController>
 
         if (splitLine.Length > 0)
         {
-            dialogueLine.characterName = splitLine[0];
+            dialogueLine.characterName = splitLine[0].Trim();
         }
 
         if (splitLine.Length > 1)
@@ -60,19 +60,46 @@ public class DialogueController : Singleton<DialogueController>
 
         if (splitLine.Length > 2)
         {
-            dialogueLine.mood = splitLine[2];
+            if(Enum.TryParse(splitLine[2], true, out BackgroundTag tag))
+            {
+                List<BackgroundTag> backgroundTags = new List<BackgroundTag>() { tag };
+                dialogueLine.backgroundImage = BackgroundController.Instance.GetBackgroundImageWithTags(backgroundTags).image;
+            }
         }
 
         if (splitLine.Length > 3)
         {
-            if(Enum.TryParse(splitLine[3], true, out BackgroundTag tag))
+            dialogueLine.mood = splitLine[3];
+        }
+
+        if (splitLine.Length > 7)
+        {
+            List<HairTag> hairTags = new List<HairTag>();
+            List<OutfitTag> outfitTags = new List<OutfitTag>();
+            List<FaceTag> faceTags = new List<FaceTag>();
+            List<AccessoryTag> accessoryTags = new List<AccessoryTag>();
+
+            if(Enum.TryParse(splitLine[4], true, out HairTag hairTag))
             {
-                dialogueLine.backgroundImage = BackgroundController.Instance.GetBackgroundImageWithTags(new List<BackgroundTag>() { tag }).image;
+                hairTags.Add(hairTag);
             }
-            else
+
+            if(Enum.TryParse(splitLine[5], true, out OutfitTag outfitTag))
             {
-                Debug.Log(serializedLine);
+                outfitTags.Add(outfitTag);
             }
+
+            if(Enum.TryParse(splitLine[6], true, out FaceTag faceTag))
+            {
+                faceTags.Add(faceTag);
+            }
+
+            if(Enum.TryParse(splitLine[7], true, out AccessoryTag accessoryTag))
+            {
+                accessoryTags.Add(accessoryTag);
+            }
+
+            CharacterGenerationController.Instance.GenerateCharacterPortrait(dialogueLine.characterName, accessoryTags, hairTags, outfitTags, faceTags);
         }
 
         return dialogueLine;

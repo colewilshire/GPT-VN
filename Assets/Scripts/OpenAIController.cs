@@ -30,11 +30,19 @@ public class OpenAIController : Singleton<OpenAIController>
     {
         Type backgroundTag = typeof(BackgroundTag);
         Type mood = typeof(Mood);
-        string newPrompt = $"Write a {numberOfLines} line {genre} genre visual novel script, set in {setting}. Every line should be delivered in Pipe-Separated Values (PSV) format. Lines must include characterName, dialogueText, mood, and backgroundImageTag, in that order.";
+        Type hairTag = typeof(HairTag);
+        Type outfitTag = typeof(OutfitTag);
+        Type faceTag = typeof(FaceTag);
+        Type accessoryTag = typeof(AccessoryTag);
+        string newPrompt = $"Write a {numberOfLines} line {genre} genre visual novel script, set in {setting}. Every line should be delivered in Pipe-Separated Values (PSV) format. Lines must include characterName, dialogueText, {backgroundTag}, {mood}, {hairTag}, {outfitTag}, {faceTag}, and {accessoryTag} in that order.";
 
         newPrompt += PromptWithCharacters();
         newPrompt += PromptWithEnum(backgroundTag);
         newPrompt += PromptWithEnum(mood);
+        newPrompt += PromptWithEnum(hairTag);
+        newPrompt += PromptWithEnum(outfitTag);
+        newPrompt += PromptWithEnum(faceTag);
+        newPrompt += PromptWithEnum(accessoryTag);
 
         return newPrompt;
     }
@@ -57,7 +65,7 @@ public class OpenAIController : Singleton<OpenAIController>
     private string PromptWithEnum(Type enumType)
     {
         string enumName = enumType.Name;
-        string newPrompt = $" The possible values for {enumName} are: ";
+        string newPrompt = $" The only possible values for {enumName} are: ";
         Array values = Enum.GetValues(enumType);
         List<string> valueList = new List<string>();
 
@@ -67,7 +75,8 @@ public class OpenAIController : Singleton<OpenAIController>
         }
 
         newPrompt += string.Join(", ", valueList);
+        newPrompt += ".";
 
-        return newPrompt += ".";
+        return newPrompt;
     }
 }
