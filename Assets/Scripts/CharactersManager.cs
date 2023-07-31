@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterEnsembleController : Singleton<CharacterEnsembleController>
+public class CharactersManager : Singleton<CharactersManager>
 {
     [SerializeField] private CharacterPortraitController characterPortraitPrefab;
 

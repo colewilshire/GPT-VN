@@ -7,6 +7,5 @@ public class CharacterAppearance: ScriptableObject
     public Sprite hairFront;
     public Sprite outfit;
     public Sprite face;
-    public Sprite head;
     public Sprite hairBack;
 }
