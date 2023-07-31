@@ -12,13 +12,13 @@ public static class TaggedImageUtility
         return string.Join(",", tags);
     }
 
-    private static Sprite GetCachedImage<T>(List<T> tags, Dictionary<string, Sprite> imageCache) where T : Enum
+    private static U GetCachedImage<T, U>(List<T> tags, Dictionary<string, U> imageCache) where T : Enum where U : TaggedImage<T>
     {
         if (imageCache == null) return null;
 
         string key = GetKeyFromTags(tags);
 
-        if (imageCache.TryGetValue(key, out Sprite cachedImage))
+        if (imageCache.TryGetValue(key, out U cachedImage))
         {
             return cachedImage;
         }
@@ -26,20 +26,20 @@ public static class TaggedImageUtility
         return null;
     }
 
-    public static Sprite GetImageWithTags<T>(List<T> desiredTags, Dictionary<T, List<Sprite>> tagDictionary, Dictionary<string, Sprite> imageCache = null) where T : Enum
+    public static U GetImageWithTags<T, U>(List<T> desiredTags, Dictionary<T, List<U>> tagDictionary, Dictionary<string, U> imageCache = null) where T : Enum where U : TaggedImage<T>
     {
-        Sprite cachedImage = GetCachedImage(desiredTags, imageCache);
+        U cachedImage = GetCachedImage(desiredTags, imageCache);
 
         if (cachedImage != null)
         {
             return cachedImage;
         }
 
-        IEnumerable<Sprite> candidateImages = desiredTags.SelectMany(tag => tagDictionary[tag]);
-        IEnumerable<IGrouping<Sprite, Sprite>> groupedCandidates = candidateImages.GroupBy(i => i);
+        IEnumerable<U> candidateImages = desiredTags.SelectMany(tag => tagDictionary[tag]);
+        IEnumerable<IGrouping<U, U>> groupedCandidates = candidateImages.GroupBy(i => i);
         int maxCount = groupedCandidates.Max(g => g.Count());
-        List<IGrouping<Sprite, Sprite>> maxGroups = groupedCandidates.Where(g => g.Count() == maxCount).ToList();
-        IGrouping<Sprite, Sprite> selectedGroup = maxGroups[UnityEngine.Random.Range(0, maxGroups.Count)];
+        List<IGrouping<U, U>> maxGroups = groupedCandidates.Where(g => g.Count() == maxCount).ToList();
+        IGrouping<U, U> selectedGroup = maxGroups[UnityEngine.Random.Range(0, maxGroups.Count)];
         string key = GetKeyFromTags(desiredTags);
 
         imageCache[key] = selectedGroup.Key;
@@ -47,7 +47,7 @@ public static class TaggedImageUtility
         return selectedGroup.Key;
     }
 
-    public static void OrganizeImagesByTag<T>(IEnumerable<TaggedImage<T>> taggedImages, Dictionary<T, List<Sprite>> tagDictionary) where T : Enum
+    public static void OrganizeImagesByTag<T, U>(IEnumerable<TaggedImage<T>> taggedImages, Dictionary<T, List<U>> tagDictionary) where T : Enum where U : TaggedImage<T>
     {
         foreach (TaggedImage<T> taggedImage in taggedImages)
         {
@@ -55,9 +55,9 @@ public static class TaggedImageUtility
             {
                 if (!tagDictionary.ContainsKey(tag))
                 {
-                    tagDictionary[tag] = new List<Sprite>();
+                    tagDictionary[tag] = new List<U>();
                 }
-                tagDictionary[tag].Add(taggedImage.image);
+                tagDictionary[tag].Add((U)taggedImage);
             }
         }
     }

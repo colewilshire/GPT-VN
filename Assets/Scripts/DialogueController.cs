@@ -24,7 +24,7 @@ public class DialogueController : Singleton<DialogueController>
     {
         DialogueLine currentLineIndex = DialoguePath[index];
 
-        BackgroundController.Instance.SetBackground(currentLineIndex.backgroundImage);//BackgroundController.Instance.GetImageWithTags(new List<ImageTag>() {ImageTag.House, ImageTag.Sky}));
+        BackgroundController.Instance.SetBackground(currentLineIndex.backgroundImage);
         NameDisplayController.Instance.SetDisplayName(currentLineIndex.characterName);
         TextController.Instance.SetText(currentLineIndex.dialogueText);
         AudioController.Instance.PlaySound(currentLineIndex.voiceLine);
@@ -67,7 +67,7 @@ public class DialogueController : Singleton<DialogueController>
         {
             if(Enum.TryParse(splitLine[3], true, out BackgroundTag tag))
             {
-                dialogueLine.backgroundImage = BackgroundController.Instance.GetBackgroundImageWithTags(new List<BackgroundTag>() { tag });
+                dialogueLine.backgroundImage = BackgroundController.Instance.GetBackgroundImageWithTags(new List<BackgroundTag>() { tag }).image;
             }
             else
             {
