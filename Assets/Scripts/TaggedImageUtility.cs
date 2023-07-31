@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static class TagImageUtility
+public static class TaggedImageUtility
 {
     private static string GetKeyFromTags<T>(List<T> tags) where T : Enum
     {
@@ -14,6 +14,8 @@ public static class TagImageUtility
 
     private static Sprite GetCachedImage<T>(List<T> tags, Dictionary<string, Sprite> imageCache) where T : Enum
     {
+        if (imageCache == null) return null;
+
         string key = GetKeyFromTags(tags);
 
         if (imageCache.TryGetValue(key, out Sprite cachedImage))
@@ -24,7 +26,7 @@ public static class TagImageUtility
         return null;
     }
 
-    public static Sprite GetImageWithTags<T>(List<T> desiredTags, Dictionary<T, List<Sprite>> tagDictionary, Dictionary<string, Sprite> imageCache) where T : Enum
+    public static Sprite GetImageWithTags<T>(List<T> desiredTags, Dictionary<T, List<Sprite>> tagDictionary, Dictionary<string, Sprite> imageCache = null) where T : Enum
     {
         Sprite cachedImage = GetCachedImage(desiredTags, imageCache);
 

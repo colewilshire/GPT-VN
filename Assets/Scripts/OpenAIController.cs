@@ -45,9 +45,9 @@ public class OpenAIController : Singleton<OpenAIController>
 
         // Prompt AI with available image tags
         newPrompt += " The possible values for BackgroundImageTag are: ";
-        BackgroundImageTag[] tags = (BackgroundImageTag[]) Enum.GetValues(typeof(BackgroundImageTag));
+        BackgroundTag[] tags = (BackgroundTag[]) Enum.GetValues(typeof(BackgroundTag));
 
-        foreach (BackgroundImageTag tag in tags)
+        foreach (BackgroundTag tag in tags)
         {
             newPrompt += $"{tag}, ";
         }

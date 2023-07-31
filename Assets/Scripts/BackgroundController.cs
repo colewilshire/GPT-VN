@@ -5,23 +5,28 @@ using UnityEngine.UI;
 public class BackgroundController : Singleton<BackgroundController>
 {
     private List<BackgroundImage> backgroundImages = new List<BackgroundImage>();
-    private Dictionary<BackgroundImageTag, List<Sprite>> tagDictionary = new Dictionary<BackgroundImageTag, List<Sprite>>();
-    private Dictionary<string, Sprite> imageCache = new Dictionary<string, Sprite>();
+    private Dictionary<BackgroundTag, List<Sprite>> backgroundDictionary = new Dictionary<BackgroundTag, List<Sprite>>();
+    private Dictionary<string, Sprite> backgroundImageCache = new Dictionary<string, Sprite>();
     private Image backgroundImage;
 
     protected override void Awake()
     {
         base.Awake();
 
+        OrganizeBackgroundsByTag();
+    }
+
+    private void OrganizeBackgroundsByTag()
+    {
         backgroundImage = GetComponent<Image>();
         backgroundImages.AddRange(Resources.LoadAll<BackgroundImage>(""));
 
-        TagImageUtility.OrganizeImagesByTag(backgroundImages, tagDictionary);
+        TaggedImageUtility.OrganizeImagesByTag(backgroundImages, backgroundDictionary);
     }
 
-    public Sprite GetBackgroundImageWithTags(List<BackgroundImageTag> desiredTags)
+    public Sprite GetBackgroundImageWithTags(List<BackgroundTag> desiredTags)
     {
-        return TagImageUtility.GetImageWithTags(desiredTags, tagDictionary, imageCache);
+        return TaggedImageUtility.GetImageWithTags(desiredTags, backgroundDictionary, backgroundImageCache);
     }
 
     public void SetBackground(Sprite sprite)

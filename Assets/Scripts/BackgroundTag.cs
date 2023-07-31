@@ -1,4 +1,4 @@
-public enum BackgroundImageTag
+public enum BackgroundTag
 {
     City,
     Factory,

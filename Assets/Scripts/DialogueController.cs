@@ -65,9 +65,9 @@ public class DialogueController : Singleton<DialogueController>
 
         if (splitLine.Length > 3)
         {
-            if(Enum.TryParse(splitLine[3], true, out BackgroundImageTag tag))
+            if(Enum.TryParse(splitLine[3], true, out BackgroundTag tag))
             {
-                dialogueLine.backgroundImage = BackgroundController.Instance.GetBackgroundImageWithTags(new List<BackgroundImageTag>() { tag });
+                dialogueLine.backgroundImage = BackgroundController.Instance.GetBackgroundImageWithTags(new List<BackgroundTag>() { tag });
             }
             else
             {
