@@ -28,32 +28,46 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private string CreatePrompt()
     {
-        string newPrompt = $"Write a {numberOfLines} line {genre} genre visual novel script, set in {setting}. EEvery line should be delivered in Pipe-Separated Values (PSV) format. Lines must include characterName, dialogueText, mood, and backgroundImageTag, in that order.";
+        Type backgroundTag = typeof(BackgroundTag);
+        Type mood = typeof(Mood);
+        string newPrompt = $"Write a {numberOfLines} line {genre} genre visual novel script, set in {setting}. Every line should be delivered in Pipe-Separated Values (PSV) format. Lines must include characterName, dialogueText, mood, and backgroundImageTag, in that order.";
 
-        // Prompt AI with cast of characters
+        newPrompt += PromptWithCharacters();
+        newPrompt += PromptWithEnum(backgroundTag);
+        newPrompt += PromptWithEnum(mood);
+
+        return newPrompt;
+    }
+
+    private string PromptWithCharacters()
+    {
+        string newPrompt = "";
+
         if (characters.Count > 0)
         {
             newPrompt += " The cast consists of the characters: ";
-
-            foreach (string characterName in characters)
-            {
-                newPrompt += $"{characterName}, ";
-            }
+            newPrompt += string.Join(", ", characters);
 
             newPrompt += ".";
         }
 
-        // Prompt AI with available image tags
-        newPrompt += " The possible values for BackgroundImageTag are: ";
-        BackgroundTag[] tags = (BackgroundTag[]) Enum.GetValues(typeof(BackgroundTag));
+        return newPrompt;
+    }
 
-        foreach (BackgroundTag tag in tags)
+    private string PromptWithEnum(Type enumType)
+    {
+        string enumName = enumType.Name;
+        string newPrompt = $" The possible values for {enumName} are: ";
+        Array values = Enum.GetValues(enumType);
+        List<string> valueList = new List<string>();
+
+        foreach (var value in values)
         {
-            newPrompt += $"{tag}, ";
+            valueList.Add(value.ToString());
         }
 
-        newPrompt += ".";
+        newPrompt += string.Join(", ", valueList);
 
-        return newPrompt;
+        return newPrompt += ".";
     }
 }

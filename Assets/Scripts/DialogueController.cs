@@ -55,7 +55,7 @@ public class DialogueController : Singleton<DialogueController>
 
         if (splitLine.Length > 1)
         {
-            dialogueLine.dialogueText = splitLine[1];
+            dialogueLine.dialogueText = splitLine[1].Trim('"');
         }
 
         if (splitLine.Length > 2)
