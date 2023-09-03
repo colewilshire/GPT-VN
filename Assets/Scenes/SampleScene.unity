@@ -870,10 +870,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c106e2136f563d44b44cb9b06af81ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  apiKey: 
+  apiKey: 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
   prompt: 
   numberOfLines: 10
-  genre: gay-romance
+  genre: action-comedy
   setting: high school
   characters:
   - Narrator

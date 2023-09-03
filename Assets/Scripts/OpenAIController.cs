@@ -21,9 +21,6 @@ public class OpenAIController : Singleton<OpenAIController>
 
         api = new OpenAIAPI(apiKey);
         Chat = api.Chat.CreateConversation();
-        prompt = CreatePrompt();
-
-        Chat.AppendSystemMessage(prompt);
     }
 
     private string CreatePrompt()
@@ -78,5 +75,28 @@ public class OpenAIController : Singleton<OpenAIController>
         newPrompt += ".";
 
         return newPrompt;
+    }
+
+    public void LoadConversationFromSave(SaveData saveData)
+    {
+        if (saveData == null)
+        {
+            prompt = CreatePrompt();
+
+            Chat.AppendSystemMessage(prompt);
+            return;
+        }
+
+        prompt = saveData.messages[0];
+
+        for (int i = 0; i < saveData.roles.Count; ++i)
+        {
+            string roleName = saveData.roles[i];
+            string message = saveData.messages[i];
+            ChatMessageRole role = ChatMessageRole.FromString(roleName);
+            ChatMessage chatMessage = new ChatMessage(role, message);
+
+            Chat.AppendMessage(chatMessage);
+        }
     }
 }

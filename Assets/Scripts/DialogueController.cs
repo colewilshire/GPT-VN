@@ -14,6 +14,7 @@ public class DialogueController : Singleton<DialogueController>
 
     private async void StartDialogue()
     {
+        OpenAIController.Instance.LoadConversationFromSave(SaveController.Instance.Load("quicksave"));
         string chatbotResponse = await OpenAIController.Instance.Chat.GetResponseFromChatbotAsync();
 
         CreateDialogue(chatbotResponse);
@@ -34,7 +35,7 @@ public class DialogueController : Singleton<DialogueController>
     {
         Debug.Log(chatbotResponse);
 
-        string[] serializedLines = chatbotResponse.Split('\n', System.StringSplitOptions.RemoveEmptyEntries);
+        string[] serializedLines = chatbotResponse.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
         foreach (string serializedLine in serializedLines)
         {
