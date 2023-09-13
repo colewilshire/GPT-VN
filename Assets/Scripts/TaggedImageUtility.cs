@@ -37,7 +37,7 @@ public static class TaggedImageUtility
             return cachedImage;
         }
 
-        IEnumerable<U> candidateImages = desiredTags.SelectMany(tag => tagDictionary[tag]);
+        IEnumerable<U> candidateImages = desiredTags.Where(tag => tagDictionary.ContainsKey(tag)).SelectMany(tag => tagDictionary[tag]);
         IEnumerable<IGrouping<U, U>> groupedCandidates = candidateImages.GroupBy(i => i);
 
         if (!groupedCandidates.Any()) return null;
