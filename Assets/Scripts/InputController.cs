@@ -116,7 +116,7 @@ public class InputController : Singleton<InputController>
 
     private void OnQuicksave(InputAction.CallbackContext context)
     {
-        SaveController.Instance.Quicksave();
+        //SaveController.Instance.Quicksave();
     }
 
     private void OnQuickload(InputAction.CallbackContext context)

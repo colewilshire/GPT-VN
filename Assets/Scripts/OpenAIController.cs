@@ -38,16 +38,18 @@ public class OpenAIController : Singleton<OpenAIController>
         string serializedOutfitDescriptions = await GenerateOutfitDescriptions();
         string serializedEyeColorDescriptions = await GenerateEyeColorDescriptions();
         string serializedAccessoryDescriptions = await GenerateAccessoryDescriptions();
+        string serializedBackgroundDescriptions = await GenerateBackgroundDescription();
         string serializedDialogue = await GenerateDialogue();
-        string serializedBackgroundDescription = await GenerateBackgroundDescription();
         string serializedDialogue2 = await ContinueDialogue();
-        string serializedBackgroundDescription2 = await GenerateBackgroundDescription();
 
-        List<string> castList = serializedCastList.Split('|').Select(str => str.Trim()).ToList();
+        List<string> castList = serializedCastList.Split('|', StringSplitOptions.RemoveEmptyEntries)
+            .Select(str => str.Trim())
+            .ToList();
         Dictionary<string, List<HairTag>> hairDescriptions = DeserializeTags<HairTag>(serializedHairDescriptions);
         Dictionary<string, List<OutfitTag>> outfitDescriptions = DeserializeTags<OutfitTag>(serializedOutfitDescriptions);
         Dictionary<string, List<FaceTag>> eyeColorDescriptions = DeserializeTags<FaceTag>(serializedEyeColorDescriptions);
         Dictionary<string, List<AccessoryTag>> accessoryDescriptions = DeserializeTags<AccessoryTag>(serializedAccessoryDescriptions);
+        Dictionary<string, List<BackgroundTag>> backgroundDescriptions = DeserializeTags<BackgroundTag>(serializedBackgroundDescriptions);
 
         foreach (string characterName in castList)
         {
@@ -70,6 +72,10 @@ public class OpenAIController : Singleton<OpenAIController>
                 Debug.Log($"Error generating {characterName}");
             }
         }
+
+        BackgroundController.Instance.GenerateBackgroundImages(backgroundDescriptions);
+        DialogueController.Instance.StartDialogue(serializedDialogue);
+        DialogueController.Instance.AddToDialogue(serializedDialogue2);
     }
 
     private void PromptWithInitialInstructions()
@@ -159,10 +165,14 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateDialogue()
     {
+        Type mood = typeof(Mood);
         string prompt =
             "Create a script for the next act of the visual novel. " +
             $"The script should be {linesPerScene} lines of dialogue long. " +
-            "Dialogue lines should start with the speaking character's name, followed by the dialogue's text, separated by a '|'.";
+            "Dialogue lines should start with the speaking character's name, followed by the dialogue's text, followed by the speaker's emotion, followed by the name of the background to display, each separated by a '|'." +
+            "Each line of dialogue should include a single emotion. The chosen emotion must come from the following list: " +
+            GetEnumValues(mood) +
+            " Backgrounds names should come from the previously generated list of backgrounds.";
         conversation.AppendSystemMessage(prompt);
 
         string assistantResponse = await conversation.GetResponseFromChatbotAsync();
@@ -187,9 +197,10 @@ public class OpenAIController : Singleton<OpenAIController>
     {
         Type type = typeof(BackgroundTag);
         string prompt =
-            "Describe the background image for the last scene using only terms from the following list: " +
+            "Generate a list of names for background images that could be featured in the visual novel. " +
+            "Describe these backgrounds using any number terms, exclusively from the following list: " +
             GetEnumValues(type) +
-            "The background image description should be outputted in PSV format, including any number of applicable background image traits from the list, each separated by a '|'.";
+            "The background image description should be outputted in PSV format, starting with its name, followed by any number of applicable background image traits from the list, each separated by a '|'.";
         conversation.AppendSystemMessage(prompt);
 
         string assistantResponse = await conversation.GetResponseFromChatbotAsync();
@@ -218,11 +229,13 @@ public class OpenAIController : Singleton<OpenAIController>
     private static Dictionary<string, List<TEnum>> DeserializeTags<TEnum>(string serializedTags) where TEnum : struct, Enum
     {
         Dictionary<string, List<TEnum>> tagsByCharacter = new Dictionary<string, List<TEnum>>();
-        List<string> splitSerializedTags = new List<string>(serializedTags.Split('\n'));
+        List<string> splitSerializedTags = new List<string>(serializedTags.Split('\n', StringSplitOptions.RemoveEmptyEntries));
 
         foreach (string characterSerializedTags in splitSerializedTags)
         {
-            List<string> tags = new List<string>(characterSerializedTags.Split('|')).Select(str => str.Trim()).ToList();;
+            List<string> tags = new List<string>(characterSerializedTags.Split('|', StringSplitOptions.RemoveEmptyEntries))
+                .Select(str => str.Trim())
+                .ToList();
             string characterName = tags[0];
 
             tags.RemoveAt(0);
