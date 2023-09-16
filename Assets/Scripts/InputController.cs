@@ -14,21 +14,27 @@ public class InputController : Singleton<InputController>
     [SerializeField] private Button stepBackwardButton;
     [SerializeField] private Button repeatLineButton;
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        playerInputActions = new PlayerInputActions();
+    }
+
     private void Start()
     {
-        EnableInputs();
+        CreateInputs();
         SetUpButtons();
     }
 
     private void OnDestroy()
     {
-        DisableInputs();
+        DestroyInputs();
         TearDownButtons();
     }
 
-    private void EnableInputs()
+    private void CreateInputs()
     {
-        playerInputActions = new PlayerInputActions();
         stepForwardAction = playerInputActions.Dialogue.StepForward;
         stepBackwardAction = playerInputActions.Dialogue.StepBackward;
         repeatLineAction = playerInputActions.Dialogue.RepeatLine;
@@ -48,7 +54,7 @@ public class InputController : Singleton<InputController>
         quickloadAction.Enable();
     }
 
-    private void DisableInputs()
+    private void DestroyInputs()
     {
         stepForwardAction.performed -= OnStepForward;
         stepBackwardAction.performed -= OnStepBackward;
@@ -122,5 +128,15 @@ public class InputController : Singleton<InputController>
     private void OnQuickload(InputAction.CallbackContext context)
     {
         //SaveController.Instance.Quickload();
+    }
+
+    public void EnableInputs()
+    {
+        playerInputActions.Enable();
+    }
+
+    public void DisableInputs()
+    {
+        playerInputActions.Disable();
     }
 }

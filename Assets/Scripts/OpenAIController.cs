@@ -30,6 +30,8 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async void CreateConversation()
     {
+        LoadingScreen.Instance.ShowLoadingScreen("Making first-contact...");
+
         Chat = api.Chat.CreateConversation();
 
         PromptWithInitialInstructions();
@@ -76,6 +78,7 @@ public class OpenAIController : Singleton<OpenAIController>
         BackgroundController.Instance.GenerateBackgroundImages(backgroundDescriptions);
         DialogueController.Instance.StartDialogue(serializedDialogue);
         DialogueController.Instance.AddToDialogue(serializedDialogue2);
+        LoadingScreen.Instance.HideLoadingScreen();
     }
 
     public void LoadConversationFromSave(SaveData saveData)
@@ -103,6 +106,8 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateCastList()
     {
+        LoadingScreen.Instance.SetLoadingMessage("Casting characters...");
+
         string prompt =
             "Generate a cast list of characters for the visual novel. " +
             "The cast list must contain only the characters' names, outputted in a single line in Pipe-Separated Vale (PSV) format.";
@@ -117,6 +122,8 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateHairDescriptions()
     {
+        LoadingScreen.Instance.SetLoadingMessage("Styling hair...");
+
         Type type = typeof(HairTag);;
         string prompt =
             "For each character in the cast list, describe their hair using terms only from the following list: " +
@@ -132,6 +139,8 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateOutfitDescriptions()
     {
+        LoadingScreen.Instance.SetLoadingMessage("Sewing outfits...");
+
         Type type = typeof(OutfitTag);
         string prompt =
             "For each character in the cast list, describe their outfit using terms only from the following list: " +
@@ -147,6 +156,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateEyeColorDescriptions()
     {
+        LoadingScreen.Instance.SetLoadingMessage("Putting in contacts...");
         
         Type type = typeof(FaceTag);
         string prompt =
@@ -163,6 +173,8 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateAccessoryDescriptions()
     {
+        LoadingScreen.Instance.SetLoadingMessage("Accessorizing...");
+
         Type type = typeof(AccessoryTag);
         string prompt =
             "For each character in the cast list, describe their accessories using terms only from the following list: " +
@@ -178,6 +190,8 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateDialogue()
     {
+        LoadingScreen.Instance.SetLoadingMessage("Writing screenplay...");
+
         Type mood = typeof(Mood);
         string prompt =
             "Create a script for the next act of the visual novel. " +
@@ -196,6 +210,8 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> ContinueDialogue()
     {
+        LoadingScreen.Instance.SetLoadingMessage("Publishing sequel direct-to-video...");
+
         string prompt =
             $"From where the story last left off, continue the visual novel's script with {linesPerScene} more lines of dialogue. ";
         Chat.AppendSystemMessage(prompt);
@@ -208,6 +224,8 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateBackgroundDescription()
     {
+        LoadingScreen.Instance.SetLoadingMessage("Hand-painting backgrounds...");
+
         Type type = typeof(BackgroundTag);
         string prompt =
             "Generate a list of names for background images that could be featured in the visual novel. " +
