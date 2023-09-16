@@ -10,13 +10,13 @@ public class DialogueController : Singleton<DialogueController>
 
     private void ReadDialogueLine(int index)
     {
-        DialogueLine currentLineIndex = DialoguePath[index];
+        DialogueLine currentLine = DialoguePath[index];
 
-        BackgroundController.Instance.SetBackground(currentLineIndex.backgroundImage);
-        CharacterManager.Instance.ShowPortait(currentLineIndex.characterName);
-        NameDisplayController.Instance.SetDisplayName(currentLineIndex.characterName);
-        TextController.Instance.SetText(currentLineIndex.dialogueText);
-        AudioController.Instance.PlaySound(currentLineIndex.voiceLine);
+        BackgroundController.Instance.SetBackground(currentLine.backgroundImage);
+        CharacterManager.Instance.ShowPortait(currentLine.characterName, currentLine.mood);
+        NameDisplayController.Instance.SetDisplayName(currentLine.characterName);
+        TextController.Instance.SetText(currentLine.dialogueText);
+        AudioController.Instance.PlaySound(currentLine.voiceLine);
     }
 
     private DialogueLine DeserializeLine(string serializedLine)

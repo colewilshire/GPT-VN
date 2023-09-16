@@ -1374,7 +1374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c106e2136f563d44b44cb9b06af81ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  apiKey: 
+  apiKey: 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
   genre: romance
   setting: all-girls Catholic boarding school
   linesPerScene: 10

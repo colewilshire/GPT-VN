@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,7 @@ public class CharacterManager : Singleton<CharacterManager>
         characters[characterPortrait.name] = characterPortrait;
     }
 
-    public void ShowPortait(string characterName)
+    public void ShowPortait(string characterName, string expressionName)
     {
         if (activePortrait)
         {
@@ -22,7 +23,9 @@ public class CharacterManager : Singleton<CharacterManager>
         if (characters.TryGetValue(characterName, out CharacterPortraitController characterPortrait))
         {
             activePortrait = characterPortrait;
-            characterPortrait.ShowPortrait();
+
+            Enum.TryParse(expressionName, out Mood expression);
+            characterPortrait.ShowPortrait(expression);
         }
     }
 }

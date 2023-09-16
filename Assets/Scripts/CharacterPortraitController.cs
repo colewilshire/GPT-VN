@@ -10,6 +10,34 @@ public class CharacterPortraitController : MonoBehaviour
     [SerializeField] private Image hairBack;
     private CharacterAppearance appearance;
 
+    private void SetExpression(Mood expression)
+    {
+        switch (expression)
+        {
+            case Mood.Neutral:
+                face.sprite = appearance.face.image;
+                break;
+            case Mood.Sad:
+                face.sprite = appearance.face.image1 ?? appearance.face.image;
+                break;
+            case Mood.Happy:
+                face.sprite = appearance.face.image2 ?? appearance.face.image;
+                break;
+            case Mood.Angry:
+                face.sprite = appearance.face.image3 ?? appearance.face.image;
+                break;
+            case Mood.Shocked:
+                face.sprite = appearance.face.image4 ?? appearance.face.image;
+                break;
+            case Mood.Awkward:
+                face.sprite = appearance.face.image5 ?? appearance.face.image;
+                break;
+            default:
+                face.sprite = appearance.face.image;
+                break;
+        }
+    }
+
     public void SetAppearance(CharacterAppearance characterAppearance)
     {
         appearance = characterAppearance;
@@ -29,14 +57,9 @@ public class CharacterPortraitController : MonoBehaviour
         HidePortrait();
     }
 
-    public void SetExpression(Mood expression)
+    public void ShowPortrait(Mood expression = Mood.Neutral)
     {
-        Sprite newFace = appearance.face.image1;
-        face.sprite = newFace;
-    }
-
-    public void ShowPortrait()
-    {
+        SetExpression(expression);
         gameObject.SetActive(true);
     }
 
