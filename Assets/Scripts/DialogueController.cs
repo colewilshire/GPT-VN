@@ -13,6 +13,7 @@ public class DialogueController : Singleton<DialogueController>
         DialogueLine currentLineIndex = DialoguePath[index];
 
         BackgroundController.Instance.SetBackground(currentLineIndex.backgroundImage);
+        CharacterManager.Instance.ShowPortait(currentLineIndex.characterName);
         NameDisplayController.Instance.SetDisplayName(currentLineIndex.characterName);
         TextController.Instance.SetText(currentLineIndex.dialogueText);
         AudioController.Instance.PlaySound(currentLineIndex.voiceLine);

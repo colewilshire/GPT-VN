@@ -66,25 +66,27 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
 
         if (accessory)
         {
-            characterAppearance.accessory = accessory.image;
+            characterAppearance.accessory = accessory;
         }
 
         if (hair)
         {
-            characterAppearance.hairFront = hair.image;
+            characterAppearance.hair = hair;
         }
 
         if (outfit)
         {
-            characterAppearance.outfit = outfit.image;
+            characterAppearance.outfit = outfit;
         }
 
         if (face)
         {
-            characterAppearance.face = face.image;
+            characterAppearance.face = face;
         }
 
         characterPortrait.name = characterName;
         characterPortrait.SetAppearance(characterAppearance);
+
+        CharacterManager.Instance.CacheCharacterPortrait(characterPortrait);
     }
 }
