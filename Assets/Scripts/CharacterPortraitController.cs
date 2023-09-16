@@ -12,6 +12,8 @@ public class CharacterPortraitController : MonoBehaviour
 
     private void SetExpression(Mood expression)
     {
+        if(!face.sprite) return;
+
         switch (expression)
         {
             case Mood.Neutral:

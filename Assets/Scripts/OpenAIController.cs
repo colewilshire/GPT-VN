@@ -14,7 +14,7 @@ public class OpenAIController : Singleton<OpenAIController>
     [SerializeField] private int linesPerScene = 10;
     [SerializeField] private int numberOfCharacters = 10;
     private OpenAIAPI api;
-    private Conversation conversation;
+    public Conversation Chat { get; private set; }
 
     protected override void Awake()
     {
@@ -30,7 +30,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async void CreateConversation()
     {
-        conversation = api.Chat.CreateConversation();
+        Chat = api.Chat.CreateConversation();
 
         PromptWithInitialInstructions();
         string serializedCastList = await GenerateCastList();
@@ -78,6 +78,19 @@ public class OpenAIController : Singleton<OpenAIController>
         DialogueController.Instance.AddToDialogue(serializedDialogue2);
     }
 
+    public void LoadConversationFromSave(SaveData saveData)
+    {
+        for (int i = 0; i < saveData.roles.Count; ++i)
+        {
+            string roleName = saveData.roles[i];
+            string message = saveData.messages[i];
+            ChatMessageRole role = ChatMessageRole.FromString(roleName);
+            ChatMessage chatMessage = new ChatMessage(role, message);
+
+            Chat.AppendMessage(chatMessage);
+        }
+    }
+
     private void PromptWithInitialInstructions()
     {
         string prompt =
@@ -85,7 +98,7 @@ public class OpenAIController : Singleton<OpenAIController>
             //"The visual novel's script is split into an indefinite number of short acts, which heavily narratively connect to each other. " +
             "The story will largely follow a small group of core characters, with occassional side characters interspersed as needed. " +
             $"There must be no more than {numberOfCharacters}, including the Narrator.";
-        conversation.AppendSystemMessage(prompt);
+        Chat.AppendSystemMessage(prompt);
     }
 
     private async Task<string> GenerateCastList()
@@ -94,9 +107,9 @@ public class OpenAIController : Singleton<OpenAIController>
             "Generate a cast list of characters for the visual novel. " +
             "The cast list must contain only the characters' names, outputted in a single line in Pipe-Separated Vale (PSV) format.";
             //"It is mandatory that the cast list include a character named \"Narrator\" who serves as the game's narrator.";
-        conversation.AppendSystemMessage(prompt);
+        Chat.AppendSystemMessage(prompt);
 
-        string assistantResponse = await conversation.GetResponseFromChatbotAsync();
+        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
 
         return assistantResponse;
@@ -109,9 +122,9 @@ public class OpenAIController : Singleton<OpenAIController>
             "For each character in the cast list, describe their hair using terms only from the following list: " +
             GetEnumValues(type) +
             "Each character's hair description should be outputted in PSV format, starting with the character's name, followed by any number of applicable hair traits from the list, each separated by a '|'.";
-        conversation.AppendSystemMessage(prompt);
+        Chat.AppendSystemMessage(prompt);
 
-        string assistantResponse = await conversation.GetResponseFromChatbotAsync();
+        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
 
         return assistantResponse;
@@ -124,9 +137,9 @@ public class OpenAIController : Singleton<OpenAIController>
             "For each character in the cast list, describe their outfit using terms only from the following list: " +
             GetEnumValues(type) +
             "Each character's outfit description should be outputted in PSV format, starting with the character's name, followed by any number of applicable outfit traits from the list, each separated by a '|'.";
-        conversation.AppendSystemMessage(prompt);
+        Chat.AppendSystemMessage(prompt);
 
-        string assistantResponse = await conversation.GetResponseFromChatbotAsync();
+        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
 
         return assistantResponse;
@@ -140,9 +153,9 @@ public class OpenAIController : Singleton<OpenAIController>
             "For each character in the cast list, describe their eye color using only one term from the following list: " +
             GetEnumValues(type) +
             "Each character's eye color description should be outputted in PSV format, starting with the character's name, followed by one eye color from the list, separated by a '|'.";
-        conversation.AppendSystemMessage(prompt);
+        Chat.AppendSystemMessage(prompt);
 
-        string assistantResponse = await conversation.GetResponseFromChatbotAsync();
+        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
 
         return assistantResponse;
@@ -155,9 +168,9 @@ public class OpenAIController : Singleton<OpenAIController>
             "For each character in the cast list, describe their accessories using terms only from the following list: " +
             GetEnumValues(type) +
             "Each character's accessories description should be outputted in PSV format, starting with the character's name, followed by any number of applicable accessories from the list, each separated by a '|'.";
-        conversation.AppendSystemMessage(prompt);
+        Chat.AppendSystemMessage(prompt);
 
-        string assistantResponse = await conversation.GetResponseFromChatbotAsync();
+        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
 
         return assistantResponse;
@@ -173,9 +186,9 @@ public class OpenAIController : Singleton<OpenAIController>
             "Each line of dialogue should include a single emotion. The chosen emotion must come from the following list: " +
             GetEnumValues(mood) +
             " Backgrounds names should come from the previously generated list of backgrounds.";
-        conversation.AppendSystemMessage(prompt);
+        Chat.AppendSystemMessage(prompt);
 
-        string assistantResponse = await conversation.GetResponseFromChatbotAsync();
+        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
 
         return assistantResponse;
@@ -185,9 +198,9 @@ public class OpenAIController : Singleton<OpenAIController>
     {
         string prompt =
             $"From where the story last left off, continue the visual novel's script with {linesPerScene} more lines of dialogue. ";
-        conversation.AppendSystemMessage(prompt);
+        Chat.AppendSystemMessage(prompt);
 
-        string assistantResponse = await conversation.GetResponseFromChatbotAsync();
+        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
 
         return assistantResponse;
@@ -201,9 +214,9 @@ public class OpenAIController : Singleton<OpenAIController>
             "Describe these backgrounds using any number terms, exclusively from the following list: " +
             GetEnumValues(type) +
             "The background image description should be outputted in PSV format, starting with its name, followed by any number of applicable background image traits from the list, each separated by a '|'.";
-        conversation.AppendSystemMessage(prompt);
+        Chat.AppendSystemMessage(prompt);
 
-        string assistantResponse = await conversation.GetResponseFromChatbotAsync();
+        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
 
         return assistantResponse;
