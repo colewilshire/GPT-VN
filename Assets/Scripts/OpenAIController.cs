@@ -106,7 +106,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateCastList()
     {
-        LoadingScreen.Instance.SetLoadingMessage(LoadingState.Cast);
+        LoadingScreen.Instance.SetLoadingState(LoadingState.Cast);
 
         string prompt =
             "Generate a cast list of characters for the visual novel. " +
@@ -122,7 +122,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateHairDescriptions()
     {
-        LoadingScreen.Instance.SetLoadingMessage(LoadingState.Hair);
+        LoadingScreen.Instance.SetLoadingState(LoadingState.Hair);
 
         Type type = typeof(HairTag);;
         string prompt =
@@ -139,7 +139,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateOutfitDescriptions()
     {
-        LoadingScreen.Instance.SetLoadingMessage(LoadingState.Outfits);
+        LoadingScreen.Instance.SetLoadingState(LoadingState.Outfits);
 
         Type type = typeof(OutfitTag);
         string prompt =
@@ -156,7 +156,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateEyeColorDescriptions()
     {
-        LoadingScreen.Instance.SetLoadingMessage(LoadingState.EyeColors);
+        LoadingScreen.Instance.SetLoadingState(LoadingState.EyeColors);
         
         Type type = typeof(FaceTag);
         string prompt =
@@ -173,7 +173,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateAccessoryDescriptions()
     {
-        LoadingScreen.Instance.SetLoadingMessage(LoadingState.Accessories);
+        LoadingScreen.Instance.SetLoadingState(LoadingState.Accessories);
 
         Type type = typeof(AccessoryTag);
         string prompt =
@@ -190,7 +190,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateDialogue()
     {
-        LoadingScreen.Instance.SetLoadingMessage(LoadingState.Dialogue);
+        LoadingScreen.Instance.SetLoadingState(LoadingState.Dialogue);
 
         Type mood = typeof(Mood);
         string prompt =
@@ -210,7 +210,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> ContinueDialogue()
     {
-        LoadingScreen.Instance.SetLoadingMessage(LoadingState.AdditionalDialogue);
+        LoadingScreen.Instance.SetLoadingState(LoadingState.AdditionalDialogue);
 
         string prompt =
             $"From where the story last left off, continue the visual novel's script with {linesPerScene} more lines of dialogue. ";
@@ -224,7 +224,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<string> GenerateBackgroundDescription()
     {
-        LoadingScreen.Instance.SetLoadingMessage(LoadingState.Backgrounds);
+        LoadingScreen.Instance.SetLoadingState(LoadingState.Backgrounds);
 
         Type type = typeof(BackgroundTag);
         string prompt =
