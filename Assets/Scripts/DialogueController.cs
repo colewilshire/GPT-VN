@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class DialogueController : Singleton<DialogueController>
 {
-    private List<DialogueLine> DialoguePath = new List<DialogueLine>();
+    private List<DialogueLine> dialoguePath = new List<DialogueLine>();
     private int currentLineIndex = 0;
+    public List<string> SerializedDialoguePath {get; private set;} = new List<string>();
 
     private void ReadDialogueLine(int index)
     {
-        DialogueLine currentLine = DialoguePath[index];
+        DialogueLine currentLine = dialoguePath[index];
 
         BackgroundController.Instance.SetBackground(currentLine.backgroundImage);
         CharacterManager.Instance.ShowPortait(currentLine.characterName, currentLine.mood);
@@ -41,7 +42,7 @@ public class DialogueController : Singleton<DialogueController>
 
     public void StepForward()
     {
-        if (!(DialoguePath.Count > currentLineIndex + 1)) return;
+        if (!(dialoguePath.Count > currentLineIndex + 1)) return;
         currentLineIndex += 1;
         ReadDialogueLine(currentLineIndex);
     }
@@ -55,13 +56,13 @@ public class DialogueController : Singleton<DialogueController>
 
     public void RepeatLine()
     {
-        if (!(DialoguePath.Count > 0)) return;
+        if (!(dialoguePath.Count > 0)) return;
         ReadDialogueLine(currentLineIndex);
     }
 
     public void StartDialogue(string serializedDialouge)
     {
-        DialoguePath = new List<DialogueLine>();
+        dialoguePath = new List<DialogueLine>();
 
         AddToDialogue(serializedDialouge);
         ReadDialogueLine(currentLineIndex);
@@ -69,13 +70,24 @@ public class DialogueController : Singleton<DialogueController>
 
     public void AddToDialogue(string serializedDialouge)
     {
-        string[] serializedLines = serializedDialouge.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        List<string> serializedLines = new List<string>(serializedDialouge.Split('\n', StringSplitOptions.RemoveEmptyEntries));
 
         foreach (string serializedLine in serializedLines)
         {
             DialogueLine dialogueLine = DeserializeLine(serializedLine);
-            DialoguePath.Add(dialogueLine);
+            dialoguePath.Add(dialogueLine);
         }
+
+        SerializedDialoguePath.Add(serializedDialouge);
     }
 
+    public void LoadDialogueFromSave(SaveData saveData)
+    {
+        StartDialogue(saveData.dialoguePath[0]);
+
+        for (int i = 1; i < saveData.dialoguePath.Count; ++i)
+        {
+            AddToDialogue(saveData.dialoguePath[i]);
+        }
+    }
 }

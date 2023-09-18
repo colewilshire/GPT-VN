@@ -89,4 +89,33 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
 
         CharacterManager.Instance.CacheCharacterPortrait(characterPortrait);
     }
+
+    public void LoadCharactersFromSave(SaveData saveData)
+    {
+        for (int i = 0; i < saveData.characterNames.Count; ++i)
+        {
+            string characterName = saveData.characterNames[i];
+            string serializedCharacterAppearance = saveData.characterAppearances[i];
+            CharacterAppearance characterAppearance = CharacterAppearance.CreateInstance<CharacterAppearance>();
+            List<string> deserializedCharacterAppearance = new List<string>(serializedCharacterAppearance.Split('|'));
+
+            string accessoryName = deserializedCharacterAppearance[0];
+            string hairName = deserializedCharacterAppearance[1];
+            string outfitName = deserializedCharacterAppearance[2];
+            string faceName = deserializedCharacterAppearance[3];
+
+            characterAppearance.accessory = Resources.Load<Accessory>($"Accessories/{accessoryName}");
+            characterAppearance.hair = Resources.Load<Hair>($"Hairs/{hairName}");
+            characterAppearance.outfit = Resources.Load<Outfit>($"Outfits/{outfitName}");
+            characterAppearance.face = Resources.Load<Face>($"Faces/{faceName}");
+
+            CharacterPortraitController characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
+            characters[characterName] = characterPortrait;
+
+            characterPortrait.name = characterName;
+            characterPortrait.SetAppearance(characterAppearance);
+
+            CharacterManager.Instance.CacheCharacterPortrait(characterPortrait);
+        }
+    }
 }

@@ -8,7 +8,7 @@ public class CharacterPortraitController : MonoBehaviour
     [SerializeField] private Image outfit;
     [SerializeField] private Image face;
     [SerializeField] private Image hairBack;
-    private CharacterAppearance appearance;
+    public CharacterAppearance Appearance { get; private set; }
 
     private void SetExpression(Mood expression)
     {
@@ -17,32 +17,32 @@ public class CharacterPortraitController : MonoBehaviour
         switch (expression)
         {
             case Mood.Neutral:
-                face.sprite = appearance.face.image;
+                face.sprite = Appearance.face.image;
                 break;
             case Mood.Sad:
-                face.sprite = appearance.face.image1 ?? appearance.face.image;
+                face.sprite = Appearance.face.image1 ?? Appearance.face.image;
                 break;
             case Mood.Happy:
-                face.sprite = appearance.face.image2 ?? appearance.face.image;
+                face.sprite = Appearance.face.image2 ?? Appearance.face.image;
                 break;
             case Mood.Angry:
-                face.sprite = appearance.face.image3 ?? appearance.face.image;
+                face.sprite = Appearance.face.image3 ?? Appearance.face.image;
                 break;
             case Mood.Shocked:
-                face.sprite = appearance.face.image4 ?? appearance.face.image;
+                face.sprite = Appearance.face.image4 ?? Appearance.face.image;
                 break;
             case Mood.Awkward:
-                face.sprite = appearance.face.image5 ?? appearance.face.image;
+                face.sprite = Appearance.face.image5 ?? Appearance.face.image;
                 break;
             default:
-                face.sprite = appearance.face.image;
+                face.sprite = Appearance.face.image;
                 break;
         }
     }
 
     public void SetAppearance(CharacterAppearance characterAppearance)
     {
-        appearance = characterAppearance;
+        Appearance = characterAppearance;
 
         accessory.sprite = characterAppearance.accessory?.image ?? null;
         hairFront.sprite = characterAppearance.hair?.image ?? null;

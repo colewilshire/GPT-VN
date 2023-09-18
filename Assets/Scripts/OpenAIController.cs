@@ -25,7 +25,16 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private void Start()
     {
-        CreateConversation();
+        SaveData saveData = SaveController.Instance.Load("quicksave");
+
+        if (saveData)
+        {
+            LoadConversationFromSave(saveData);
+        }
+        else
+        {
+            CreateConversation();
+        }
     }
 
     private async void CreateConversation()
@@ -83,15 +92,24 @@ public class OpenAIController : Singleton<OpenAIController>
 
     public void LoadConversationFromSave(SaveData saveData)
     {
-        for (int i = 0; i < saveData.roles.Count; ++i)
+        LoadingScreen.Instance.ShowLoadingScreen();
+
+        Chat = api.Chat.CreateConversation();
+
+        for (int i = 0; i < saveData.conversationRoles.Count; ++i)
         {
-            string roleName = saveData.roles[i];
-            string message = saveData.messages[i];
+            string roleName = saveData.conversationRoles[i];
+            string message = saveData.conversationMessages[i];
             ChatMessageRole role = ChatMessageRole.FromString(roleName);
             ChatMessage chatMessage = new ChatMessage(role, message);
 
             Chat.AppendMessage(chatMessage);
         }
+
+        CharacterGenerationController.Instance.LoadCharactersFromSave(saveData);
+        BackgroundController.Instance.LoadBackgroundImagesFromSave(saveData);
+        DialogueController.Instance.LoadDialogueFromSave(saveData);
+        LoadingScreen.Instance.HideLoadingScreen();
     }
 
     private void PromptWithInitialInstructions()

@@ -8,7 +8,7 @@ public class BackgroundController : Singleton<BackgroundController>
     private Dictionary<BackgroundTag, List<BackgroundImage>> backgroundDictionary = new Dictionary<BackgroundTag, List<BackgroundImage>>();
     private Dictionary<string, BackgroundImage> backgroundImageCache = new Dictionary<string, BackgroundImage>();
     private Image backgroundImage;
-    private Dictionary<string, BackgroundImage> generatedBackgrounds = new Dictionary<string, BackgroundImage>();
+    public Dictionary<string, BackgroundImage> GeneratedBackgrounds {get; private set;} = new Dictionary<string, BackgroundImage>();
 
     protected override void Awake()
     {
@@ -38,21 +38,36 @@ public class BackgroundController : Singleton<BackgroundController>
 
     public void GenerateBackgroundImages(Dictionary<string, List<BackgroundTag>> tagsByBackground)
     {
-        generatedBackgrounds = new Dictionary<string, BackgroundImage>();
+        GeneratedBackgrounds = new Dictionary<string, BackgroundImage>();
 
         foreach (KeyValuePair<string, List<BackgroundTag>> kvp in tagsByBackground)
         {
-            generatedBackgrounds[kvp.Key] = GetBackgroundImageWithTags(kvp.Value);
+            GeneratedBackgrounds[kvp.Key] = GetBackgroundImageWithTags(kvp.Value);
         }
     }
 
     public Sprite GetBackgroundImageFromName(string backgroundName)
     {
-        if (generatedBackgrounds.TryGetValue(backgroundName, out BackgroundImage backgroundImage))
+        if (GeneratedBackgrounds.TryGetValue(backgroundName, out BackgroundImage foundImage))
         {
-            return backgroundImage.image;
+            if (foundImage == null) return null;
+            return foundImage.image;
         }
 
         return null;
+    }
+
+    public void LoadBackgroundImagesFromSave(SaveData saveData)
+    {
+        GeneratedBackgrounds = new Dictionary<string, BackgroundImage>();
+
+        for (int i = 0; i < saveData.backgroundIndexes.Count; ++i)
+        {
+            string backgroundIndex = saveData.backgroundIndexes[i];
+            string backgroundName = saveData.backgroundNames[i];
+            BackgroundImage foundImage = Resources.Load<BackgroundImage>($"BackgroundImages/{backgroundName}");
+
+            GeneratedBackgrounds[backgroundIndex] = foundImage;
+        }
     }
 }

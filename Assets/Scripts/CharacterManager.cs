@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class CharacterManager : Singleton<CharacterManager>
 {
-    Dictionary<string, CharacterPortraitController> characters = new Dictionary<string, CharacterPortraitController>();
-    CharacterPortraitController activePortrait;
+    private CharacterPortraitController activePortrait;
+    public Dictionary<string, CharacterPortraitController> Characters {get; private set;} = new Dictionary<string, CharacterPortraitController>();
 
     public void CacheCharacterPortrait(CharacterPortraitController characterPortrait)
     {
-        characters[characterPortrait.name] = characterPortrait;
+        Characters[characterPortrait.name] = characterPortrait;
     }
 
     public void ShowPortait(string characterName, string expressionName)
@@ -20,7 +20,7 @@ public class CharacterManager : Singleton<CharacterManager>
             activePortrait.HidePortrait();
         }
 
-        if (characters.TryGetValue(characterName, out CharacterPortraitController characterPortrait))
+        if (Characters.TryGetValue(characterName, out CharacterPortraitController characterPortrait))
         {
             activePortrait = characterPortrait;
 
