@@ -1,7 +1,8 @@
 public enum OutfitTag
 {
-    Casual,
+    School,
     Formal,
+    Casual,
     Festive,
     ColdWeather,
     WarmWeather,
@@ -15,6 +16,5 @@ public enum OutfitTag
     Green,
     Purple,
     Orange,
-    Brown,
-    School
+    Brown
 }

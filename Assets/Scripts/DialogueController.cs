@@ -14,7 +14,7 @@ public class DialogueController : Singleton<DialogueController>
         DialogueLine currentLine = dialoguePath[index];
 
         BackgroundController.Instance.SetBackground(currentLine.BackgroundImage);
-        CharacterManager.Instance.ShowPortait(currentLine.CharacterName, currentLine.FacialExpression);
+        CharacterManager.Instance.ShowPortait(currentLine.CharacterName, currentLine.Mood);
         NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
         TextController.Instance.SetText(currentLine.DialogueText);
         AudioController.Instance.PlaySound(currentLine.VoiceLine);
@@ -29,12 +29,12 @@ public class DialogueController : Singleton<DialogueController>
         DialogueLine dialogueLine = DialogueLine.CreateInstance<DialogueLine>();
         string characterName = splitLine[0];
         string dialogueText = splitLine[1];
-        string characterExpression = splitLine[2];
+        string characterMood = splitLine[2];
         string backgroundName = splitLine[3];
 
         dialogueLine.CharacterName = characterName;
         dialogueLine.DialogueText = dialogueText;
-        dialogueLine.FacialExpression = characterExpression;
+        dialogueLine.Mood = characterMood;
         dialogueLine.BackgroundImage = BackgroundController.Instance.GetBackgroundImageFromName(backgroundName);
 
         return dialogueLine;
