@@ -42,21 +42,17 @@ public class SaveController : Singleton<SaveController>
 
         saveData.conversationRoles = new List<string>();
         saveData.conversationMessages = new List<string>();
-        saveData.dialoguePath = new List<string>();
+        saveData.dialoguePath = DialogueController.Instance.SerializedDialoguePath;
         saveData.characterNames = new List<string>();
         saveData.characterAppearances = new List<string>();
         saveData.backgroundIndexes = new List<string>();
         saveData.backgroundNames = new List<string>();
+        saveData.currentLineIndex = DialogueController.Instance.CurrentLineIndex;
 
         foreach(ChatMessage message in OpenAIController.Instance.Chat.Messages)
         {
             saveData.conversationRoles.Add(message.rawRole);
             saveData.conversationMessages.Add(message.Content);
-        }
-
-        foreach(string serializedDialogue in DialogueController.Instance.SerializedDialoguePath)
-        {
-            saveData.dialoguePath.Add(serializedDialogue);
         }
 
         foreach(KeyValuePair<string, CharacterPortraitController> characterEntry in CharacterManager.Instance.Characters)
