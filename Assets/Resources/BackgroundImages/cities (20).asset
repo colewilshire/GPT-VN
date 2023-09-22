@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14365c9f4667cd34f9547c3fcffa7fda, type: 3}
   m_Name: cities (20)
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: e4bc4c01bc84f2f48b0f38aa8c42a474, type: 3}
-  tags: 00000000
+  MainImage: {fileID: 21300000, guid: e4bc4c01bc84f2f48b0f38aa8c42a474, type: 3}
+  Tags: 00000000

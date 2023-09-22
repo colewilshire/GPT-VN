@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40e69165749278b498d8bd35cd7c0739, type: 3}
   m_Name: 16
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 9563d98e3b772894dacee9b17f6efe55, type: 3}
-  tags: 02000000
+  MainImage: {fileID: 21300000, guid: 9563d98e3b772894dacee9b17f6efe55, type: 3}
+  Tags: 02000000

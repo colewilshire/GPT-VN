@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bcd57e204c800348ac8875f8f183428, type: 3}
   m_Name: 04
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 5f0eba7445b5c6f42b8110d5ac85799f, type: 3}
-  tags: 0100000006000000
-  imageBackground: {fileID: 21300000, guid: f9a16e37255f21741af0bf1aa87bc475, type: 3}
+  MainImage: {fileID: 21300000, guid: 5f0eba7445b5c6f42b8110d5ac85799f, type: 3}
+  Tags: 0100000006000000
+  HairBackground: {fileID: 21300000, guid: f9a16e37255f21741af0bf1aa87bc475, type: 3}

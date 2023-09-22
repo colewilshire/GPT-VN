@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9200b2d98adb5f4f9ce735364c538fa, type: 3}
   m_Name: Face8
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: f9e5b7c2e6ae8664db3a4f01427288f6, type: 3}
-  tags: 01000000
-  image1: {fileID: 21300000, guid: caba991419978784188998b872a4a022, type: 3}
-  image2: {fileID: 21300000, guid: 0172f8d8330cc5b4086af5f3292e2581, type: 3}
-  image3: {fileID: 21300000, guid: 9a36995dfd21cde4d8d8068b401b28ed, type: 3}
-  image4: {fileID: 21300000, guid: d627f639dfab4f14da494a41f471a039, type: 3}
-  image5: {fileID: 21300000, guid: f6a7eb3b0a96fe74e88027d9421542fa, type: 3}
+  MainImage: {fileID: 21300000, guid: f9e5b7c2e6ae8664db3a4f01427288f6, type: 3}
+  Tags: 01000000
+  Sad: {fileID: 21300000, guid: caba991419978784188998b872a4a022, type: 3}
+  Happy: {fileID: 21300000, guid: 0172f8d8330cc5b4086af5f3292e2581, type: 3}
+  Angry: {fileID: 21300000, guid: 9a36995dfd21cde4d8d8068b401b28ed, type: 3}
+  Shocked: {fileID: 21300000, guid: d627f639dfab4f14da494a41f471a039, type: 3}
+  Awkward: {fileID: 21300000, guid: f6a7eb3b0a96fe74e88027d9421542fa, type: 3}

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14365c9f4667cd34f9547c3fcffa7fda, type: 3}
   m_Name: mountains (17)
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: b71ed5c9de5f0f441b0d28a5f557e40d, type: 3}
-  tags: 04000000
+  MainImage: {fileID: 21300000, guid: b71ed5c9de5f0f441b0d28a5f557e40d, type: 3}
+  Tags: 04000000

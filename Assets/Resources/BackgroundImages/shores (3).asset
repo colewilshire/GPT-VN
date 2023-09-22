@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14365c9f4667cd34f9547c3fcffa7fda, type: 3}
   m_Name: shores (3)
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 2df142867b0362a41aee1d8a5f76375d, type: 3}
-  tags: 07000000
+  MainImage: {fileID: 21300000, guid: 2df142867b0362a41aee1d8a5f76375d, type: 3}
+  Tags: 07000000

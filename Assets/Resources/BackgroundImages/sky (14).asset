@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14365c9f4667cd34f9547c3fcffa7fda, type: 3}
   m_Name: sky (14)
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 82fb2d8cc50b6cb49a68a7826bab885f, type: 3}
-  tags: 08000000
+  MainImage: {fileID: 21300000, guid: 82fb2d8cc50b6cb49a68a7826bab885f, type: 3}
+  Tags: 08000000

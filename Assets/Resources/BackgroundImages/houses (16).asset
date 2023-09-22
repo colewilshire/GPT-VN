@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14365c9f4667cd34f9547c3fcffa7fda, type: 3}
   m_Name: houses (16)
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 9050684a825b1db4190999bb99f41ce5, type: 3}
-  tags: 03000000
+  MainImage: {fileID: 21300000, guid: 9050684a825b1db4190999bb99f41ce5, type: 3}
+  Tags: 03000000
