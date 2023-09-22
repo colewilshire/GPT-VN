@@ -25,7 +25,7 @@ public class OutfitCreator : MonoBehaviour
             {
                 // Create a new Outfit and assign the sprite to it
                 Outfit outfit = ScriptableObject.CreateInstance<Outfit>();
-                outfit.image = sprite;
+                outfit.MainImage = sprite;
 
                 // Prepare the save path
                 string savePath = Path.Combine(saveFolder, sprite.name + ".asset");

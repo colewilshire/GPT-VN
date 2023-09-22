@@ -26,10 +26,10 @@ public class SaveController : Singleton<SaveController>
 
     private string SerializeCharacterAppearance(CharacterAppearance characterAppearance)
     {
-        string accessoryName = characterAppearance.accessory?.name ?? "";
-        string hairName = characterAppearance.hair?.name ?? "";
-        string outfitName = characterAppearance.outfit?.name ?? "";
-        string faceName = characterAppearance.face?.name ?? "";
+        string accessoryName = characterAppearance.Accessory?.name ?? "";
+        string hairName = characterAppearance.Hair?.name ?? "";
+        string outfitName = characterAppearance.Outfit?.name ?? "";
+        string faceName = characterAppearance.Face?.name ?? "";
         string serializedCharacterAppearance = $"{accessoryName}|{hairName}|{outfitName}|{faceName}";
 
         return serializedCharacterAppearance;
@@ -40,19 +40,19 @@ public class SaveController : Singleton<SaveController>
         string savePath = Path.Combine(Application.persistentDataPath, saveName + ".sav");
         SaveData saveData = SaveData.CreateInstance<SaveData>();
 
-        saveData.conversationRoles = new List<string>();
-        saveData.conversationMessages = new List<string>();
-        saveData.dialoguePath = DialogueController.Instance.SerializedDialoguePath;
-        saveData.characterNames = new List<string>();
-        saveData.characterAppearances = new List<string>();
-        saveData.backgroundIndexes = new List<string>();
-        saveData.backgroundNames = new List<string>();
-        saveData.currentLineIndex = DialogueController.Instance.CurrentLineIndex;
+        saveData.ConversationRoles = new List<string>();
+        saveData.ConversationMessages = new List<string>();
+        saveData.DialoguePath = DialogueController.Instance.SerializedDialoguePath;
+        saveData.CharacterNames = new List<string>();
+        saveData.CharacterAppearances = new List<string>();
+        saveData.BackgroundIndexes = new List<string>();
+        saveData.BackgroundNames = new List<string>();
+        saveData.CurrentLineIndex = DialogueController.Instance.CurrentLineIndex;
 
         foreach(ChatMessage message in OpenAIController.Instance.Chat.Messages)
         {
-            saveData.conversationRoles.Add(message.rawRole);
-            saveData.conversationMessages.Add(message.Content);
+            saveData.ConversationRoles.Add(message.rawRole);
+            saveData.ConversationMessages.Add(message.Content);
         }
 
         foreach(KeyValuePair<string, CharacterPortraitController> characterEntry in CharacterManager.Instance.Characters)
@@ -60,14 +60,14 @@ public class SaveController : Singleton<SaveController>
             CharacterAppearance characterAppearance = characterEntry.Value.Appearance;
             string serializedCharacterAppearance = SerializeCharacterAppearance(characterAppearance);
 
-            saveData.characterNames.Add(characterEntry.Key);
-            saveData.characterAppearances.Add(serializedCharacterAppearance);
+            saveData.CharacterNames.Add(characterEntry.Key);
+            saveData.CharacterAppearances.Add(serializedCharacterAppearance);
         }
 
         foreach(KeyValuePair<string, BackgroundImage> backgroundEntry in BackgroundController.Instance.GeneratedBackgrounds)
         {
-            saveData.backgroundIndexes.Add(backgroundEntry.Key);
-            saveData.backgroundNames.Add(backgroundEntry.Value.name);
+            saveData.BackgroundIndexes.Add(backgroundEntry.Key);
+            saveData.BackgroundNames.Add(backgroundEntry.Value.name);
         }
 
         string serializedSaveData = JsonUtility.ToJson(saveData);

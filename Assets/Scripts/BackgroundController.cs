@@ -51,7 +51,7 @@ public class BackgroundController : Singleton<BackgroundController>
         if (GeneratedBackgrounds.TryGetValue(backgroundName, out BackgroundImage foundImage))
         {
             if (foundImage == null) return null;
-            return foundImage.image;
+            return foundImage.MainImage;
         }
 
         return null;
@@ -61,10 +61,10 @@ public class BackgroundController : Singleton<BackgroundController>
     {
         GeneratedBackgrounds = new Dictionary<string, BackgroundImage>();
 
-        for (int i = 0; i < saveData.backgroundIndexes.Count; ++i)
+        for (int i = 0; i < saveData.BackgroundIndexes.Count; ++i)
         {
-            string backgroundIndex = saveData.backgroundIndexes[i];
-            string backgroundName = saveData.backgroundNames[i];
+            string backgroundIndex = saveData.BackgroundIndexes[i];
+            string backgroundName = saveData.BackgroundNames[i];
             BackgroundImage foundImage = Resources.Load<BackgroundImage>($"BackgroundImages/{backgroundName}");
 
             GeneratedBackgrounds[backgroundIndex] = foundImage;

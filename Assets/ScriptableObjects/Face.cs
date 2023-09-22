@@ -1,11 +1,17 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "New Face", menuName = "Custom Types/Face")]
 public class Face : TaggedImage<FaceTag>
 {
-    public Sprite image1;
-    public Sprite image2;
-    public Sprite image3;
-    public Sprite image4;
-    public Sprite image5;
+    [FormerlySerializedAs("MainImage1")]
+    public Sprite MainImage1;
+    [FormerlySerializedAs("MainImage2")]
+    public Sprite MainImage2;
+    [FormerlySerializedAs("MainImage3")]
+    public Sprite MainImage3;
+    [FormerlySerializedAs("MainImage4")]
+    public Sprite MainImage4;
+    [FormerlySerializedAs("MainImage5")]
+    public Sprite MainImage5;
 }

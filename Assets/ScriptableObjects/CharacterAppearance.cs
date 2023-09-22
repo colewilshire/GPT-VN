@@ -1,10 +1,15 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "New Character Appearance", menuName = "Custom Types/Character Appearance")]
 public class CharacterAppearance: ScriptableObject
 {
-    public Accessory accessory;
-    public Hair hair;
-    public Outfit outfit;
-    public Face face;
+    [FormerlySerializedAs("accessory")]
+    public Accessory Accessory;
+    [FormerlySerializedAs("hair")]
+    public Hair Hair;
+    [FormerlySerializedAs("outfit")]
+    public Outfit Outfit;
+    [FormerlySerializedAs("face")]
+    public Face Face;
 }

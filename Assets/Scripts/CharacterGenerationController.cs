@@ -66,22 +66,22 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
 
         if (accessory)
         {
-            characterAppearance.accessory = accessory;
+            characterAppearance.Accessory = accessory;
         }
 
         if (hair)
         {
-            characterAppearance.hair = hair;
+            characterAppearance.Hair = hair;
         }
 
         if (outfit)
         {
-            characterAppearance.outfit = outfit;
+            characterAppearance.Outfit = outfit;
         }
 
         if (face)
         {
-            characterAppearance.face = face;
+            characterAppearance.Face = face;
         }
 
         characterPortrait.name = characterName;
@@ -92,10 +92,10 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
 
     public void LoadCharactersFromSave(SaveData saveData)
     {
-        for (int i = 0; i < saveData.characterNames.Count; ++i)
+        for (int i = 0; i < saveData.CharacterNames.Count; ++i)
         {
-            string characterName = saveData.characterNames[i];
-            string serializedCharacterAppearance = saveData.characterAppearances[i];
+            string characterName = saveData.CharacterNames[i];
+            string serializedCharacterAppearance = saveData.CharacterAppearances[i];
             CharacterAppearance characterAppearance = CharacterAppearance.CreateInstance<CharacterAppearance>();
             List<string> deserializedCharacterAppearance = new List<string>(serializedCharacterAppearance.Split('|'));
 
@@ -104,10 +104,10 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
             string outfitName = deserializedCharacterAppearance[2];
             string faceName = deserializedCharacterAppearance[3];
 
-            characterAppearance.accessory = Resources.Load<Accessory>($"Accessories/{accessoryName}");
-            characterAppearance.hair = Resources.Load<Hair>($"Hairs/{hairName}");
-            characterAppearance.outfit = Resources.Load<Outfit>($"Outfits/{outfitName}");
-            characterAppearance.face = Resources.Load<Face>($"Faces/{faceName}");
+            characterAppearance.Accessory = Resources.Load<Accessory>($"Accessories/{accessoryName}");
+            characterAppearance.Hair = Resources.Load<Hair>($"Hairs/{hairName}");
+            characterAppearance.Outfit = Resources.Load<Outfit>($"Outfits/{outfitName}");
+            characterAppearance.Face = Resources.Load<Face>($"Faces/{faceName}");
 
             CharacterPortraitController characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
             characters[characterName] = characterPortrait;

@@ -25,7 +25,7 @@ public class AccessoryCreator : MonoBehaviour
             {
                 // Create a new Accessory and assign the sprite to it
                 Accessory accessory = ScriptableObject.CreateInstance<Accessory>();
-                accessory.image = sprite;
+                accessory.MainImage = sprite;
 
                 // Prepare the save path
                 string savePath = Path.Combine(saveFolder, sprite.name + ".asset");

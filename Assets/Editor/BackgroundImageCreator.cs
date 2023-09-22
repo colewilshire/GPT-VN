@@ -25,7 +25,7 @@ public class BackgroundImageCreator : MonoBehaviour
             {
                 // Create a new BackgroundImage and assign the sprite to it
                 BackgroundImage backgroundImage = ScriptableObject.CreateInstance<BackgroundImage>();
-                backgroundImage.image = sprite;
+                backgroundImage.MainImage = sprite;
 
                 // Prepare the save path
                 string savePath = Path.Combine(saveFolder, sprite.name + ".asset");

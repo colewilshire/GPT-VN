@@ -17,25 +17,25 @@ public class CharacterPortraitController : MonoBehaviour
         switch (expression)
         {
             case Mood.Neutral:
-                face.sprite = Appearance.face.image;
+                face.sprite = Appearance.Face.MainImage;
                 break;
             case Mood.Sad:
-                face.sprite = Appearance.face.image1 ?? Appearance.face.image;
+                face.sprite = Appearance.Face.MainImage1 ?? Appearance.Face.MainImage;
                 break;
             case Mood.Happy:
-                face.sprite = Appearance.face.image2 ?? Appearance.face.image;
+                face.sprite = Appearance.Face.MainImage2 ?? Appearance.Face.MainImage;
                 break;
             case Mood.Angry:
-                face.sprite = Appearance.face.image3 ?? Appearance.face.image;
+                face.sprite = Appearance.Face.MainImage3 ?? Appearance.Face.MainImage;
                 break;
             case Mood.Shocked:
-                face.sprite = Appearance.face.image4 ?? Appearance.face.image;
+                face.sprite = Appearance.Face.MainImage4 ?? Appearance.Face.MainImage;
                 break;
             case Mood.Awkward:
-                face.sprite = Appearance.face.image5 ?? Appearance.face.image;
+                face.sprite = Appearance.Face.MainImage5 ?? Appearance.Face.MainImage;
                 break;
             default:
-                face.sprite = Appearance.face.image;
+                face.sprite = Appearance.Face.MainImage;
                 break;
         }
     }
@@ -44,11 +44,11 @@ public class CharacterPortraitController : MonoBehaviour
     {
         Appearance = characterAppearance;
 
-        accessory.sprite = characterAppearance.accessory?.image ?? null;
-        hairFront.sprite = characterAppearance.hair?.image ?? null;
-        outfit.sprite = characterAppearance.outfit?.image ?? null;
-        face.sprite = characterAppearance.face?.image ?? null;
-        hairBack.sprite = characterAppearance.hair?.imageBackground ?? null;
+        accessory.sprite = characterAppearance.Accessory?.MainImage ?? null;
+        hairFront.sprite = characterAppearance.Hair?.MainImage ?? null;
+        outfit.sprite = characterAppearance.Outfit?.MainImage ?? null;
+        face.sprite = characterAppearance.Face?.MainImage ?? null;
+        hairBack.sprite = characterAppearance.Hair?.MainImageBackground ?? null;
 
         accessory.gameObject.SetActive(accessory.sprite);
         hairFront.gameObject.SetActive(hairFront.sprite);

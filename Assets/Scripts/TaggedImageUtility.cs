@@ -59,7 +59,7 @@ public static class TaggedImageUtility
     {
         foreach (TaggedImage<T> taggedImage in taggedImages)
         {
-            foreach (T tag in taggedImage.tags)
+            foreach (T tag in taggedImage.Tags)
             {
                 if (!tagDictionary.ContainsKey(tag))
                 {

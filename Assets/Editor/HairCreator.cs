@@ -28,7 +28,7 @@ public class HairCreator : MonoBehaviour
             {
                 // Create a new Hair and assign the sprite to it
                 Hair hair = ScriptableObject.CreateInstance<Hair>();
-                hair.image = sprite;
+                hair.MainImage = sprite;
 
                 // Find the matching back hair sprite
                 string backgroundSpritePath = Path.Combine(backgroundSpriteFolder, sprite.name + ".png");
@@ -37,7 +37,7 @@ public class HairCreator : MonoBehaviour
                 // Assign the back hair sprite to the imageBackground property
                 if (backgroundSprite != null)
                 {
-                    hair.imageBackground = backgroundSprite;
+                    hair.MainImageBackground = backgroundSprite;
                 }
 
                 // Prepare the save path

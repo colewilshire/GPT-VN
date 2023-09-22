@@ -4,12 +4,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Save Data", menuName = "Custom Types/Save Data")]
 public class SaveData : ScriptableObject
 {
-    public List<string> conversationRoles;
-    public List<string> conversationMessages;
-    public string dialoguePath;
-    public List<string> characterNames;
-    public List<string> characterAppearances;
-    public List<string> backgroundIndexes;
-    public List<string> backgroundNames;
-    public int currentLineIndex;
+    public List<string> ConversationRoles;
+    public List<string> ConversationMessages;
+    public string DialoguePath;
+    public List<string> CharacterNames;
+    public List<string> CharacterAppearances;
+    public List<string> BackgroundIndexes;
+    public List<string> BackgroundNames;
+    public int CurrentLineIndex;
 }

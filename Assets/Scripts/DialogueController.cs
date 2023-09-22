@@ -85,6 +85,6 @@ public class DialogueController : Singleton<DialogueController>
 
     public void LoadDialogueFromSave(SaveData saveData)
     {
-        StartDialogue(saveData.dialoguePath, saveData.currentLineIndex);
+        StartDialogue(saveData.DialoguePath, saveData.CurrentLineIndex);
     }
 }

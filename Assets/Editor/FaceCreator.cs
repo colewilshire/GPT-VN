@@ -29,27 +29,27 @@ public class FaceCreator : MonoBehaviour
                 
                 if (spriteNumber % 6 == 0)
                 {
-                    faceList[faceNumber].image = sprite;
+                    faceList[faceNumber].MainImage = sprite;
                 }
                 else if (spriteNumber % 6 == 1)
                 {
-                    faceList[faceNumber].image1 = sprite;
+                    faceList[faceNumber].MainImage1 = sprite;
                 }
                 else if (spriteNumber % 6 == 2)
                 {
-                    faceList[faceNumber].image2 = sprite;
+                    faceList[faceNumber].MainImage2 = sprite;
                 }
                 else if (spriteNumber % 6 == 3)
                 {
-                    faceList[faceNumber].image3 = sprite;
+                    faceList[faceNumber].MainImage3 = sprite;
                 }
                 else if (spriteNumber % 6 == 4)
                 {
-                    faceList[faceNumber].image4 = sprite;
+                    faceList[faceNumber].MainImage4 = sprite;
                 }
                 else if (spriteNumber % 6 == 5)
                 {
-                    faceList[faceNumber].image5 = sprite;
+                    faceList[faceNumber].MainImage5 = sprite;
                 }
             }
         }

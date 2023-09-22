@@ -96,10 +96,10 @@ public class OpenAIController : Singleton<OpenAIController>
 
         Chat = api.Chat.CreateConversation();
 
-        for (int i = 0; i < saveData.conversationRoles.Count; ++i)
+        for (int i = 0; i < saveData.ConversationRoles.Count; ++i)
         {
-            string roleName = saveData.conversationRoles[i];
-            string message = saveData.conversationMessages[i];
+            string roleName = saveData.ConversationRoles[i];
+            string message = saveData.ConversationMessages[i];
             ChatMessageRole role = ChatMessageRole.FromString(roleName);
             ChatMessage chatMessage = new ChatMessage(role, message);
 
