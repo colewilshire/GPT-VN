@@ -37,7 +37,7 @@ public class HairCreator : MonoBehaviour
                 // Assign the back hair sprite to the imageBackground property
                 if (backgroundSprite != null)
                 {
-                    hair.MainImageBackground = backgroundSprite;
+                    hair.HairBackground = backgroundSprite;
                 }
 
                 // Prepare the save path

@@ -5,13 +5,13 @@ using UnityEngine.Serialization;
 public class DialogueLine : ScriptableObject
 {
     [FormerlySerializedAs("characterName")]
-    public string characterName;
+    public string CharacterName;
     [FormerlySerializedAs("dialogueText")]
-    public string dialogueText;
+    public string DialogueText;
     [FormerlySerializedAs("mood")]
-    public string mood;
+    public string FacialExpression;
     [FormerlySerializedAs("backgroundImage")]
-    public Sprite backgroundImage;
+    public Sprite BackgroundImage;
     [FormerlySerializedAs("voiceLine")]
-    public AudioClip voiceLine;
+    public AudioClip VoiceLine;
 }

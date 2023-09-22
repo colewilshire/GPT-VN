@@ -33,23 +33,23 @@ public class FaceCreator : MonoBehaviour
                 }
                 else if (spriteNumber % 6 == 1)
                 {
-                    faceList[faceNumber].MainImage1 = sprite;
+                    faceList[faceNumber].Sad = sprite;
                 }
                 else if (spriteNumber % 6 == 2)
                 {
-                    faceList[faceNumber].MainImage2 = sprite;
+                    faceList[faceNumber].Happy = sprite;
                 }
                 else if (spriteNumber % 6 == 3)
                 {
-                    faceList[faceNumber].MainImage3 = sprite;
+                    faceList[faceNumber].Angry = sprite;
                 }
                 else if (spriteNumber % 6 == 4)
                 {
-                    faceList[faceNumber].MainImage4 = sprite;
+                    faceList[faceNumber].Shocked = sprite;
                 }
                 else if (spriteNumber % 6 == 5)
                 {
-                    faceList[faceNumber].MainImage5 = sprite;
+                    faceList[faceNumber].Awkward = sprite;
                 }
             }
         }

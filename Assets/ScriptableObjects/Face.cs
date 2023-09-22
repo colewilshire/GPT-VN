@@ -4,14 +4,14 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(fileName = "New Face", menuName = "Custom Types/Face")]
 public class Face : TaggedImage<FaceTag>
 {
-    [FormerlySerializedAs("MainImage1")]
-    public Sprite MainImage1;
-    [FormerlySerializedAs("MainImage2")]
-    public Sprite MainImage2;
-    [FormerlySerializedAs("MainImage3")]
-    public Sprite MainImage3;
-    [FormerlySerializedAs("MainImage4")]
-    public Sprite MainImage4;
-    [FormerlySerializedAs("MainImage5")]
-    public Sprite MainImage5;
+    [FormerlySerializedAs("image1")]
+    public Sprite Sad;
+    [FormerlySerializedAs("image2")]
+    public Sprite Happy;
+    [FormerlySerializedAs("image3")]
+    public Sprite Angry;
+    [FormerlySerializedAs("image4")]
+    public Sprite Shocked;
+    [FormerlySerializedAs("image5")]
+    public Sprite Awkward;
 }

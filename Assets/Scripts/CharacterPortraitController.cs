@@ -20,19 +20,19 @@ public class CharacterPortraitController : MonoBehaviour
                 face.sprite = Appearance.Face.MainImage;
                 break;
             case Mood.Sad:
-                face.sprite = Appearance.Face.MainImage1 ?? Appearance.Face.MainImage;
+                face.sprite = Appearance.Face.Sad ?? Appearance.Face.MainImage;
                 break;
             case Mood.Happy:
-                face.sprite = Appearance.Face.MainImage2 ?? Appearance.Face.MainImage;
+                face.sprite = Appearance.Face.Happy ?? Appearance.Face.MainImage;
                 break;
             case Mood.Angry:
-                face.sprite = Appearance.Face.MainImage3 ?? Appearance.Face.MainImage;
+                face.sprite = Appearance.Face.Angry ?? Appearance.Face.MainImage;
                 break;
             case Mood.Shocked:
-                face.sprite = Appearance.Face.MainImage4 ?? Appearance.Face.MainImage;
+                face.sprite = Appearance.Face.Shocked ?? Appearance.Face.MainImage;
                 break;
             case Mood.Awkward:
-                face.sprite = Appearance.Face.MainImage5 ?? Appearance.Face.MainImage;
+                face.sprite = Appearance.Face.Awkward ?? Appearance.Face.MainImage;
                 break;
             default:
                 face.sprite = Appearance.Face.MainImage;
@@ -48,7 +48,7 @@ public class CharacterPortraitController : MonoBehaviour
         hairFront.sprite = characterAppearance.Hair?.MainImage ?? null;
         outfit.sprite = characterAppearance.Outfit?.MainImage ?? null;
         face.sprite = characterAppearance.Face?.MainImage ?? null;
-        hairBack.sprite = characterAppearance.Hair?.MainImageBackground ?? null;
+        hairBack.sprite = characterAppearance.Hair?.HairBackground ?? null;
 
         accessory.gameObject.SetActive(accessory.sprite);
         hairFront.gameObject.SetActive(hairFront.sprite);

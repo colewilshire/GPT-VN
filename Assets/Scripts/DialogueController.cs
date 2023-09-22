@@ -13,11 +13,11 @@ public class DialogueController : Singleton<DialogueController>
     {
         DialogueLine currentLine = dialoguePath[index];
 
-        BackgroundController.Instance.SetBackground(currentLine.backgroundImage);
-        CharacterManager.Instance.ShowPortait(currentLine.characterName, currentLine.mood);
-        NameDisplayController.Instance.SetDisplayName(currentLine.characterName);
-        TextController.Instance.SetText(currentLine.dialogueText);
-        AudioController.Instance.PlaySound(currentLine.voiceLine);
+        BackgroundController.Instance.SetBackground(currentLine.BackgroundImage);
+        CharacterManager.Instance.ShowPortait(currentLine.CharacterName, currentLine.FacialExpression);
+        NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
+        TextController.Instance.SetText(currentLine.DialogueText);
+        AudioController.Instance.PlaySound(currentLine.VoiceLine);
     }
 
     private DialogueLine DeserializeLine(string serializedLine)
@@ -29,13 +29,13 @@ public class DialogueController : Singleton<DialogueController>
         DialogueLine dialogueLine = DialogueLine.CreateInstance<DialogueLine>();
         string characterName = splitLine[0];
         string dialogueText = splitLine[1];
-        string characterMood = splitLine[2];
+        string characterExpression = splitLine[2];
         string backgroundName = splitLine[3];
 
-        dialogueLine.characterName = characterName;
-        dialogueLine.dialogueText = dialogueText;
-        dialogueLine.mood = characterMood;
-        dialogueLine.backgroundImage = BackgroundController.Instance.GetBackgroundImageFromName(backgroundName);
+        dialogueLine.CharacterName = characterName;
+        dialogueLine.DialogueText = dialogueText;
+        dialogueLine.FacialExpression = characterExpression;
+        dialogueLine.BackgroundImage = BackgroundController.Instance.GetBackgroundImageFromName(backgroundName);
 
         return dialogueLine;
     }
