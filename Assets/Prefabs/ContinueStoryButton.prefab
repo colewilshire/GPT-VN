@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Dialogue option.
+  m_text: Continue story.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2996d93e184c43241aedffe5291526d5, type: 2}
   m_sharedMaterial: {fileID: 1406052508829040794, guid: 2996d93e184c43241aedffe5291526d5, type: 2}
@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 201580611847367525}
   - component: {fileID: 380805743790570478}
   m_Layer: 0
-  m_Name: ResponseButton
+  m_Name: ContinueStoryButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

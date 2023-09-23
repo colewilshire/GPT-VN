@@ -10,6 +10,7 @@ public class InputController : Singleton<InputController>
     private InputAction repeatLineAction;
     private InputAction quicksaveAction;
     private InputAction quickloadAction;
+    private bool inputEnabled = true;
     [SerializeField] private Button stepForwardButton;
     [SerializeField] private Button stepBackwardButton;
     [SerializeField] private Button repeatLineButton;
@@ -73,17 +74,17 @@ public class InputController : Singleton<InputController>
     {
         if (stepForwardButton)
         {
-            stepForwardButton.onClick.AddListener(DialogueController.Instance.StepForward);
+            stepForwardButton.onClick.AddListener(() => OnStepForward());
         }
 
         if (stepBackwardButton)
         {
-            stepBackwardButton.onClick.AddListener(DialogueController.Instance.StepBackward);
+            stepBackwardButton.onClick.AddListener(() => OnStepBackward());
         }
 
         if (repeatLineButton)
         {
-            repeatLineButton.onClick.AddListener(DialogueController.Instance.RepeatLine);
+            repeatLineButton.onClick.AddListener(() => OnRepeatLine());
         }
     }
 
@@ -91,52 +92,58 @@ public class InputController : Singleton<InputController>
     {
         if (stepForwardButton)
         {
-            stepForwardButton.onClick.RemoveListener(DialogueController.Instance.StepForward);
+            stepForwardButton.onClick.RemoveListener(() => OnStepForward());
         }
 
         if (stepBackwardButton)
         {
-            stepBackwardButton.onClick.RemoveListener(DialogueController.Instance.StepBackward);
+            stepBackwardButton.onClick.RemoveListener(() => OnStepBackward());
         }
 
         if (repeatLineButton)
         {
-            repeatLineButton.onClick.RemoveListener(DialogueController.Instance.RepeatLine);
+            repeatLineButton.onClick.RemoveListener(() => OnRepeatLine());
         }
     }
 
-    private void OnStepForward(InputAction.CallbackContext context)
+    private void OnStepForward(InputAction.CallbackContext context = default)
     {
+        if (!inputEnabled) return;
         DialogueController.Instance.StepForward();
     }
 
-    private void OnStepBackward(InputAction.CallbackContext context)
+    private void OnStepBackward(InputAction.CallbackContext context = default)
     {
+        if (!inputEnabled) return;
         DialogueController.Instance.StepBackward();
     }
 
-    private void OnRepeatLine(InputAction.CallbackContext context)
+    private void OnRepeatLine(InputAction.CallbackContext context = default)
     {
+        if (!inputEnabled) return;
         DialogueController.Instance.RepeatLine();
     }
 
     private void OnQuicksave(InputAction.CallbackContext context)
     {
+        if (!inputEnabled) return;
         SaveController.Instance.Quicksave();
     }
 
     private void OnQuickload(InputAction.CallbackContext context)
     {
-        //SaveController.Instance.Quickload();
+        if (!inputEnabled) return;
     }
 
     public void EnableInputs()
     {
+        inputEnabled = true;
         playerInputActions.Enable();
     }
 
     public void DisableInputs()
     {
+        inputEnabled = false;
         playerInputActions.Disable();
     }
 }

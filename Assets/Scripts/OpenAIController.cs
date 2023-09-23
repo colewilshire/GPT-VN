@@ -303,4 +303,14 @@ public class OpenAIController : Singleton<OpenAIController>
 
         return tagsByCharacter;
     }
+
+    public async void GenerateAdditionalDialogue()
+    {
+        LoadingScreen.Instance.ShowLoadingScreen();
+
+        string additionalDialogue = await ContinueDialogue();
+        DialogueController.Instance.ContinueDialogue(additionalDialogue);
+
+        LoadingScreen.Instance.HideLoadingScreen();
+    }
 }

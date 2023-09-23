@@ -7,7 +7,7 @@ public class DialogueController : Singleton<DialogueController>
 {
     private List<DialogueLine> dialoguePath = new List<DialogueLine>();
     public int CurrentLineIndex {get; private set;} = 0;
-    public string SerializedDialoguePath = "";
+    public string SerializedDialoguePath {get; private set;} = "";
 
     private void ReadDialogueLine(int index)
     {
@@ -42,7 +42,12 @@ public class DialogueController : Singleton<DialogueController>
 
     public void StepForward()
     {
-        if (!(dialoguePath.Count > CurrentLineIndex + 1)) return;
+        if (!(dialoguePath.Count > CurrentLineIndex + 1))
+        {
+            ContinueStoryButton.Instance.ShowButton();
+            return;
+        }
+
         CurrentLineIndex += 1;
         ReadDialogueLine(CurrentLineIndex);
     }
@@ -50,6 +55,7 @@ public class DialogueController : Singleton<DialogueController>
     public void StepBackward()
     {
         if (!(CurrentLineIndex - 1 >= 0)) return;
+        ContinueStoryButton.Instance.HideButton();
         CurrentLineIndex -= 1;
         ReadDialogueLine(CurrentLineIndex);
     }
@@ -81,6 +87,14 @@ public class DialogueController : Singleton<DialogueController>
         }
 
         SerializedDialoguePath += $"{serializedDialogue}\n";
+    }
+
+    public void ContinueDialogue(string serializedDialogue)
+    {
+        ++CurrentLineIndex;
+
+        AddToDialogue(serializedDialogue);
+        ReadDialogueLine(CurrentLineIndex);
     }
 
     public void LoadDialogueFromSave(SaveData saveData)
