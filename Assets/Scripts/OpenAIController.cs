@@ -25,6 +25,22 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private void Start()
     {
+        StateController.Instance.OnStateChange += OnStateChange;
+    }
+
+    private void OnDestroy()
+    {
+        StateController.Instance.OnStateChange -= OnStateChange;
+    }
+
+    private void OnStateChange(GameState state)
+    {
+        if (state != GameState.Gameplay) return;
+        StartConversation();
+    }
+
+    private void StartConversation()
+    {
         SaveData saveData = SaveController.Instance.Load("quicksave");
 
         if (saveData)
@@ -33,14 +49,13 @@ public class OpenAIController : Singleton<OpenAIController>
         }
         else
         {
-            CreateConversation();
+            CreateNewConversation();
         }
     }
 
-    private async void CreateConversation()
+    private async void CreateNewConversation()
     {
         LoadingScreen.Instance.ShowLoadingScreen();
-
         Chat = api.Chat.CreateConversation();
 
         PromptWithInitialInstructions();
@@ -90,10 +105,9 @@ public class OpenAIController : Singleton<OpenAIController>
         LoadingScreen.Instance.HideLoadingScreen();
     }
 
-    public void LoadConversationFromSave(SaveData saveData)
+    private void LoadConversationFromSave(SaveData saveData)
     {
         LoadingScreen.Instance.ShowLoadingScreen();
-
         Chat = api.Chat.CreateConversation();
 
         for (int i = 0; i < saveData.ConversationRoles.Count; ++i)
