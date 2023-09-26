@@ -28,8 +28,25 @@ public class LoadingScreen : Singleton<LoadingScreen>
 
         loadingMessage = GetComponentInChildren<TextMeshProUGUI>();
         progressBar = GetComponentInChildren<ProgressBar>();
-    
-        gameObject.SetActive(false);
+    }
+
+    private void Start()
+    {
+        StateController.Instance.OnStateChange += OnStateChange;
+    }
+
+    private void OnDestroy()
+    {
+        StateController.Instance.OnStateChange -= OnStateChange;
+    }
+
+    private void OnStateChange(GameState state)
+    {
+        gameObject.SetActive(state == GameState.Loading);
+        if (state != GameState.Loading) return;
+
+        statesEllapsed = 0;
+        SetLoadingState(LoadingState.Conversation);
     }
 
     public void SetLoadingState(LoadingState state)
@@ -39,19 +56,5 @@ public class LoadingScreen : Singleton<LoadingScreen>
 
         float loadingProgress = (float) statesEllapsed / loadingMessages.Count;
         progressBar.SetProgress(loadingProgress);
-    }
-
-    public void ShowLoadingScreen()
-    {
-        statesEllapsed = 0;
-        InputController.Instance.DisableInputs();
-        SetLoadingState(LoadingState.Conversation);
-        gameObject.SetActive(true);
-    }
-
-    public void HideLoadingScreen()
-    {
-        gameObject.SetActive(false);
-        InputController.Instance.EnableInputs();
     }
 }

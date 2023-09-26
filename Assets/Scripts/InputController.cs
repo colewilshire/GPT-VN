@@ -10,7 +10,7 @@ public class InputController : Singleton<InputController>
     private InputAction repeatLineAction;
     private InputAction quicksaveAction;
     private InputAction quickloadAction;
-    private bool inputEnabled = true;
+    private bool inputEnabled = false;
     [SerializeField] private Button stepForwardButton;
     [SerializeField] private Button stepBackwardButton;
     [SerializeField] private Button repeatLineButton;
@@ -24,14 +24,30 @@ public class InputController : Singleton<InputController>
 
     private void Start()
     {
+        StateController.Instance.OnStateChange += OnStateChange;
+
         CreateInputs();
         SetUpButtons();
     }
 
     private void OnDestroy()
     {
+        StateController.Instance.OnStateChange -= OnStateChange;
+
         DestroyInputs();
         TearDownButtons();
+    }
+
+    private void OnStateChange(GameState state)
+    {
+        if (state == GameState.Gameplay)
+        {
+            EnableInputs();
+        }
+        else
+        {
+            DisableInputs();
+        }
     }
 
     private void CreateInputs()

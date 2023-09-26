@@ -23,39 +23,9 @@ public class OpenAIController : Singleton<OpenAIController>
         api = new OpenAIAPI(apiKey);
     }
 
-    private void Start()
-    {
-        StateController.Instance.OnStateChange += OnStateChange;
-    }
-
-    private void OnDestroy()
-    {
-        StateController.Instance.OnStateChange -= OnStateChange;
-    }
-
-    private void OnStateChange(GameState state)
-    {
-        if (state != GameState.Gameplay) return;
-        StartConversation();
-    }
-
-    private void StartConversation()
-    {
-        SaveData saveData = SaveController.Instance.Load("quicksave");
-
-        if (saveData)
-        {
-            LoadConversationFromSave(saveData);
-        }
-        else
-        {
-            CreateNewConversation();
-        }
-    }
-
     private async void CreateNewConversation()
     {
-        LoadingScreen.Instance.ShowLoadingScreen();
+        StateController.Instance.SetState(GameState.Loading);
         Chat = api.Chat.CreateConversation();
 
         PromptWithInitialInstructions();
@@ -102,12 +72,12 @@ public class OpenAIController : Singleton<OpenAIController>
         BackgroundController.Instance.GenerateBackgroundImages(backgroundDescriptions);
         DialogueController.Instance.StartDialogue(serializedDialogue);
         DialogueController.Instance.AddToDialogue(serializedDialogue2);
-        LoadingScreen.Instance.HideLoadingScreen();
+        StateController.Instance.SetState(GameState.Gameplay);
     }
 
     private void LoadConversationFromSave(SaveData saveData)
     {
-        LoadingScreen.Instance.ShowLoadingScreen();
+        StateController.Instance.SetState(GameState.Loading);
         Chat = api.Chat.CreateConversation();
 
         for (int i = 0; i < saveData.ConversationRoles.Count; ++i)
@@ -123,7 +93,7 @@ public class OpenAIController : Singleton<OpenAIController>
         CharacterGenerationController.Instance.LoadCharactersFromSave(saveData);
         BackgroundController.Instance.LoadBackgroundImagesFromSave(saveData);
         DialogueController.Instance.LoadDialogueFromSave(saveData);
-        LoadingScreen.Instance.HideLoadingScreen();
+        StateController.Instance.SetState(GameState.Gameplay);
     }
 
     private void PromptWithInitialInstructions()
@@ -318,13 +288,27 @@ public class OpenAIController : Singleton<OpenAIController>
         return tagsByCharacter;
     }
 
+    public void StartConversation()
+    {
+        SaveData saveData = SaveController.Instance.Load("quicksave");
+
+        if (saveData)
+        {
+            LoadConversationFromSave(saveData);
+        }
+        else
+        {
+            CreateNewConversation();
+        }
+    }
+
     public async void GenerateAdditionalDialogue()
     {
-        LoadingScreen.Instance.ShowLoadingScreen();
+        StateController.Instance.SetState(GameState.Loading);
 
         string additionalDialogue = await ContinueDialogue();
         DialogueController.Instance.ContinueDialogue(additionalDialogue);
 
-        LoadingScreen.Instance.HideLoadingScreen();
+        StateController.Instance.SetState(GameState.Gameplay);
     }
 }

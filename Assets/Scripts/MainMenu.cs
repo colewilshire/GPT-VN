@@ -26,6 +26,6 @@ public class MainMenu : MonoBehaviour
 
     private void OnNewGameButtonClicked()
     {
-        StateController.Instance.SetState(GameState.Gameplay);
+        OpenAIController.Instance.StartConversation();
     }
 }
