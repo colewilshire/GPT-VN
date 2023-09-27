@@ -37,7 +37,9 @@ public class SaveController : Singleton<SaveController>
 
     public void Save(string saveName)
     {
-        string savePath = Path.Combine(Application.persistentDataPath, saveName + ".sav");
+        string folderPath = Path.Combine(Application.persistentDataPath, saveName);
+        string savePath = Path.Combine(folderPath, $"{saveName}.sav");
+        string screenshotPath = Path.Combine(folderPath, $"{saveName}.png");
         SaveData saveData = SaveData.CreateInstance<SaveData>();
 
         saveData.ConversationRoles = new List<string>();
@@ -73,11 +75,12 @@ public class SaveController : Singleton<SaveController>
         string serializedSaveData = JsonUtility.ToJson(saveData);
 
         File.WriteAllText(savePath, serializedSaveData);
+        ScreenCapture.CaptureScreenshot(screenshotPath);
     }
 
     public SaveData Load(string saveName)
     {
-        string savePath = Path.Combine(Application.persistentDataPath, saveName + ".sav");
+        string savePath = Path.Combine(Application.persistentDataPath, saveName, $"{saveName}.sav");
         if (!(File.Exists(savePath))) return null;
 
         SaveData saveData = SaveData.CreateInstance<SaveData>();
