@@ -149,6 +149,7 @@ public class InputController : Singleton<InputController>
     private void OnQuickload(InputAction.CallbackContext context)
     {
         if (!inputEnabled) return;
+        SaveController.Instance.Quickload();
     }
 
     public void EnableInputs()

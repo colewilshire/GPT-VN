@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class SaveController : Singleton<SaveController>
 {
+    private string mostRecentSaveName = "";
     public string quicksaveName = "quicksave";
     public string autosaveName = "autosave";
 
@@ -19,11 +20,13 @@ public class SaveController : Singleton<SaveController>
     //     Save(autosaveName);
     // }
 
-    // public void Quickload()
-    // {
-    //     string savePath = Path.Combine(Application.persistentDataPath, quicksaveName + ".sav");
-    //     if (!(File.Exists(savePath))) return;
-    // }
+    public void Quickload()
+    {
+        string savePath = Path.Combine(Application.persistentDataPath, mostRecentSaveName, $"{mostRecentSaveName}.sav");
+
+        if (!(File.Exists(savePath))) return;
+        OpenAIController.Instance.LoadConversationFromSave(mostRecentSaveName);
+    }
 
     private string SerializeCharacterAppearance(CharacterAppearance characterAppearance)
     {
@@ -53,6 +56,8 @@ public class SaveController : Singleton<SaveController>
 
     public void Save(string saveName)
     {
+        StateController.Instance.SetState(GameState.Saving);
+
         string folderPath = Path.Combine(Application.persistentDataPath, saveName);
         string savePath = Path.Combine(folderPath, $"{saveName}.sav");
         string screenshotPath = Path.Combine(folderPath, $"{saveName}.png");
@@ -90,8 +95,13 @@ public class SaveController : Singleton<SaveController>
 
         string serializedSaveData = JsonUtility.ToJson(saveData);
 
+        Directory.CreateDirectory(folderPath);
         File.WriteAllText(savePath, serializedSaveData);
         ScreenCapture.CaptureScreenshot(screenshotPath);
+
+        mostRecentSaveName = saveName;
+
+        StateController.Instance.SetState(GameState.Gameplay);
     }
 
     public SaveData Load(string saveName)
@@ -110,11 +120,17 @@ public class SaveController : Singleton<SaveController>
     public Dictionary<string, Sprite> GetSavesSortedByDate()
     {
         string rootSaveFolderPath = Path.Combine(Application.persistentDataPath);
-        List<string> sortedSaveFolderPaths = new List<string>();
+        string[] saveFolderPaths = Directory.GetDirectories(rootSaveFolderPath, "*", SearchOption.TopDirectoryOnly);
+        List<string> sortedSaveFolderPaths = saveFolderPaths.OrderByDescending(d => 
+            Directory.EnumerateFileSystemEntries(d, "*.*", SearchOption.TopDirectoryOnly)
+            .Max(e => (File.GetAttributes(e) & FileAttributes.Directory) == FileAttributes.Directory ? Directory.GetLastWriteTime(e) : File.GetLastWriteTimeUtc(e))
+        ).ToList();
         Dictionary<string, Sprite> screenshotDictionary = new Dictionary<string, Sprite>();
 
-        string[] saveFolderPaths = Directory.GetDirectories(rootSaveFolderPath, "*", SearchOption.TopDirectoryOnly);
-        sortedSaveFolderPaths = saveFolderPaths.OrderBy(d => Directory.GetLastWriteTime(d)).ToList();
+        if (sortedSaveFolderPaths.Count > 0)
+        {
+            mostRecentSaveName = Path.GetFileName(sortedSaveFolderPaths[0]);
+        }
 
         foreach(string saveFolderPath in sortedSaveFolderPaths)
         {
@@ -124,7 +140,7 @@ public class SaveController : Singleton<SaveController>
 
             screenshotDictionary[saveName] = screenshot;
         }
-        
+
         return screenshotDictionary;
     }
 }

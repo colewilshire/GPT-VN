@@ -227,7 +227,6 @@ public class OpenAIController : Singleton<OpenAIController>
         string serializedAccessoryDescriptions = await GenerateAccessoryDescriptions();
         string serializedBackgroundDescriptions = await GenerateBackgroundDescription();
         string serializedDialogue = await GenerateDialogue();
-        string serializedDialogue2 = await ContinueDialogue();
 
         List<string> castList = serializedCastList.Split('|', StringSplitOptions.RemoveEmptyEntries)
             .Select(str => str.Trim())
@@ -262,7 +261,6 @@ public class OpenAIController : Singleton<OpenAIController>
 
         BackgroundController.Instance.GenerateBackgroundImages(backgroundDescriptions);
         DialogueController.Instance.StartDialogue(serializedDialogue);
-        DialogueController.Instance.AddToDialogue(serializedDialogue2);
         StateController.Instance.SetState(GameState.Gameplay);
     }
 

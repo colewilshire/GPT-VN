@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ContinueStoryButton : Singleton<ContinueStoryButton>
+public class ContinueStoryButton : MonoBehaviour
 {
     private Button button;
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-
         button = GetComponent<Button>();
 
-        HideButton();
         button.onClick.AddListener(OnClick);
     }
 

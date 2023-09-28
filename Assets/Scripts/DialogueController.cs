@@ -6,6 +6,7 @@ using UnityEngine;
 public class DialogueController : Singleton<DialogueController>
 {
     private List<DialogueLine> dialoguePath = new List<DialogueLine>();
+    [SerializeField] ContinueStoryButton continueStoryButton;
     public int CurrentLineIndex {get; private set;} = 0;
     public string SerializedDialoguePath {get; private set;} = "";
 
@@ -40,11 +41,24 @@ public class DialogueController : Singleton<DialogueController>
         return dialogueLine;
     }
 
+    private void AddToDialogue(string serializedDialogue)
+    {
+        List<string> serializedLines = new List<string>(serializedDialogue.Split('\n', StringSplitOptions.RemoveEmptyEntries));
+
+        foreach (string serializedLine in serializedLines)
+        {
+            DialogueLine dialogueLine = DeserializeLine(serializedLine);
+            dialoguePath.Add(dialogueLine);
+        }
+
+        SerializedDialoguePath += $"{serializedDialogue}\n";
+    }
+
     public void StepForward()
     {
         if (!(dialoguePath.Count > CurrentLineIndex + 1))
         {
-            ContinueStoryButton.Instance.ShowButton();
+           continueStoryButton.ShowButton();
             return;
         }
 
@@ -55,7 +69,7 @@ public class DialogueController : Singleton<DialogueController>
     public void StepBackward()
     {
         if (!(CurrentLineIndex - 1 >= 0)) return;
-        ContinueStoryButton.Instance.HideButton();
+        continueStoryButton.HideButton();
         CurrentLineIndex -= 1;
         ReadDialogueLine(CurrentLineIndex);
     }
@@ -74,19 +88,6 @@ public class DialogueController : Singleton<DialogueController>
 
         AddToDialogue(serializedDialogue);
         ReadDialogueLine(CurrentLineIndex);
-    }
-
-    public void AddToDialogue(string serializedDialogue)
-    {
-        List<string> serializedLines = new List<string>(serializedDialogue.Split('\n', StringSplitOptions.RemoveEmptyEntries));
-
-        foreach (string serializedLine in serializedLines)
-        {
-            DialogueLine dialogueLine = DeserializeLine(serializedLine);
-            dialoguePath.Add(dialogueLine);
-        }
-
-        SerializedDialoguePath += $"{serializedDialogue}\n";
     }
 
     public void ContinueDialogue(string serializedDialogue)

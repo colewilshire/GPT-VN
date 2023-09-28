@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LoadGameMenu : Singleton<LoadGameMenu>
+public class LoadGameMenu : MonoBehaviour
 {
     private Dictionary<string, Sprite> screenshotDictionary;
     private int currentPageIndex = 0;
@@ -11,10 +11,8 @@ public class LoadGameMenu : Singleton<LoadGameMenu>
     [SerializeField] private Button nextPageButton;
     [SerializeField] private Button previousPageButton;
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-
         nextPageButton.onClick.AddListener(NextPage);
         previousPageButton.onClick.AddListener(PreviousPage);
     }
@@ -22,7 +20,6 @@ public class LoadGameMenu : Singleton<LoadGameMenu>
     private void Start()
     {
         StateController.Instance.OnStateChange += OnStateChange;
-        HideMenu();
     }
 
     private void OnDestroy()
@@ -34,7 +31,8 @@ public class LoadGameMenu : Singleton<LoadGameMenu>
 
     private void OnStateChange(GameState state)
     {
-        HideMenu();
+        gameObject.SetActive(state == GameState.LoadGameMenu);
+
         if (state != GameState.MainMenu) return;
         ResetMenu();
     }
@@ -82,15 +80,5 @@ public class LoadGameMenu : Singleton<LoadGameMenu>
 
         --currentPageIndex;
         ShowPage(currentPageIndex);
-    }
-
-    public void ShowMenu()
-    {
-        gameObject.SetActive(true);
-    }
-
-    public void HideMenu()
-    {
-        gameObject.SetActive(false);
     }
 }

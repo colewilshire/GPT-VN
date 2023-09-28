@@ -36,6 +36,6 @@ public class MainMenu : MonoBehaviour
 
     private void OnLoadGameButtonClicked()
     {
-        LoadGameMenu.Instance.ShowMenu();
+        StateController.Instance.SetState(GameState.LoadGameMenu);
     }
 }
