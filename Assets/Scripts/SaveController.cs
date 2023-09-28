@@ -6,27 +6,9 @@ using UnityEngine;
 
 public class SaveController : Singleton<SaveController>
 {
-    private string mostRecentSaveName = "";
+    private int highestSceneIndex = 0;
     public string quicksaveName = "quicksave";
     public string autosaveName = "autosave";
-
-    public void Quicksave()
-    {
-        Save(quicksaveName);
-    }
-
-    // public void Autosave()
-    // {
-    //     Save(autosaveName);
-    // }
-
-    public void Quickload()
-    {
-        string savePath = Path.Combine(Application.persistentDataPath, mostRecentSaveName, $"{mostRecentSaveName}.sav");
-
-        if (!(File.Exists(savePath))) return;
-        OpenAIController.Instance.LoadConversationFromSave(mostRecentSaveName);
-    }
 
     private string SerializeCharacterAppearance(CharacterAppearance characterAppearance)
     {
@@ -52,6 +34,26 @@ public class SaveController : Singleton<SaveController>
         Sprite sprite = Sprite.Create(texture, rect, pivot);
 
         return sprite;
+    }
+
+    public void Quicksave()
+    {
+        Save(quicksaveName);
+    }
+
+    public void Autosave(int currentSceneIndex)
+    {
+        if (currentSceneIndex < highestSceneIndex) return;
+        highestSceneIndex = currentSceneIndex;
+        Save(autosaveName);
+    }
+
+    public void Quickload()
+    {
+        string savePath = Path.Combine(Application.persistentDataPath, quicksaveName, $"{quicksaveName}.sav");
+
+        if (!(File.Exists(savePath))) return;
+        OpenAIController.Instance.LoadConversationFromSave(quicksaveName);
     }
 
     public void Save(string saveName)
@@ -98,9 +100,6 @@ public class SaveController : Singleton<SaveController>
         Directory.CreateDirectory(folderPath);
         File.WriteAllText(savePath, serializedSaveData);
         ScreenCapture.CaptureScreenshot(screenshotPath);
-
-        mostRecentSaveName = saveName;
-
         StateController.Instance.SetState(GameState.Gameplay);
     }
 
@@ -113,6 +112,7 @@ public class SaveController : Singleton<SaveController>
         string serializedSaveData = File.ReadAllText(savePath);
 
         JsonUtility.FromJsonOverwrite(serializedSaveData, saveData);
+        highestSceneIndex = saveData.CurrentLineIndex;
 
         return saveData;
     }
@@ -126,11 +126,6 @@ public class SaveController : Singleton<SaveController>
             .Max(e => (File.GetAttributes(e) & FileAttributes.Directory) == FileAttributes.Directory ? Directory.GetLastWriteTime(e) : File.GetLastWriteTimeUtc(e))
         ).ToList();
         Dictionary<string, Sprite> screenshotDictionary = new Dictionary<string, Sprite>();
-
-        if (sortedSaveFolderPaths.Count > 0)
-        {
-            mostRecentSaveName = Path.GetFileName(sortedSaveFolderPaths[0]);
-        }
 
         foreach(string saveFolderPath in sortedSaveFolderPaths)
         {
