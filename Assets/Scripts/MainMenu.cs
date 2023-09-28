@@ -31,7 +31,7 @@ public class MainMenu : MonoBehaviour
 
     private void OnNewGameButtonClicked()
     {
-        OpenAIController.Instance.StartConversation();
+        OpenAIController.Instance.CreateNewConversation();
     }
 
     private void OnLoadGameButtonClicked()

@@ -23,79 +23,6 @@ public class OpenAIController : Singleton<OpenAIController>
         api = new OpenAIAPI(apiKey);
     }
 
-    private async void CreateNewConversation()
-    {
-        StateController.Instance.SetState(GameState.Loading);
-        Chat = api.Chat.CreateConversation();
-
-        PromptWithInitialInstructions();
-        string serializedCastList = await GenerateCastList();
-        string serializedHairDescriptions = await GenerateHairDescriptions();
-        string serializedOutfitDescriptions = await GenerateOutfitDescriptions();
-        string serializedEyeColorDescriptions = await GenerateEyeColorDescriptions();
-        string serializedAccessoryDescriptions = await GenerateAccessoryDescriptions();
-        string serializedBackgroundDescriptions = await GenerateBackgroundDescription();
-        string serializedDialogue = await GenerateDialogue();
-        string serializedDialogue2 = await ContinueDialogue();
-
-        List<string> castList = serializedCastList.Split('|', StringSplitOptions.RemoveEmptyEntries)
-            .Select(str => str.Trim())
-            .ToList();
-        Dictionary<string, List<HairTag>> hairDescriptions = DeserializeTags<HairTag>(serializedHairDescriptions);
-        Dictionary<string, List<OutfitTag>> outfitDescriptions = DeserializeTags<OutfitTag>(serializedOutfitDescriptions);
-        Dictionary<string, List<FaceTag>> eyeColorDescriptions = DeserializeTags<FaceTag>(serializedEyeColorDescriptions);
-        Dictionary<string, List<AccessoryTag>> accessoryDescriptions = DeserializeTags<AccessoryTag>(serializedAccessoryDescriptions);
-        Dictionary<string, List<BackgroundTag>> backgroundDescriptions = DeserializeTags<BackgroundTag>(serializedBackgroundDescriptions);
-
-        foreach (string characterName in castList)
-        {
-            List<HairTag> hairTags;
-            List<OutfitTag> outfitTags;
-            List<FaceTag> eyeColorTags;
-            List<AccessoryTag> accessoryTags;
-
-            hairDescriptions.TryGetValue(characterName, out hairTags);
-            outfitDescriptions.TryGetValue(characterName, out outfitTags);
-            eyeColorDescriptions.TryGetValue(characterName, out eyeColorTags);
-            accessoryDescriptions.TryGetValue(characterName, out accessoryTags);
-
-            if (hairTags != null && outfitTags != null && eyeColorTags != null && accessoryTags != null)
-            {
-                CharacterGenerationController.Instance.GenerateCharacterPortrait(characterName, accessoryTags, hairTags, outfitTags, eyeColorTags);
-            }
-            else
-            {
-                Debug.Log($"Error generating {characterName}");
-            }
-        }
-
-        BackgroundController.Instance.GenerateBackgroundImages(backgroundDescriptions);
-        DialogueController.Instance.StartDialogue(serializedDialogue);
-        DialogueController.Instance.AddToDialogue(serializedDialogue2);
-        StateController.Instance.SetState(GameState.Gameplay);
-    }
-
-    private void LoadConversationFromSave(SaveData saveData)
-    {
-        StateController.Instance.SetState(GameState.Loading);
-        Chat = api.Chat.CreateConversation();
-
-        for (int i = 0; i < saveData.ConversationRoles.Count; ++i)
-        {
-            string roleName = saveData.ConversationRoles[i];
-            string message = saveData.ConversationMessages[i];
-            ChatMessageRole role = ChatMessageRole.FromString(roleName);
-            ChatMessage chatMessage = new ChatMessage(role, message);
-
-            Chat.AppendMessage(chatMessage);
-        }
-
-        CharacterGenerationController.Instance.LoadCharactersFromSave(saveData);
-        BackgroundController.Instance.LoadBackgroundImagesFromSave(saveData);
-        DialogueController.Instance.LoadDialogueFromSave(saveData);
-        StateController.Instance.SetState(GameState.Gameplay);
-    }
-
     private void PromptWithInitialInstructions()
     {
         string prompt =
@@ -244,7 +171,6 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private string GetEnumValues(Type enumType)
     {
-        //string enumName = enumType.Name;
         string enumValues = "";
         Array values = Enum.GetValues(enumType);
         List<string> valueList = new List<string>();
@@ -288,18 +214,85 @@ public class OpenAIController : Singleton<OpenAIController>
         return tagsByCharacter;
     }
 
-    public void StartConversation()
+    public async void CreateNewConversation()
     {
-        SaveData saveData = SaveController.Instance.Load("quicksave");
+        StateController.Instance.SetState(GameState.Loading);
+        Chat = api.Chat.CreateConversation();
 
-        if (saveData)
+        PromptWithInitialInstructions();
+        string serializedCastList = await GenerateCastList();
+        string serializedHairDescriptions = await GenerateHairDescriptions();
+        string serializedOutfitDescriptions = await GenerateOutfitDescriptions();
+        string serializedEyeColorDescriptions = await GenerateEyeColorDescriptions();
+        string serializedAccessoryDescriptions = await GenerateAccessoryDescriptions();
+        string serializedBackgroundDescriptions = await GenerateBackgroundDescription();
+        string serializedDialogue = await GenerateDialogue();
+        string serializedDialogue2 = await ContinueDialogue();
+
+        List<string> castList = serializedCastList.Split('|', StringSplitOptions.RemoveEmptyEntries)
+            .Select(str => str.Trim())
+            .ToList();
+        Dictionary<string, List<HairTag>> hairDescriptions = DeserializeTags<HairTag>(serializedHairDescriptions);
+        Dictionary<string, List<OutfitTag>> outfitDescriptions = DeserializeTags<OutfitTag>(serializedOutfitDescriptions);
+        Dictionary<string, List<FaceTag>> eyeColorDescriptions = DeserializeTags<FaceTag>(serializedEyeColorDescriptions);
+        Dictionary<string, List<AccessoryTag>> accessoryDescriptions = DeserializeTags<AccessoryTag>(serializedAccessoryDescriptions);
+        Dictionary<string, List<BackgroundTag>> backgroundDescriptions = DeserializeTags<BackgroundTag>(serializedBackgroundDescriptions);
+
+        foreach (string characterName in castList)
         {
-            LoadConversationFromSave(saveData);
+            List<HairTag> hairTags;
+            List<OutfitTag> outfitTags;
+            List<FaceTag> eyeColorTags;
+            List<AccessoryTag> accessoryTags;
+
+            hairDescriptions.TryGetValue(characterName, out hairTags);
+            outfitDescriptions.TryGetValue(characterName, out outfitTags);
+            eyeColorDescriptions.TryGetValue(characterName, out eyeColorTags);
+            accessoryDescriptions.TryGetValue(characterName, out accessoryTags);
+
+            if (hairTags != null && outfitTags != null && eyeColorTags != null && accessoryTags != null)
+            {
+                CharacterGenerationController.Instance.GenerateCharacterPortrait(characterName, accessoryTags, hairTags, outfitTags, eyeColorTags);
+            }
+            else
+            {
+                Debug.Log($"Error generating {characterName}");
+            }
         }
-        else
+
+        BackgroundController.Instance.GenerateBackgroundImages(backgroundDescriptions);
+        DialogueController.Instance.StartDialogue(serializedDialogue);
+        DialogueController.Instance.AddToDialogue(serializedDialogue2);
+        StateController.Instance.SetState(GameState.Gameplay);
+    }
+
+    public void LoadConversationFromSave(string saveName)
+    {
+        StateController.Instance.SetState(GameState.Loading);
+        SaveData saveData = SaveController.Instance.Load(saveName);
+
+        if (!saveData)
         {
-            CreateNewConversation();
+            StateController.Instance.SetState(GameState.MainMenu);
+            return;
         }
+
+        Chat = api.Chat.CreateConversation();
+
+        for (int i = 0; i < saveData.ConversationRoles.Count; ++i)
+        {
+            string roleName = saveData.ConversationRoles[i];
+            string message = saveData.ConversationMessages[i];
+            ChatMessageRole role = ChatMessageRole.FromString(roleName);
+            ChatMessage chatMessage = new ChatMessage(role, message);
+
+            Chat.AppendMessage(chatMessage);
+        }
+
+        CharacterGenerationController.Instance.LoadCharactersFromSave(saveData);
+        BackgroundController.Instance.LoadBackgroundImagesFromSave(saveData);
+        DialogueController.Instance.LoadDialogueFromSave(saveData);
+        StateController.Instance.SetState(GameState.Gameplay);
     }
 
     public async void GenerateAdditionalDialogue()

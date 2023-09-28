@@ -7,7 +7,7 @@ public class LoadGameMenu : Singleton<LoadGameMenu>
 {
     private Dictionary<string, Sprite> screenshotDictionary;
     private int currentPageIndex = 0;
-    [SerializeField] private List<Image> saveDisplays;
+    [SerializeField] private List<SaveDisplay> saveDisplays;
     [SerializeField] private Button nextPageButton;
     [SerializeField] private Button previousPageButton;
 
@@ -34,6 +34,7 @@ public class LoadGameMenu : Singleton<LoadGameMenu>
 
     private void OnStateChange(GameState state)
     {
+        HideMenu();
         if (state != GameState.MainMenu) return;
         ResetMenu();
     }
@@ -56,13 +57,13 @@ public class LoadGameMenu : Singleton<LoadGameMenu>
                 string saveName = screenshotDictionary.Keys.ElementAt(saveSlotIndex);
                 Sprite screenshot = screenshotDictionary[saveName];
 
-                saveDisplays[i].sprite = screenshot;
-                saveDisplays[i].name = saveName;
-                saveDisplays[i].gameObject.SetActive(true);
+                saveDisplays[i].SetScreenshot(screenshot);
+                saveDisplays[i].SetNameDisplay(saveName);
+                saveDisplays[i].ShowDisplay();
             }
             else
             {
-                saveDisplays[i].gameObject.SetActive(false);
+                saveDisplays[i].HideDisplay();
             }
         }
     }
