@@ -1,5 +1,6 @@
 using OpenAI_API.Chat;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,6 +34,21 @@ public class SaveController : Singleton<SaveController>
         string serializedCharacterAppearance = $"{accessoryName}|{hairName}|{outfitName}|{faceName}";
 
         return serializedCharacterAppearance;
+    }
+
+    private Sprite LoadPNGAsSprite(string filePath)
+    {
+        if (!File.Exists(filePath)) return null;
+
+        Texture2D texture = new Texture2D(2, 2);
+        byte[] fileData = File.ReadAllBytes(filePath);
+        texture.LoadImage(fileData);
+
+        Rect rect = new Rect(0, 0, texture.width, texture.height);
+        Vector2 pivot = new Vector2(0.5f, 0.5f);
+        Sprite sprite = Sprite.Create(texture, rect, pivot);
+
+        return sprite;
     }
 
     public void Save(string saveName)
@@ -89,5 +105,26 @@ public class SaveController : Singleton<SaveController>
         JsonUtility.FromJsonOverwrite(serializedSaveData, saveData);
 
         return saveData;
+    }
+
+    public Dictionary<string, Sprite> GetSavesSortedByDate()
+    {
+        string rootSaveFolderPath = Path.Combine(Application.persistentDataPath);
+        List<string> sortedSaveFolderPaths = new List<string>();
+        Dictionary<string, Sprite> screenshotDictionary = new Dictionary<string, Sprite>();
+
+        string[] saveFolderPaths = Directory.GetDirectories(rootSaveFolderPath, "*", SearchOption.TopDirectoryOnly);
+        sortedSaveFolderPaths = saveFolderPaths.OrderBy(d => Directory.GetLastWriteTime(d)).ToList();
+
+        foreach(string saveFolderPath in sortedSaveFolderPaths)
+        {
+            string saveName = Path.GetFileName(saveFolderPath);
+            string screenshotPath = Path.Combine(saveFolderPath, $"{saveName}.png");
+            Sprite screenshot = LoadPNGAsSprite(screenshotPath);
+
+            screenshotDictionary[saveName] = screenshot;
+        }
+        
+        return screenshotDictionary;
     }
 }
