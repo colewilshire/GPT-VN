@@ -59,7 +59,7 @@ public class DialogueController : Singleton<DialogueController>
         if (!(dialoguePath.Count > CurrentLineIndex + 1))
         {
            continueStoryButton.ShowButton();
-            return;
+           return;
         }
 
         CurrentLineIndex += 1;
@@ -97,6 +97,7 @@ public class DialogueController : Singleton<DialogueController>
 
         AddToDialogue(serializedDialogue);
         ReadDialogueLine(CurrentLineIndex);
+        SaveController.Instance.Autosave(CurrentLineIndex);
     }
 
     public void LoadDialogueFromSave(SaveData saveData)

@@ -7,6 +7,8 @@ using UnityEngine;
 public class SaveController : Singleton<SaveController>
 {
     private int highestSceneIndex = 0;
+    private int maxQuicksaves = 10;
+    private int nextQuicksaveIndex = 0;
     public string quicksaveName = "quicksave";
     public string autosaveName = "autosave";
 
@@ -36,9 +38,33 @@ public class SaveController : Singleton<SaveController>
         return sprite;
     }
 
+    private void SetMostRecentQuicksaveIndex(List<string> sortedSaveFolderPaths)
+    {
+        if (sortedSaveFolderPaths.Count < 1) return;
+
+        string mostRecentQuicksavePath = sortedSaveFolderPaths.FirstOrDefault(d => Path.GetFileName(d).StartsWith(quicksaveName));
+        string mostRecentQuicksaveName = Path.GetFileName(mostRecentQuicksavePath);
+        string mostRecentQuicksaveIndexName = mostRecentQuicksaveName.Substring(quicksaveName.Length);
+
+        if (int.TryParse(mostRecentQuicksaveIndexName, out int mostRecentQuicksaveIndex))
+        {
+            nextQuicksaveIndex = mostRecentQuicksaveIndex + 1;
+        }
+        else
+        {
+            nextQuicksaveIndex = 0;
+        }
+    }
+
     public void Quicksave()
     {
-        Save(quicksaveName);
+        if (nextQuicksaveIndex > maxQuicksaves - 1)
+        {
+            nextQuicksaveIndex = 0;
+        }
+
+        Save($"{quicksaveName}{nextQuicksaveIndex}");
+        ++nextQuicksaveIndex;
     }
 
     public void Autosave(int currentSceneIndex)
@@ -126,6 +152,8 @@ public class SaveController : Singleton<SaveController>
             .Max(e => (File.GetAttributes(e) & FileAttributes.Directory) == FileAttributes.Directory ? Directory.GetLastWriteTime(e) : File.GetLastWriteTimeUtc(e))
         ).ToList();
         Dictionary<string, Sprite> screenshotDictionary = new Dictionary<string, Sprite>();
+
+        SetMostRecentQuicksaveIndex(sortedSaveFolderPaths);
 
         foreach(string saveFolderPath in sortedSaveFolderPaths)
         {
