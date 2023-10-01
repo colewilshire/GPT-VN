@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CharacterGenerationController : Singleton<CharacterGenerationController>
 {
-    [SerializeField] CharacterPortraitController characterPortaitPrefab;
+    [SerializeField] private CharacterPortraitController characterPortaitPrefab;
 
     private List<Accessory> accessories = new List<Accessory>();
     private List<Hair> hairs = new List<Hair>();
@@ -14,8 +14,6 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
     private Dictionary<HairTag, List<Hair>> hairDictionary = new Dictionary<HairTag, List<Hair>>();
     private Dictionary<OutfitTag, List<Outfit>> outfitDictionary = new Dictionary<OutfitTag, List<Outfit>>();
     private Dictionary<FaceTag, List<Face>> faceDictionary = new Dictionary<FaceTag, List<Face>>();
-
-    private Dictionary<string, CharacterPortraitController> characters = new Dictionary<string, CharacterPortraitController>();
 
     protected override void Awake()
     {
@@ -53,11 +51,7 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
 
     public void GenerateCharacterPortrait(string characterName, List<AccessoryTag> accessoryTags, List<HairTag> hairTags, List<OutfitTag> outfitTags, List <FaceTag> faceTags)
     {
-        if (characters.ContainsKey(characterName)) return;
-
         CharacterPortraitController characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
-        characters[characterName] = characterPortrait;
-
         CharacterAppearance characterAppearance = CharacterAppearance.CreateInstance<CharacterAppearance>();
         Accessory accessory = TaggedImageUtility.GetImageWithTags(accessoryTags, accessoryDictionary);
         Hair hair = TaggedImageUtility.GetImageWithTags(hairTags, hairDictionary);
@@ -110,7 +104,6 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
             characterAppearance.Face = Resources.Load<Face>($"Faces/{faceName}");
 
             CharacterPortraitController characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
-            characters[characterName] = characterPortrait;
 
             characterPortrait.name = characterName;
             characterPortrait.SetAppearance(characterAppearance);

@@ -28,4 +28,14 @@ public class CharacterManager : Singleton<CharacterManager>
             characterPortrait.ShowPortrait(expression);
         }
     }
+
+    public void ClearCharacters()
+    {
+        foreach (KeyValuePair<string, CharacterPortraitController> characterEntry in Characters)
+        {
+            Destroy(characterEntry.Value.gameObject);
+        }
+
+        Characters = new Dictionary<string, CharacterPortraitController>();
+    }
 }

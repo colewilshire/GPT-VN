@@ -217,6 +217,8 @@ public class OpenAIController : Singleton<OpenAIController>
     public async void CreateNewConversation()
     {
         StateController.Instance.SetState(GameState.Loading);
+        CharacterManager.Instance.ClearCharacters();
+
         Chat = api.Chat.CreateConversation();
 
         PromptWithInitialInstructions();
@@ -255,7 +257,7 @@ public class OpenAIController : Singleton<OpenAIController>
             }
             else
             {
-                Debug.Log($"Error generating {characterName}");
+                Debug.Log($"Error generating {characterName}.");
             }
         }
 
@@ -267,6 +269,8 @@ public class OpenAIController : Singleton<OpenAIController>
     public void LoadConversationFromSave(string saveName)
     {
         StateController.Instance.SetState(GameState.Loading);
+        CharacterManager.Instance.ClearCharacters();
+
         SaveData saveData = SaveController.Instance.Load(saveName);
 
         if (!saveData)

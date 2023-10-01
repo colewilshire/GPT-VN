@@ -76,10 +76,12 @@ public class SaveController : Singleton<SaveController>
 
     public void Quickload()
     {
-        string savePath = Path.Combine(Application.persistentDataPath, quicksaveName, $"{quicksaveName}.sav");
+        int lastQuicksaveIndex = nextQuicksaveIndex - 1;
+        string lastQuicksaveName = $"{quicksaveName}{lastQuicksaveIndex}";
+        string savePath = Path.Combine(Application.persistentDataPath, lastQuicksaveName, $"{lastQuicksaveName}.sav");
 
         if (!(File.Exists(savePath))) return;
-        OpenAIController.Instance.LoadConversationFromSave(quicksaveName);
+        OpenAIController.Instance.LoadConversationFromSave(lastQuicksaveName);
     }
 
     public void Save(string saveName)
