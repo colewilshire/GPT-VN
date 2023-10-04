@@ -13,7 +13,7 @@ public class CharacterManager : Singleton<CharacterManager>
         Characters[characterPortrait.name] = characterPortrait;
     }
 
-    public void ShowPortait(string characterName, string expressionName)
+    public void ShowPortrait(string characterName, string expressionName)
     {
         if (activePortrait)
         {

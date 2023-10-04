@@ -14,8 +14,9 @@ public class DialogueController : Singleton<DialogueController>
     {
         DialogueLine currentLine = dialoguePath[index];
 
+        UIEffectController.Instance.TerminateEffects();
         BackgroundController.Instance.SetBackground(currentLine.BackgroundImage);
-        CharacterManager.Instance.ShowPortait(currentLine.CharacterName, currentLine.Mood);
+        CharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
         NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
         TextController.Instance.SetText(currentLine.DialogueText);
         AudioController.Instance.PlaySound(currentLine.VoiceLine);
