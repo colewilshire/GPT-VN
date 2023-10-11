@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour
+public class PauseMenu : MonoBehaviour
 {
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button loadGameButton;
@@ -13,6 +13,7 @@ public class MainMenu : MonoBehaviour
         StateController.Instance.OnStateChange += OnStateChange;
         newGameButton.onClick.AddListener(OnNewGameButtonClicked);
         loadGameButton.onClick.AddListener(OnLoadGameButtonClicked);
+        quitButton.onClick.AddListener(OnQuitButtonClicked);
     }
 
     private void OnDestroy()
@@ -20,11 +21,12 @@ public class MainMenu : MonoBehaviour
         StateController.Instance.OnStateChange -= OnStateChange;
         newGameButton.onClick.RemoveListener(OnNewGameButtonClicked);
         loadGameButton.onClick.RemoveListener(OnLoadGameButtonClicked);
+        quitButton.onClick.RemoveListener(OnQuitButtonClicked);
     }
 
     private void OnStateChange(GameState state)
     {
-        gameObject.SetActive(state == GameState.MainMenu);
+        gameObject.SetActive(state == GameState.PauseMenu);
     }
 
     private void OnNewGameButtonClicked()
@@ -35,5 +37,10 @@ public class MainMenu : MonoBehaviour
     private void OnLoadGameButtonClicked()
     {
         StateController.Instance.SetState(GameState.LoadGameMenu);
+    }
+
+    private void OnQuitButtonClicked()
+    {
+        StateController.Instance.SetState(GameState.Gameplay);
     }
 }

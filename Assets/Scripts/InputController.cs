@@ -10,6 +10,7 @@ public class InputController : Singleton<InputController>
     private InputAction repeatLineAction;
     private InputAction quicksaveAction;
     private InputAction quickloadAction;
+    private InputAction pauseAction;
     private bool inputEnabled = false;
     [SerializeField] private Button stepForwardButton;
     [SerializeField] private Button stepBackwardButton;
@@ -57,18 +58,21 @@ public class InputController : Singleton<InputController>
         repeatLineAction = playerInputActions.Dialogue.RepeatLine;
         quicksaveAction = playerInputActions.Dialogue.Quicksave;
         quickloadAction = playerInputActions.Dialogue.Quickload;
+        pauseAction = playerInputActions.Dialogue.Pause;
 
         stepForwardAction.performed += OnStepForward;
         stepBackwardAction.performed += OnStepBackward;
         repeatLineAction.performed += OnRepeatLine;
         quicksaveAction.performed += OnQuicksave;
         quickloadAction.performed += OnQuickload;
+        pauseAction.performed += OnPause;
 
         stepForwardAction.Enable();
         stepBackwardAction.Enable();
         repeatLineAction.Enable();
         quicksaveAction.Enable();
         quickloadAction.Enable();
+        pauseAction.Enable();
     }
 
     private void DestroyInputs()
@@ -78,12 +82,14 @@ public class InputController : Singleton<InputController>
         repeatLineAction.performed -= OnRepeatLine;
         quicksaveAction.performed -= OnQuicksave;
         quickloadAction.performed -= OnQuickload;
+        pauseAction.performed -= OnPause;
 
         stepForwardAction.Disable();
         stepBackwardAction.Disable();
         repeatLineAction.Disable();
         quicksaveAction.Disable();
         quickloadAction.Disable();
+        pauseAction.Disable();
     }
 
     private void SetUpButtons()
@@ -150,6 +156,12 @@ public class InputController : Singleton<InputController>
     {
         if (!inputEnabled) return;
         SaveController.Instance.Quickload();
+    }
+
+    private void OnPause(InputAction.CallbackContext context)
+    {
+        if (!inputEnabled) return;
+        StateController.Instance.SetState(GameState.PauseMenu);
     }
 
     public void EnableInputs()

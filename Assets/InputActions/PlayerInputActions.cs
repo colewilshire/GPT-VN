@@ -71,6 +71,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""004d709e-e50e-4bf9-8998-17eb16e4de78"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -115,6 +124,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""Quicksave"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2aa6894b-dfed-49a2-829f-7362590d7f32"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -175,6 +195,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Dialogue_RepeatLine = m_Dialogue.FindAction("RepeatLine", throwIfNotFound: true);
         m_Dialogue_Quicksave = m_Dialogue.FindAction("Quicksave", throwIfNotFound: true);
         m_Dialogue_Quickload = m_Dialogue.FindAction("Quickload", throwIfNotFound: true);
+        m_Dialogue_Pause = m_Dialogue.FindAction("Pause", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -241,6 +262,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Dialogue_RepeatLine;
     private readonly InputAction m_Dialogue_Quicksave;
     private readonly InputAction m_Dialogue_Quickload;
+    private readonly InputAction m_Dialogue_Pause;
     public struct DialogueActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -250,6 +272,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @RepeatLine => m_Wrapper.m_Dialogue_RepeatLine;
         public InputAction @Quicksave => m_Wrapper.m_Dialogue_Quicksave;
         public InputAction @Quickload => m_Wrapper.m_Dialogue_Quickload;
+        public InputAction @Pause => m_Wrapper.m_Dialogue_Pause;
         public InputActionMap Get() { return m_Wrapper.m_Dialogue; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -274,6 +297,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Quickload.started += instance.OnQuickload;
             @Quickload.performed += instance.OnQuickload;
             @Quickload.canceled += instance.OnQuickload;
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
         }
 
         private void UnregisterCallbacks(IDialogueActions instance)
@@ -293,6 +319,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Quickload.started -= instance.OnQuickload;
             @Quickload.performed -= instance.OnQuickload;
             @Quickload.canceled -= instance.OnQuickload;
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
         }
 
         public void RemoveCallbacks(IDialogueActions instance)
@@ -344,5 +373,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnRepeatLine(InputAction.CallbackContext context);
         void OnQuicksave(InputAction.CallbackContext context);
         void OnQuickload(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
     }
 }
