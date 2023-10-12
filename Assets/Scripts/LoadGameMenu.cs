@@ -11,32 +11,6 @@ public class LoadGameMenu : MonoBehaviour
     [SerializeField] private Button nextPageButton;
     [SerializeField] private Button previousPageButton;
 
-    private void Awake()
-    {
-        nextPageButton.onClick.AddListener(NextPage);
-        previousPageButton.onClick.AddListener(PreviousPage);
-    }
-
-    private void Start()
-    {
-        StateController.Instance.OnStateChange += OnStateChange;
-    }
-
-    private void OnDestroy()
-    {
-        nextPageButton.onClick.RemoveListener(NextPage);
-        previousPageButton.onClick.RemoveListener(PreviousPage);
-        StateController.Instance.OnStateChange -= OnStateChange;
-    }
-
-    private void OnStateChange(GameState state)
-    {
-        gameObject.SetActive(state == GameState.LoadGameMenu);
-
-        if (state != GameState.MainMenu) return;
-        ResetMenu();
-    }
-
     private void ResetMenu()
     {
         currentPageIndex = 0;
@@ -80,5 +54,16 @@ public class LoadGameMenu : MonoBehaviour
 
         --currentPageIndex;
         ShowPage(currentPageIndex);
+    }
+
+    public void OpenMenu()
+    {
+        ResetMenu();
+        gameObject.SetActive(true);
+    }
+
+    public void CloseMenu()
+    {
+        gameObject.SetActive(false);
     }
 }

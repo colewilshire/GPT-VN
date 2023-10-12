@@ -1,30 +1,34 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour
+public class MainMenu : Menu
 {
+    [SerializeField] private GameObject buttons;
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button loadGameButton;
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button quitButton;
+    [SerializeField] private LoadGameMenu loadGameMenu;
+    protected override GameState activeState {get; set;} = GameState.MainMenu;
 
-    private void Start()
+    private void Awake()
     {
-        StateController.Instance.OnStateChange += OnStateChange;
         newGameButton.onClick.AddListener(OnNewGameButtonClicked);
         loadGameButton.onClick.AddListener(OnLoadGameButtonClicked);
     }
 
-    private void OnDestroy()
+    protected override void Start()
     {
-        StateController.Instance.OnStateChange -= OnStateChange;
-        newGameButton.onClick.RemoveListener(OnNewGameButtonClicked);
-        loadGameButton.onClick.RemoveListener(OnLoadGameButtonClicked);
+        loadGameMenu.CloseMenu();
+        base.Start();
     }
 
-    private void OnStateChange(GameState state)
+    protected override void OnDestroy()
     {
-        gameObject.SetActive(state == GameState.MainMenu);
+        base.OnDestroy();
+
+        newGameButton.onClick.RemoveListener(OnNewGameButtonClicked);
+        loadGameButton.onClick.RemoveListener(OnLoadGameButtonClicked);
     }
 
     private void OnNewGameButtonClicked()
@@ -34,6 +38,7 @@ public class MainMenu : MonoBehaviour
 
     private void OnLoadGameButtonClicked()
     {
-        StateController.Instance.SetState(GameState.LoadGameMenu);
+        buttons.SetActive(false);
+        loadGameMenu.OpenMenu();
     }
 }

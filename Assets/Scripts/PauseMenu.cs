@@ -1,46 +1,58 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PauseMenu : MonoBehaviour
+public class PauseMenu : Menu
 {
-    [SerializeField] private Button newGameButton;
+    [SerializeField] private GameObject buttons;
+    [SerializeField] private Button resumeButton;
     [SerializeField] private Button loadGameButton;
     [SerializeField] private Button optionsButton;
-    [SerializeField] private Button quitButton;
+    [SerializeField] private Button mainMenuButton;
+    [SerializeField] private LoadGameMenu loadGameMenu;
+    protected override GameState activeState {get; set;} = GameState.PauseMenu;
 
-    private void Start()
+    private void Awake()
     {
-        StateController.Instance.OnStateChange += OnStateChange;
-        newGameButton.onClick.AddListener(OnNewGameButtonClicked);
+        resumeButton.onClick.AddListener(OnResumeButtonClicked);
         loadGameButton.onClick.AddListener(OnLoadGameButtonClicked);
-        quitButton.onClick.AddListener(OnQuitButtonClicked);
+        optionsButton.onClick.AddListener(OnOptionsButtonClicked);
+        mainMenuButton.onClick.AddListener(OnMainMenuButtonClicked);
     }
 
-    private void OnDestroy()
+    protected override void Start()
     {
-        StateController.Instance.OnStateChange -= OnStateChange;
-        newGameButton.onClick.RemoveListener(OnNewGameButtonClicked);
+        loadGameMenu.CloseMenu();
+        base.Start();
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        resumeButton.onClick.RemoveListener(OnResumeButtonClicked);
         loadGameButton.onClick.RemoveListener(OnLoadGameButtonClicked);
-        quitButton.onClick.RemoveListener(OnQuitButtonClicked);
+        optionsButton.onClick.RemoveListener(OnOptionsButtonClicked);
+        mainMenuButton.onClick.AddListener(OnMainMenuButtonClicked);
     }
 
-    private void OnStateChange(GameState state)
+    private void OnResumeButtonClicked()
     {
-        gameObject.SetActive(state == GameState.PauseMenu);
-    }
-
-    private void OnNewGameButtonClicked()
-    {
-        OpenAIController.Instance.CreateNewConversation();
+        StateController.Instance.SetState(GameState.Gameplay);
     }
 
     private void OnLoadGameButtonClicked()
     {
-        StateController.Instance.SetState(GameState.LoadGameMenu);
+        buttons.SetActive(false);
+        loadGameMenu.OpenMenu();
     }
 
-    private void OnQuitButtonClicked()
+    private void OnOptionsButtonClicked()
     {
-        StateController.Instance.SetState(GameState.Gameplay);
+
+    }
+
+    private void OnMainMenuButtonClicked()
+    {
+        StateController.Instance.SetState(GameState.MainMenu);
     }
 }

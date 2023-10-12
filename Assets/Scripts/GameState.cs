@@ -1,5 +1,6 @@
 public enum GameState
 {
+    None,
     MainMenu,
     LoadGameMenu,
     PauseMenu,
