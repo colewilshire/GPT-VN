@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class Menu : MonoBehaviour
 {
     private Dictionary<GameObject, bool> defaultChildStates = new Dictionary<GameObject, bool>();
-    protected virtual GameState activeState { get; set; } = GameState.None;
+    protected abstract GameState activeState { get; set; }
 
     protected virtual void Start()
     {

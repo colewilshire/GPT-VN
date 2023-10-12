@@ -10,6 +10,21 @@ public class LoadGameMenu : MonoBehaviour
     [SerializeField] private List<SaveDisplay> saveDisplays;
     [SerializeField] private Button nextPageButton;
     [SerializeField] private Button previousPageButton;
+    [SerializeField] private Button exitMenuButton;
+
+    private void Awake()
+    {
+        nextPageButton.onClick.AddListener(NextPage);
+        previousPageButton.onClick.AddListener(PreviousPage);
+        exitMenuButton.onClick.AddListener(ExitMenu);
+    }
+
+    private void OnDestroy()
+    {
+        nextPageButton.onClick.RemoveListener(NextPage);
+        previousPageButton.onClick.RemoveListener(PreviousPage);
+        exitMenuButton.onClick.RemoveListener(ExitMenu);
+    }
 
     private void ResetMenu()
     {
@@ -20,6 +35,12 @@ public class LoadGameMenu : MonoBehaviour
 
     private void ShowPage(int pageIndex)
     {
+        bool nextPageExists = (currentPageIndex + 1) * saveDisplays.Count < screenshotDictionary.Count;
+        bool previousPageExists = currentPageIndex - 1 >= 0;
+
+        nextPageButton.gameObject.SetActive(nextPageExists);
+        previousPageButton.gameObject.SetActive(previousPageExists);
+
         for (int i = 0; i < saveDisplays.Count; ++i)
         {
             int saveSlotIndex = i + saveDisplays.Count * pageIndex;
@@ -42,16 +63,12 @@ public class LoadGameMenu : MonoBehaviour
 
     private void NextPage()
     {
-        if (!(currentPageIndex * saveDisplays.Count + 1 < screenshotDictionary.Count)) return;
-
         ++currentPageIndex;
         ShowPage(currentPageIndex);
     }
 
     private void PreviousPage()
     {
-        if (!(currentPageIndex - 1 >= 0)) return;
-
         --currentPageIndex;
         ShowPage(currentPageIndex);
     }
@@ -65,5 +82,10 @@ public class LoadGameMenu : MonoBehaviour
     public void CloseMenu()
     {
         gameObject.SetActive(false);
+    }
+
+    public void ExitMenu()
+    {
+        StateController.Instance.SetState(StateController.Instance.CurrentState);
     }
 }
