@@ -9,6 +9,7 @@ public class MainMenu : Menu
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private LoadGameMenu loadGameMenu;
+    [SerializeField] private ParticleSystem particleSystem;
     protected override GameState activeState {get; set;} = GameState.MainMenu;
 
     private void Awake()
@@ -21,6 +22,16 @@ public class MainMenu : Menu
     {
         loadGameMenu.CloseMenu();
         base.Start();
+    }
+
+    private void OnEnable()
+    {
+        particleSystem.gameObject.SetActive(true);
+    }
+
+    private void OnDisable()
+    {
+        particleSystem.gameObject.SetActive(false);
     }
 
     protected override void OnDestroy()
