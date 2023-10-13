@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using OpenAI_API.Models;
 
 public class OpenAIController : Singleton<OpenAIController>
 {
@@ -13,6 +14,7 @@ public class OpenAIController : Singleton<OpenAIController>
     [SerializeField] private string setting = "high school";
     [SerializeField] private int linesPerScene = 10;
     [SerializeField] private int numberOfCharacters = 10;
+    [SerializeField] private string finishedPrompt = "";
     private OpenAIAPI api;
     public Conversation Chat { get; private set; }
 
@@ -31,6 +33,7 @@ public class OpenAIController : Singleton<OpenAIController>
             "The story will largely follow a small group of core characters, with occassional side characters interspersed as needed. " +
             $"There must be no more than {numberOfCharacters}, including the Narrator.";
         Chat.AppendSystemMessage(prompt);
+        finishedPrompt += prompt;
     }
 
     private async Task<string> GenerateCastList()
@@ -42,6 +45,7 @@ public class OpenAIController : Singleton<OpenAIController>
             "The cast list must contain only the characters' names, outputted in a single line in Pipe-Separated Vale (PSV) format.";
             //"It is mandatory that the cast list include a character named \"Narrator\" who serves as the game's narrator.";
         Chat.AppendSystemMessage(prompt);
+        finishedPrompt += prompt;
 
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
@@ -59,6 +63,7 @@ public class OpenAIController : Singleton<OpenAIController>
             GetEnumValues(type) +
             "Each character's hair description should be outputted in PSV format, starting with the character's name, followed by any number of applicable hair traits from the list, each separated by a '|'.";
         Chat.AppendSystemMessage(prompt);
+        finishedPrompt += prompt;
 
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
@@ -76,6 +81,7 @@ public class OpenAIController : Singleton<OpenAIController>
             GetEnumValues(type) +
             "Each character's outfit description should be outputted in PSV format, starting with the character's name, followed by any number of applicable outfit traits from the list, each separated by a '|'.";
         Chat.AppendSystemMessage(prompt);
+        finishedPrompt += prompt;
 
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
@@ -93,6 +99,7 @@ public class OpenAIController : Singleton<OpenAIController>
             GetEnumValues(type) +
             "Each character's eye color description should be outputted in PSV format, starting with the character's name, followed by one eye color from the list, separated by a '|'.";
         Chat.AppendSystemMessage(prompt);
+        finishedPrompt += prompt;
 
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
@@ -110,6 +117,7 @@ public class OpenAIController : Singleton<OpenAIController>
             GetEnumValues(type) +
             "Each character's accessories description should be outputted in PSV format, starting with the character's name, followed by any number of applicable accessories from the list, each separated by a '|'.";
         Chat.AppendSystemMessage(prompt);
+        finishedPrompt += prompt;
 
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
@@ -130,6 +138,7 @@ public class OpenAIController : Singleton<OpenAIController>
             GetEnumValues(mood) +
             " Backgrounds names should come from the previously generated list of backgrounds.";
         Chat.AppendSystemMessage(prompt);
+        finishedPrompt += prompt;
 
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
@@ -144,6 +153,7 @@ public class OpenAIController : Singleton<OpenAIController>
         string prompt =
             $"From where the story last left off, continue the visual novel's script with {linesPerScene} more lines of dialogue. ";
         Chat.AppendSystemMessage(prompt);
+        finishedPrompt += prompt;
 
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
@@ -162,6 +172,7 @@ public class OpenAIController : Singleton<OpenAIController>
             GetEnumValues(type) +
             "The background image description should be outputted in PSV format, starting with its name, followed by any number of applicable background image traits from the list, each separated by a '|'.";
         Chat.AppendSystemMessage(prompt);
+        finishedPrompt += prompt;
 
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         Debug.Log(assistantResponse);
@@ -219,16 +230,18 @@ public class OpenAIController : Singleton<OpenAIController>
         StateController.Instance.SetState(GameState.Loading);
         CharacterManager.Instance.ClearCharacters();
 
-        Chat = api.Chat.CreateConversation();
+        ChatRequest chatRequest = new ChatRequest();
+        //chatRequest.Model = Model.GPT4;
+        Chat = api.Chat.CreateConversation(chatRequest);
 
         PromptWithInitialInstructions();
         string serializedCastList = await GenerateCastList();
+        string serializedDialogue = await GenerateDialogue();
         string serializedHairDescriptions = await GenerateHairDescriptions();
         string serializedOutfitDescriptions = await GenerateOutfitDescriptions();
         string serializedEyeColorDescriptions = await GenerateEyeColorDescriptions();
         string serializedAccessoryDescriptions = await GenerateAccessoryDescriptions();
         string serializedBackgroundDescriptions = await GenerateBackgroundDescription();
-        string serializedDialogue = await GenerateDialogue();
 
         List<string> castList = serializedCastList.Split('|', StringSplitOptions.RemoveEmptyEntries)
             .Select(str => str.Trim())
@@ -279,7 +292,9 @@ public class OpenAIController : Singleton<OpenAIController>
             return;
         }
 
-        Chat = api.Chat.CreateConversation();
+        ChatRequest chatRequest = new ChatRequest();
+        //chatRequest.Model = Model.GPT4;
+        Chat = api.Chat.CreateConversation(chatRequest);
 
         for (int i = 0; i < saveData.ConversationRoles.Count; ++i)
         {

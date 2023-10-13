@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +11,11 @@ public class CharacterPortraitController : MonoBehaviour
     [SerializeField] private Image face;
     [SerializeField] private Image hairBack;
     public CharacterAppearance Appearance { get; private set; }
+
+    [SerializeField] private Accessory accessoryScriptableObject;
+    [SerializeField] private Hair hairScriptableObject;
+    [SerializeField] private Outfit outfitScriptableObject;
+    [SerializeField] private Face faceScriptableObject;
 
     private void SetExpression(Mood expression)
     {
@@ -43,6 +50,10 @@ public class CharacterPortraitController : MonoBehaviour
     public void SetAppearance(CharacterAppearance characterAppearance)
     {
         Appearance = characterAppearance;
+        accessoryScriptableObject = characterAppearance.Accessory;
+        outfitScriptableObject = characterAppearance.Outfit;
+        hairScriptableObject = characterAppearance.Hair;
+        faceScriptableObject = characterAppearance.Face;
 
         accessory.sprite = characterAppearance.Accessory?.MainImage ?? null;
         hairFront.sprite = characterAppearance.Hair?.MainImage ?? null;
@@ -63,6 +74,8 @@ public class CharacterPortraitController : MonoBehaviour
     {
         SetExpression(expression);
         gameObject.SetActive(true);
+        //UIEffectController.Instance.PlayEffect(gameObject, typeof(MovePortraitEffect));
+        //UIEffectController.Instance.PlayEffect(gameObject, typeof(ScreenShakeEffect));
     }
 
     public void HidePortrait()
