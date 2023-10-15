@@ -22,7 +22,7 @@ public class NameDisplayController : Singleton<NameDisplayController>
         }
         else
         {
-            textBox.text = characterName;
+            textBox.text = characterName.ToLower();
         }
     }
 }

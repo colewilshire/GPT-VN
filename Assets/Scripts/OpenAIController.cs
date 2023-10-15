@@ -5,7 +5,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using OpenAI_API.Models;
 
 public class OpenAIController : Singleton<OpenAIController>
 {
@@ -159,6 +158,22 @@ public class OpenAIController : Singleton<OpenAIController>
         Debug.Log(assistantResponse);
 
         return assistantResponse;
+    }
+
+    public async void GenerateChoice()
+    {
+        LoadingScreen.Instance.SetLoadingState(LoadingState.AdditionalDialogue);
+
+        string prompt =
+            "From where the story last left off, offer the player 3 choices of dialogue lines they may choose for the main character to speak to determine the trajectory of the story. ";
+        Chat.AppendSystemMessage(prompt);
+
+        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
+        Debug.Log(assistantResponse);
+
+        DialogueController.Instance.ContinueDialogue(assistantResponse);
+
+        //return assistantResponse;
     }
 
     private async Task<string> GenerateBackgroundDescription()

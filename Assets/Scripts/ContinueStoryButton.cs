@@ -22,7 +22,8 @@ public class ContinueStoryButton : MonoBehaviour
     private void OnClick()
     {
         HideButton();
-        OpenAIController.Instance.GenerateAdditionalDialogue();
+        OpenAIController.Instance.GenerateChoice();
+        //OpenAIController.Instance.GenerateAdditionalDialogue();
     }
 
     public void ShowButton()

@@ -1,5 +1,6 @@
 using TMPro;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class TextController : Singleton<TextController>
@@ -41,8 +42,13 @@ public class TextController : Singleton<TextController>
         }
     }
 
-    public void SetText(string text)
+    public async Task SetText(string text)
     {
+        if (!gameObject.activeInHierarchy)
+        {
+            await Task.Yield();
+        }
+
         StopAllCoroutines();
         currentText = text;
         StartCoroutine(DisplayText());

@@ -10,7 +10,7 @@ public class DialogueController : Singleton<DialogueController>
     public int CurrentLineIndex {get; private set;} = 0;
     public string SerializedDialoguePath {get; private set;} = "";
 
-    private void ReadDialogueLine(int index)
+    private async void ReadDialogueLine(int index)
     {
         DialogueLine currentLine = dialoguePath[index];
 
@@ -18,7 +18,7 @@ public class DialogueController : Singleton<DialogueController>
         BackgroundController.Instance.SetBackground(currentLine.BackgroundImage);
         CharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
         NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
-        TextController.Instance.SetText(currentLine.DialogueText);
+        await TextController.Instance.SetText(currentLine.DialogueText);
         AudioController.Instance.PlaySound(currentLine.VoiceLine);
     }
 
@@ -29,10 +29,62 @@ public class DialogueController : Singleton<DialogueController>
             .Select(str => str.Trim('"'))
             .ToList();
         DialogueLine dialogueLine = DialogueLine.CreateInstance<DialogueLine>();
-        string characterName = splitLine[0];
-        string dialogueText = splitLine[1];
-        string characterMood = splitLine[2];
-        string backgroundName = splitLine[3];
+        string characterName = "";
+        string dialogueText = "";
+        string characterMood = "";
+        string backgroundName = "";
+
+        if (splitLine.Count > 3)
+        {
+            characterName = splitLine[0];
+            dialogueText = splitLine[1];
+            characterMood = splitLine[2];
+            backgroundName = splitLine[3];
+        }
+        else if (splitLine.Count > 0)
+        {
+            Dictionary<string, string> dict = new Dictionary<string, string>()
+            {
+                ["characterName"] = "",
+                ["dialogueText"] = "",
+                ["characterMood"] = "",
+                ["backgroundName"] = "",
+            };
+
+            foreach (string unknownString in splitLine)
+            {
+                if (CharacterManager.Instance.Characters.ContainsKey(unknownString))
+                {
+                    Debug.Log($"Name: {unknownString}");
+                    dict["characterName"] = unknownString;
+                }
+                else if (BackgroundController.Instance.GetBackgroundImageFromName(unknownString) != null)
+                {
+                    Debug.Log($"Background: {unknownString}");
+                    backgroundName = unknownString;
+                }
+                else
+                {
+                    if (unknownString.Length > dict["dialogueText"].Length)
+                    {
+                        Debug.Log($"Dialogue: {unknownString}");
+                        dict["characterMood"] = dict["dialogueText"];
+                        dict["dialogueText"] = unknownString;
+                    }
+                    else
+                    {
+                        Debug.Log($"Mood: {unknownString}");
+                        dict["characterMood"] = unknownString; 
+                    }
+                }
+            }
+
+            characterName = dict["characterName"];
+            dialogueText = dict["dialogueText"];
+            characterMood = dict["characterMood"];
+            backgroundName = dict["backgroundName"];
+            // Now add some functionality to rewrite the Chat log to make it appear to the AI that it did everything correct and hopefully train it
+        }
 
         dialogueLine.CharacterName = characterName;
         dialogueLine.DialogueText = dialogueText;
