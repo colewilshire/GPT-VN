@@ -10,7 +10,7 @@ public class DialogueController : Singleton<DialogueController>
     public int CurrentLineIndex {get; private set;} = 0;
     public string SerializedDialoguePath {get; private set;} = "";
 
-    private async void ReadDialogueLine(int index)
+    private void ReadDialogueLine(int index)
     {
         DialogueLine currentLine = dialoguePath[index];
 
@@ -18,7 +18,7 @@ public class DialogueController : Singleton<DialogueController>
         BackgroundController.Instance.SetBackground(currentLine.BackgroundImage);
         CharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
         NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
-        await TextController.Instance.SetText(currentLine.DialogueText);
+        TextController.Instance.SetText(currentLine.DialogueText);
         AudioController.Instance.PlaySound(currentLine.VoiceLine);
     }
 

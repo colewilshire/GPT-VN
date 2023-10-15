@@ -3,8 +3,8 @@ using UnityEngine;
 
 public abstract class Menu : MonoBehaviour
 {
-    private Dictionary<GameObject, bool> defaultChildStates = new Dictionary<GameObject, bool>();
-    protected abstract GameState activeState { get; set; }
+    private readonly Dictionary<GameObject, bool> defaultChildStates = new();
+    protected abstract HashSet<GameState> ActiveStates { get; set; }
 
     protected virtual void Start()
     {
@@ -23,7 +23,7 @@ public abstract class Menu : MonoBehaviour
 
     protected virtual void OnStateChange(GameState state)
     {
-        bool isActiveState = state == activeState;
+        bool isActiveState = ActiveStates.Contains(state);
 
         gameObject.SetActive(isActiveState);
         if (!isActiveState) return;

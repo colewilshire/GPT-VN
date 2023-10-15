@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,10 @@ public class PauseMenu : Menu
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button mainMenuButton;
     [SerializeField] private LoadGameMenu loadGameMenu;
-    protected override GameState activeState {get; set;} = GameState.PauseMenu;
+    protected override HashSet<GameState> ActiveStates { get; set; } = new HashSet<GameState>
+    {
+        GameState.PauseMenu
+    };
 
     private void Awake()
     {

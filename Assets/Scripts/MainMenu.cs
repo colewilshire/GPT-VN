@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,10 @@ public class MainMenu : Menu
     [SerializeField] private Button quitButton;
     [SerializeField] private LoadGameMenu loadGameMenu;
     [SerializeField] private ParticleSystem mainMenuParticleSystem;
-    protected override GameState activeState {get; set;} = GameState.MainMenu;
+    protected override HashSet<GameState> ActiveStates { get; set; } = new HashSet<GameState>
+    {
+        GameState.MainMenu
+    };
 
     private void Awake()
     {
