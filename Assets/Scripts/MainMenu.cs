@@ -26,12 +26,12 @@ public class MainMenu : Menu
 
     private void OnEnable()
     {
-        mainMenuParticleSystem.gameObject.SetActive(true);
+        //mainMenuParticleSystem.gameObject.SetActive(true);
     }
 
     private void OnDisable()
     {
-        mainMenuParticleSystem.gameObject.SetActive(false);
+        //mainMenuParticleSystem.gameObject.SetActive(false);
     }
 
     protected override void OnDestroy()

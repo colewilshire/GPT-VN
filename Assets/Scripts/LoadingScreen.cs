@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class LoadingScreen : Singleton<LoadingScreen>
 {
-    private TextMeshProUGUI loadingMessage;
-    private ProgressBar progressBar;
+    [SerializeField] private TextMeshProUGUI loadingMessage;
+    [SerializeField] private ProgressBar progressBar;
     private Dictionary<LoadingState, string> loadingMessages = new Dictionary<LoadingState, string>
     {
         { LoadingState.Conversation, "Making first-contact..." },
@@ -21,14 +19,6 @@ public class LoadingScreen : Singleton<LoadingScreen>
         { LoadingState.AdditionalDialogue, "Publishing sequel direct-to-video..." }
     };
     private int statesEllapsed = 0;
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-        loadingMessage = GetComponentInChildren<TextMeshProUGUI>();
-        progressBar = GetComponentInChildren<ProgressBar>();
-    }
 
     private void Start()
     {

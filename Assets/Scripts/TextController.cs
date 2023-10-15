@@ -50,7 +50,7 @@ public class TextController : Singleton<TextController>
         }
 
         StopAllCoroutines();
-        currentText = text;
+        currentText = text.ToLower();
         StartCoroutine(DisplayText());
     }
 }
