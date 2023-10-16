@@ -24,9 +24,12 @@ public class SaveDisplay : MonoBehaviour
         button.onClick.RemoveListener(OnClick);
     }
 
-    private void OnClick()
+    private async void OnClick()
     {
-        OpenAIController.Instance.LoadConversationFromSave(nameDisplay.text);
+        if (await ConfirmationPrompt.Instance.PromptConfirmation("load this save?"))
+        {
+            OpenAIController.Instance.LoadConversationFromSave(nameDisplay.text);
+        }
     }
 
     public void SetScreenshot(Sprite screenshot)

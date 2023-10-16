@@ -44,13 +44,12 @@ public class ConfirmationPrompt : Singleton<ConfirmationPrompt>
         confirmed = new TaskCompletionSource<bool>();
 
         promptText.text = confirmationText;
+        InputController.Instance.DisableInputs();
         gameObject.SetActive(true);
 
-        if (await confirmed.Task == true)
-        {
-            return true;
-        }
+        bool isPromptConfirmed = await confirmed.Task == true;
+        InputController.Instance.EnableInputs();
 
-        return false;
+        return isPromptConfirmed;
     }
 }

@@ -10,7 +10,6 @@ public class MainMenu : Menu
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private LoadGameMenu loadGameMenu;
-    [SerializeField] private ParticleSystem mainMenuParticleSystem;
     protected override HashSet<GameState> ActiveStates { get; set; } = new HashSet<GameState>
     {
         GameState.MainMenu
@@ -26,16 +25,6 @@ public class MainMenu : Menu
     {
         loadGameMenu.CloseMenu();
         base.Start();
-    }
-
-    private void OnEnable()
-    {
-        //mainMenuParticleSystem.gameObject.SetActive(true);
-    }
-
-    private void OnDisable()
-    {
-        //mainMenuParticleSystem.gameObject.SetActive(false);
     }
 
     protected override void OnDestroy()
