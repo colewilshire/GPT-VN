@@ -6,7 +6,6 @@ using UnityEngine;
 public class DialogueController : Singleton<DialogueController>
 {
     private List<DialogueLine> dialoguePath = new List<DialogueLine>();
-    [SerializeField] ContinueStoryButton continueStoryButton;
     public int CurrentLineIndex {get; private set;} = 0;
     public string SerializedDialoguePath {get; private set;} = "";
 
@@ -107,12 +106,17 @@ public class DialogueController : Singleton<DialogueController>
         SerializedDialoguePath += $"{serializedDialogue}\n";
     }
 
-    public void StepForward()
+    public async void StepForward()
     {
         if (!(dialoguePath.Count > CurrentLineIndex + 1))
         {
-           continueStoryButton.ShowButton();
-           return;
+            bool boolean = await ConfirmationPrompt.Instance.PromptConfirmation("continue story?");
+            if (boolean)
+            {
+                OpenAIController.Instance.GenerateChoice();
+            }
+
+            return;
         }
 
         CurrentLineIndex += 1;
@@ -123,7 +127,7 @@ public class DialogueController : Singleton<DialogueController>
     public void StepBackward()
     {
         if (!(CurrentLineIndex - 1 >= 0)) return;
-        continueStoryButton.HideButton();
+        //continueStoryButton.HideButton();
         CurrentLineIndex -= 1;
         ReadDialogueLine(CurrentLineIndex);
     }
