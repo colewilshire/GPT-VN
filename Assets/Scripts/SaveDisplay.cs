@@ -1,20 +1,16 @@
 using TMPro;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SaveDisplay : MonoBehaviour
 {
-    private Image screenshotDisplay;
+    [SerializeField] private Image screenshotDisplay;
+    [SerializeField] private TMP_Text nameDisplay;
     private Button button;
-    private TMP_Text nameDisplay;
 
     private void Awake()
     {
-        screenshotDisplay = GetComponent<Image>();
         button = GetComponent<Button>();
-        nameDisplay = GetComponentInChildren<TMP_Text>();
 
         button.onClick.AddListener(OnClick);
     }

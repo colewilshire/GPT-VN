@@ -9,7 +9,6 @@ public class PauseMenu : Menu
     [SerializeField] private Button loadGameButton;
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button mainMenuButton;
-    [SerializeField] private LoadGameMenu loadGameMenu;
     protected override HashSet<GameState> ActiveStates { get; set; } = new HashSet<GameState>
     {
         GameState.PauseMenu
@@ -25,7 +24,6 @@ public class PauseMenu : Menu
 
     protected override void Start()
     {
-        loadGameMenu.CloseMenu();
         base.Start();
     }
 
@@ -46,8 +44,7 @@ public class PauseMenu : Menu
 
     private void OnLoadGameButtonClicked()
     {
-        buttons.SetActive(false);
-        loadGameMenu.OpenMenu();
+        StateController.Instance.SetState(GameState.LoadGameMenu);
     }
 
     private void OnOptionsButtonClicked()
