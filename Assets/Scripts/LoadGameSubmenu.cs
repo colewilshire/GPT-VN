@@ -70,7 +70,7 @@ public class LoadGameSubmenu : Submenu
         {
             int saveSlotIndex = i + saveDisplays.Count * pageIndex;
 
-            if (saveSlotIndex < screenshotDictionary.Count)
+            if (screenshotDictionary.Count > 0 && saveSlotIndex < screenshotDictionary.Count)
             {
                 string saveName = screenshotDictionary.Keys.ElementAt(saveSlotIndex);
                 Sprite screenshot = screenshotDictionary[saveName];
@@ -121,7 +121,15 @@ public class LoadGameSubmenu : Submenu
     {
         screenshotDictionary = SaveController.Instance.GetSavesSortedByDate();
         scrollbar.numberOfSteps = (int)Math.Ceiling((double)screenshotDictionary.Count / saveDisplays.Count);
-        scrollbar.value = (float)currentPageIndex / (scrollbar.numberOfSteps - 1);
+
+        if (scrollbar.numberOfSteps > 1)
+        {
+            scrollbar.value = (float)currentPageIndex / (scrollbar.numberOfSteps - 1);
+        }
+        else
+        {
+            scrollbar.value = 0;
+        }
 
         ShowPage(currentPageIndex);
     }

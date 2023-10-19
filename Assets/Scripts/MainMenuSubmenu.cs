@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class MainMenuSubmenu : Submenu
 {
@@ -8,18 +6,4 @@ public class MainMenuSubmenu : Submenu
     {
         GameState.MainMenu
     };
-
-    protected override void Start()
-    {
-        base.Start();
-
-        StateController.Instance.OnStateChange += OnStateChange;
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-
-        StateController.Instance.OnStateChange -= OnStateChange;
-    }
 }

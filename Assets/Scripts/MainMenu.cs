@@ -20,11 +20,6 @@ public class MainMenu : Menu
         loadGameButton.onClick.AddListener(OnLoadGameButtonClicked);
     }
 
-    protected override void Start()
-    {
-        base.Start();
-    }
-
     protected override void OnDestroy()
     {
         base.OnDestroy();
