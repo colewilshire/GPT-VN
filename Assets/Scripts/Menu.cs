@@ -10,10 +10,10 @@ public abstract class Menu : MonoBehaviour
     {
         StateController.Instance.OnStateChange += OnStateChange;
 
-        foreach (Transform child in transform)
-        {
-            defaultChildStates[child.gameObject] = child.gameObject.activeSelf;
-        }
+        // foreach (Transform child in transform)
+        // {
+        //     defaultChildStates[child.gameObject] = child.gameObject.activeSelf;
+        // }
     }
 
     protected virtual void OnDestroy()

@@ -40,6 +40,6 @@ public class MainMenu : Menu
 
     private void OnLoadGameButtonClicked()
     {
-        StateController.Instance.SetState(GameState.LoadGameMenu);
+        StateController.Instance.SetSubmenuState(GameState.LoadGameMenu);
     }
 }

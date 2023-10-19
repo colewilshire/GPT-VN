@@ -145,6 +145,12 @@ public class SaveController : Singleton<SaveController>
         return saveData;
     }
 
+    public void DeleteSave(string saveName)
+    {
+        string folderPath = Path.Combine(Application.persistentDataPath, saveName);
+        Directory.Delete(folderPath, true);
+    }
+
     public Dictionary<string, Sprite> GetSavesSortedByDate()
     {
         string rootSaveFolderPath = Path.Combine(Application.persistentDataPath);

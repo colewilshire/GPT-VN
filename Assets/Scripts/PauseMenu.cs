@@ -44,7 +44,7 @@ public class PauseMenu : Menu
 
     private void OnLoadGameButtonClicked()
     {
-        StateController.Instance.SetState(GameState.LoadGameMenu);
+        StateController.Instance.SetSubmenuState(GameState.LoadGameMenu);
     }
 
     private void OnOptionsButtonClicked()

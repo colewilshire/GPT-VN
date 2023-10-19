@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LoadGameMenu : Menu
+public class LoadGameSubmenu : Submenu
 {
     protected override HashSet<GameState> ActiveStates { get; set; } = new HashSet<GameState>
     {
@@ -13,10 +13,12 @@ public class LoadGameMenu : Menu
 
     private Dictionary<string, Sprite> screenshotDictionary;
     private int currentPageIndex = 0;
+    private bool deletionEnabled = false;
     [SerializeField] private List<SaveDisplay> saveDisplays;
     [SerializeField] private Button nextPageButton;
     [SerializeField] private Button previousPageButton;
     [SerializeField] private Button exitMenuButton;
+    [SerializeField] private Button deleteButton;
     [SerializeField] private Scrollbar scrollbar;
 
     private void Awake()
@@ -24,6 +26,7 @@ public class LoadGameMenu : Menu
         nextPageButton.onClick.AddListener(NextPage);
         previousPageButton.onClick.AddListener(PreviousPage);
         exitMenuButton.onClick.AddListener(ExitMenu);
+        deleteButton.onClick.AddListener(EnableSaveDeletion);
         scrollbar.onValueChanged.AddListener(OnScrollbarValueChanged);
     }
 
@@ -34,6 +37,7 @@ public class LoadGameMenu : Menu
         nextPageButton.onClick.RemoveListener(NextPage);
         previousPageButton.onClick.RemoveListener(PreviousPage);
         exitMenuButton.onClick.RemoveListener(ExitMenu);
+        deleteButton.onClick.RemoveListener(EnableSaveDeletion);
         scrollbar.onValueChanged.RemoveListener(OnScrollbarValueChanged);
     }
 
@@ -48,9 +52,10 @@ public class LoadGameMenu : Menu
         base.ResetMenu();
 
         currentPageIndex = 0;
-        screenshotDictionary = SaveController.Instance.GetSavesSortedByDate();
-        scrollbar.numberOfSteps = (int)Math.Ceiling((double)screenshotDictionary.Count / saveDisplays.Count);
-        ShowPage(0);
+        deletionEnabled = false;
+
+        EnableSaveDeletion();
+        ReloadPage();
     }
 
     private void ShowPage(int pageIndex)
@@ -97,8 +102,27 @@ public class LoadGameMenu : Menu
         scrollbar.value = (float)currentPageIndex / (scrollbar.numberOfSteps - 1);
     }
 
-    public void ExitMenu()
+    private void ExitMenu()
     {
-        StateController.Instance.SetState(StateController.Instance.PreviousState);
+        StateController.Instance.SetSubmenuState(StateController.Instance.PreviousSubmenuState);
+    }
+
+    private void EnableSaveDeletion()
+    {
+        foreach (SaveDisplay saveDisplay in saveDisplays)
+        {
+            saveDisplay.EnableDeleteButton(deletionEnabled);
+        }
+
+        deletionEnabled = !deletionEnabled;
+    }
+
+    public void ReloadPage()
+    {
+        screenshotDictionary = SaveController.Instance.GetSavesSortedByDate();
+        scrollbar.numberOfSteps = (int)Math.Ceiling((double)screenshotDictionary.Count / saveDisplays.Count);
+        scrollbar.value = (float)currentPageIndex / (scrollbar.numberOfSteps - 1);
+
+        ShowPage(currentPageIndex);
     }
 }

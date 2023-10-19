@@ -6,25 +6,41 @@ public class SaveDisplay : MonoBehaviour
 {
     [SerializeField] private Image screenshotDisplay;
     [SerializeField] private TMP_Text nameDisplay;
-    private Button button;
+    [SerializeField] private Button loadSaveButton;
+    [SerializeField] private Button deleteSaveButton;
+    private LoadGameSubmenu loadGameSubmenu;
 
     private void Awake()
     {
-        button = GetComponent<Button>();
-
-        button.onClick.AddListener(OnClick);
+        loadSaveButton.onClick.AddListener(LoadSave);
+        deleteSaveButton.onClick.AddListener(DeleteSave);
     }
 
     private void OnDestroy()
     {
-        button.onClick.RemoveListener(OnClick);
+        loadSaveButton.onClick.RemoveListener(LoadSave);
+        deleteSaveButton.onClick.RemoveListener(DeleteSave);
     }
 
-    private async void OnClick()
+    private void Start()
+    {
+        loadGameSubmenu = gameObject.GetComponentInParent<LoadGameSubmenu>();
+    }
+
+    private async void LoadSave()
     {
         if (await ConfirmationPrompt.Instance.PromptConfirmation("load this save?"))
         {
             OpenAIController.Instance.LoadConversationFromSave(nameDisplay.text);
+        }     
+    }
+
+    private async void DeleteSave()
+    {
+        if (await ConfirmationPrompt.Instance.PromptConfirmation("delete this save?"))
+        {
+            SaveController.Instance.DeleteSave(nameDisplay.text);
+            loadGameSubmenu.ReloadPage();
         }
     }
 
@@ -36,6 +52,11 @@ public class SaveDisplay : MonoBehaviour
     public void SetNameDisplay(string name)
     {
         nameDisplay.text = name;
+    }
+
+    public void EnableDeleteButton(bool isEnabled)
+    {
+        deleteSaveButton.gameObject.SetActive(isEnabled);
     }
 
     public void ShowDisplay()
