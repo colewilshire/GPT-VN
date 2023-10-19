@@ -8,4 +8,6 @@ public class DialogueLine : ScriptableObject
     public string Mood;
     public Sprite BackgroundImage;
     public AudioClip VoiceLine;
+    public DialogueChoice DialogueChoice;
+    public string SerializedLine;
 }

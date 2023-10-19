@@ -160,20 +160,22 @@ public class OpenAIController : Singleton<OpenAIController>
         return assistantResponse;
     }
 
-    public async void GenerateChoice()
+    public async Task<string> GenerateChoice()
     {
         LoadingScreen.Instance.SetLoadingState(LoadingState.AdditionalDialogue);
 
         string prompt =
-            "From where the story last left off, offer the player 3 choices of dialogue lines they may choose for the main character to speak to determine the trajectory of the story. ";
+            "From where the story last left off, offer the player 3 choices of dialogue lines they may choose for the main character to speak to determine the trajectory of the story. " +
+            "Dialogue lines should start with the speaking character's name, followed by the dialogue's text, followed by the speaker's emotion, followed by the name of the background to display, each separated by a '|'.";
         Chat.AppendSystemMessage(prompt);
+        finishedPrompt += prompt;
 
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
+        assistantResponse = $"©{assistantResponse.Trim('\n').Replace('\n', '©')}";
+
         Debug.Log(assistantResponse);
 
-        DialogueController.Instance.ContinueDialogue(assistantResponse);
-
-        //return assistantResponse;
+        return assistantResponse;
     }
 
     private async Task<string> GenerateBackgroundDescription()
@@ -252,6 +254,7 @@ public class OpenAIController : Singleton<OpenAIController>
         PromptWithInitialInstructions();
         string serializedCastList = await GenerateCastList();
         string serializedDialogue = await GenerateDialogue();
+        string serializedChoice = await GenerateChoice();
         string serializedHairDescriptions = await GenerateHairDescriptions();
         string serializedOutfitDescriptions = await GenerateOutfitDescriptions();
         string serializedEyeColorDescriptions = await GenerateEyeColorDescriptions();
@@ -291,6 +294,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
         BackgroundController.Instance.GenerateBackgroundImages(backgroundDescriptions);
         DialogueController.Instance.StartDialogue(serializedDialogue);
+        DialogueController.Instance.AddToDialogue(serializedChoice);
         StateController.Instance.SetState(GameState.Gameplay);
     }
 
@@ -332,7 +336,9 @@ public class OpenAIController : Singleton<OpenAIController>
         StateController.Instance.SetState(GameState.Loading);
 
         string additionalDialogue = await ContinueDialogue();
+        string additionalChoice = await GenerateChoice();
         DialogueController.Instance.ContinueDialogue(additionalDialogue);
+        DialogueController.Instance.AddToDialogue(additionalChoice);
 
         StateController.Instance.SetState(GameState.Gameplay);
     }

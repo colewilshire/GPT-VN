@@ -134,7 +134,7 @@ public class SaveController : Singleton<SaveController>
     public SaveData Load(string saveName)
     {
         string savePath = Path.Combine(Application.persistentDataPath, saveName, $"{saveName}.sav");
-        if (!(File.Exists(savePath))) return null;
+        if (!File.Exists(savePath)) return null;
 
         SaveData saveData = SaveData.CreateInstance<SaveData>();
         string serializedSaveData = File.ReadAllText(savePath);

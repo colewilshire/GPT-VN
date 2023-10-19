@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class DialogueController : Singleton<DialogueController>
@@ -13,6 +14,12 @@ public class DialogueController : Singleton<DialogueController>
     {
         DialogueLine currentLine = dialoguePath[index];
 
+        if (currentLine.DialogueChoice)
+        {
+            ChoiceController.Instance.ShowChoices(currentLine.DialogueChoice);
+            return;
+        }
+
         UIEffectController.Instance.TerminateEffects();
         BackgroundController.Instance.SetBackground(currentLine.BackgroundImage);
         CharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
@@ -21,12 +28,13 @@ public class DialogueController : Singleton<DialogueController>
         AudioController.Instance.PlaySound(currentLine.VoiceLine);
     }
 
-    private DialogueLine DeserializeLine(string serializedLine)
+    public DialogueLine DeserializeLine(string serializedLine)
     {
         List<string> splitLine = new List<string>(serializedLine.Split('|', StringSplitOptions.RemoveEmptyEntries))
             .Select(str => str.Trim())
             .Select(str => str.Trim('"'))
             .ToList();
+
         DialogueLine dialogueLine = DialogueLine.CreateInstance<DialogueLine>();
         string characterName = "";
         string dialogueText = "";
@@ -76,10 +84,14 @@ public class DialogueController : Singleton<DialogueController>
                         dict["characterMood"] = unknownString; 
                     }
                 }
-            }
-
+            }            
             characterName = dict["characterName"];
             dialogueText = dict["dialogueText"];
+            Match match = Regex.Match(dict["dialogueText"], @"""([^""]*)""");
+            if (match.Success)
+            {
+                dialogueText = match.Groups[1].Value;
+            }
             characterMood = dict["characterMood"];
             backgroundName = dict["backgroundName"];
             // Now add some functionality to rewrite the Chat log to make it appear to the AI that it did everything correct and hopefully train it
@@ -93,13 +105,44 @@ public class DialogueController : Singleton<DialogueController>
         return dialogueLine;
     }
 
-    private void AddToDialogue(string serializedDialogue)
+    public void AddToDialogue(string serializedDialogue)
     {
-        List<string> serializedLines = new List<string>(serializedDialogue.Split('\n', StringSplitOptions.RemoveEmptyEntries));
+        if(serializedDialogue.StartsWith('©'))
+        {
+            AddChoiceToDialogue(serializedDialogue);
+            return;
+        }
+
+        List<string> serializedLines = new(serializedDialogue.Split('\n', StringSplitOptions.RemoveEmptyEntries));
 
         foreach (string serializedLine in serializedLines)
         {
             DialogueLine dialogueLine = DeserializeLine(serializedLine);
+            dialoguePath.Add(dialogueLine);
+        }
+
+        SerializedDialoguePath += $"{serializedDialogue}";
+    }
+
+    private void AddChoiceToDialogue(string serializedDialogue)
+    {
+        List<string> serializedLines = new(serializedDialogue.Split('©', StringSplitOptions.RemoveEmptyEntries));
+        List<DialogueLine> dialogueLines = new();
+        DialogueChoice dialogueChoice = DialogueChoice.CreateInstance<DialogueChoice>();
+
+        foreach (string serializedLine in serializedLines)
+        {
+            Debug.Log($"qqq: {serializedLine}");
+            DialogueLine dialogueLine = DeserializeLine(serializedLine);
+            dialogueLine.SerializedLine = serializedLine;
+
+            dialogueChoice.Choices.Add(dialogueLine);
+            dialogueLines.Add(dialogueLine);
+        }
+
+        foreach (DialogueLine dialogueLine in dialogueLines)
+        {
+            dialogueLine.DialogueChoice = dialogueChoice;
             dialoguePath.Add(dialogueLine);
         }
 
@@ -113,7 +156,7 @@ public class DialogueController : Singleton<DialogueController>
             bool boolean = await ConfirmationPrompt.Instance.PromptConfirmation("continue story?");
             if (boolean)
             {
-                OpenAIController.Instance.GenerateChoice();
+                OpenAIController.Instance.GenerateAdditionalDialogue();
             }
 
             return;
@@ -127,7 +170,6 @@ public class DialogueController : Singleton<DialogueController>
     public void StepBackward()
     {
         if (!(CurrentLineIndex - 1 >= 0)) return;
-        //continueStoryButton.HideButton();
         CurrentLineIndex -= 1;
         ReadDialogueLine(CurrentLineIndex);
     }
