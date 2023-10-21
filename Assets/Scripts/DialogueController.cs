@@ -105,49 +105,111 @@ public class DialogueController : Singleton<DialogueController>
         return dialogueLine;
     }
 
-    public void AddToDialogue(string serializedDialogue)
+    private void AddToDialogue(string serializedDialogue)
     {
-        if(serializedDialogue.StartsWith('©'))
-        {
-            AddChoiceToDialogue(serializedDialogue);
-            return;
-        }
+        //Debug.Log(serializedDialogue[0]);
+
+        //if (serializedDialogue.StartsWith('~'))
+
+        // ^ Here lies the problem: when new, AddToDialogue is called twice on two different serializedDialogues, whereas there is only one combined on loading a save,
+        // which doesn't start with ~, since choices are never presented before the first on-rails dialogue segment
+        // Thus, deserialize line is probably the ideal place to do things
+
+        //{
+            //Debug.Log($"qqq: {serializedDialogue}");
+            //AddChoiceToDialogue(serializedDialogue);
+            //return;
+        //}
 
         List<string> serializedLines = new(serializedDialogue.Split('\n', StringSplitOptions.RemoveEmptyEntries));
+        DialogueLine firstChoice = null;
 
         foreach (string serializedLine in serializedLines)
         {
-            DialogueLine dialogueLine = DeserializeLine(serializedLine);
-            dialoguePath.Add(dialogueLine);
-        }
+            //Debug.Log(serializedLine);
 
+            if (!firstChoice && serializedLine.StartsWith('~'))
+            {
+                Debug.Log("A: " + serializedLine);
+                
+                firstChoice = DeserializeLine(serializedLine.TrimStart('~'));
+                firstChoice.DialogueChoice = DialogueChoice.CreateInstance<DialogueChoice>();
+                firstChoice.DialogueChoice.Choices.Add(firstChoice);
+
+                dialoguePath.Add(firstChoice);
+            }
+            else if (firstChoice && serializedLine.StartsWith('~'))
+            {
+                Debug.Log("B: " + serializedLine);
+
+                firstChoice.DialogueChoice.Choices.Add(DeserializeLine(serializedLine.TrimStart('~')));
+            }
+            else
+            {
+                DialogueLine dialogueLine = DeserializeLine(serializedLine);
+                dialoguePath.Add(dialogueLine);
+            }
+        }
+        ////Debug.Log($"{serializedDialogue}");
         SerializedDialoguePath += $"{serializedDialogue}";
+
+        if (!SerializedDialoguePath.EndsWith('\n'))
+        {
+            SerializedDialoguePath += '\n';
+        }
     }
 
-    private void AddChoiceToDialogue(string serializedDialogue)
+    public void AddChoiceToDialogue(string serializedDialogue)
     {
-        List<string> serializedLines = new(serializedDialogue.Split('©', StringSplitOptions.RemoveEmptyEntries));
-        List<DialogueLine> dialogueLines = new();
-        DialogueChoice dialogueChoice = DialogueChoice.CreateInstance<DialogueChoice>();
+        Debug.Log($"Original: {serializedDialogue}");
 
-        foreach (string serializedLine in serializedLines)
-        {
-            Debug.Log($"qqq: {serializedLine}");
-            DialogueLine dialogueLine = DeserializeLine(serializedLine);
-            dialogueLine.SerializedLine = serializedLine;
+        // Main Character|We should invite Aiko and Yumi to join the basketball team too. What do you think?|Excited|School Rooftop
+        // Main Character|Do you have any tips for beginners like us?|Curious|School Gymnasium
+        // Main Character|I'm a bit nervous about joining the team. Can you help boost my confidence?|Nervous|School Classroom
 
-            dialogueChoice.Choices.Add(dialogueLine);
-            dialogueLines.Add(dialogueLine);
-        }
+        // ~Main Character|We should invite Aiko and Yumi to join the basketball team too. What do you think?|Excited|School Rooftop~Main Character|Do you have any tips for
+        // beginners like us?|Curious|School Gymnasium~Main Character|I'm a bit nervous about joining the team. Can you help boost my confidence?|Nervous|School Classroom
 
-        foreach (DialogueLine dialogueLine in dialogueLines)
-        {
-            dialogueLine.DialogueChoice = dialogueChoice;
-            dialoguePath.Add(dialogueLine);
-        }
+        //serializedDialogue = $"~{serializedDialogue.Trim('\n').Replace("\n", "~\n")}\n";
+        serializedDialogue = $"~{serializedDialogue.Trim('\n').Replace("\n", "\n~")}";
+        //serializedDialogue = $"~{serializedDialogue}\r\n";
 
-        SerializedDialoguePath += $"{serializedDialogue}\n";
+        Debug.Log($"Modified: {serializedDialogue}");
+
+        //return;
+        AddToDialogue(serializedDialogue);
     }
+
+    // private void AddChoiceToDialogue(string serializedDialogue)
+    // {
+    //     List<string> serializedLines = new(serializedDialogue.Split('~', StringSplitOptions.RemoveEmptyEntries));
+    //     List<DialogueLine> dialogueLines = new();
+    //     DialogueChoice dialogueChoice = DialogueChoice.CreateInstance<DialogueChoice>();
+
+    //     foreach (string serializedLine in serializedLines)
+    //     {
+    //         //Debug.Log($"www: {serializedLine}");
+    //         DialogueLine dialogueLine = DeserializeLine(serializedLine);
+    //         dialogueLine.SerializedLine = serializedLine;
+
+    //         dialogueChoice.Choices.Add(dialogueLine);
+    //         dialogueLines.Add(dialogueLine);
+    //     }
+
+    //     foreach (DialogueLine dialogueLine in dialogueLines)
+    //     {
+    //         dialogueLine.DialogueChoice = dialogueChoice;
+    //         dialoguePath.Add(dialogueLine);
+    //     }
+
+    //     //Debug.Log($"zzz: {serializedDialogue}");
+    //     SerializedDialoguePath += $"{serializedDialogue}";
+
+    //     if (!SerializedDialoguePath.EndsWith('\n'))
+    //     {
+    //         SerializedDialoguePath += '\n';
+    //     }
+    // }
 
     public async void StepForward()
     {
@@ -182,6 +244,8 @@ public class DialogueController : Singleton<DialogueController>
 
     public void StartDialogue(string serializedDialogue, int startingLineIndex = 0)
     {
+        //Debug.Log($"{serializedDialogue}");
+
         CurrentLineIndex = startingLineIndex;
         dialoguePath = new List<DialogueLine>();
         SerializedDialoguePath = "";

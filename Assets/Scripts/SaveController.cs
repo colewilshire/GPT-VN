@@ -80,7 +80,7 @@ public class SaveController : Singleton<SaveController>
         string lastQuicksaveName = $"{quicksaveName}{lastQuicksaveIndex}";
         string savePath = Path.Combine(Application.persistentDataPath, lastQuicksaveName, $"{lastQuicksaveName}.sav");
 
-        if (!(File.Exists(savePath))) return;
+        if (!File.Exists(savePath)) return;
         OpenAIController.Instance.LoadConversationFromSave(lastQuicksaveName);
     }
 
@@ -141,6 +141,10 @@ public class SaveController : Singleton<SaveController>
 
         JsonUtility.FromJsonOverwrite(serializedSaveData, saveData);
         highestSceneIndex = saveData.CurrentLineIndex;
+
+        //Debug.Log(serializedSaveData);    /yes ~
+        //Debug.Log(saveData.ConversationMessages);   //no ~
+        //Debug.Log(saveData.DialoguePath);   //yes ~
 
         return saveData;
     }

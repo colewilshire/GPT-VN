@@ -171,7 +171,7 @@ public class OpenAIController : Singleton<OpenAIController>
         finishedPrompt += prompt;
 
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
-        assistantResponse = $"©{assistantResponse.Trim('\n').Replace('\n', '©')}";
+        //assistantResponse = $"~{assistantResponse.Trim('\n').Replace('\n', '~')}";
 
         Debug.Log(assistantResponse);
 
@@ -294,7 +294,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
         BackgroundController.Instance.GenerateBackgroundImages(backgroundDescriptions);
         DialogueController.Instance.StartDialogue(serializedDialogue);
-        DialogueController.Instance.AddToDialogue(serializedChoice);
+        DialogueController.Instance.AddChoiceToDialogue(serializedChoice);
         StateController.Instance.SetState(GameState.Gameplay);
     }
 
@@ -323,6 +323,8 @@ public class OpenAIController : Singleton<OpenAIController>
             ChatMessage chatMessage = new ChatMessage(role, message);
 
             Chat.AppendMessage(chatMessage);
+
+            //Debug.Log($"{roleName}: {message}");
         }
 
         CharacterGenerationController.Instance.LoadCharactersFromSave(saveData);
@@ -338,7 +340,7 @@ public class OpenAIController : Singleton<OpenAIController>
         string additionalDialogue = await ContinueDialogue();
         string additionalChoice = await GenerateChoice();
         DialogueController.Instance.ContinueDialogue(additionalDialogue);
-        DialogueController.Instance.AddToDialogue(additionalChoice);
+        DialogueController.Instance.AddChoiceToDialogue(additionalChoice);
 
         StateController.Instance.SetState(GameState.Gameplay);
     }
