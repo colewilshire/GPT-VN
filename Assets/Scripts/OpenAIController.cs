@@ -201,7 +201,7 @@ public class OpenAIController : Singleton<OpenAIController>
     {
         string enumValues = "";
         Array values = Enum.GetValues(enumType);
-        List<string> valueList = new List<string>();
+        List<string> valueList = new();
 
         foreach (var value in values)
         {
@@ -215,8 +215,8 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private static Dictionary<string, List<TEnum>> DeserializeTags<TEnum>(string serializedTags) where TEnum : struct, Enum
     {
-        Dictionary<string, List<TEnum>> tagsByCharacter = new Dictionary<string, List<TEnum>>();
-        List<string> splitSerializedTags = new List<string>(serializedTags.Split('\n', StringSplitOptions.RemoveEmptyEntries));
+        Dictionary<string, List<TEnum>> tagsByCharacter = new();
+        List<string> splitSerializedTags = new(serializedTags.Split('\n', StringSplitOptions.RemoveEmptyEntries));
 
         foreach (string characterSerializedTags in splitSerializedTags)
         {
@@ -227,7 +227,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
             tags.RemoveAt(0);
 
-            List<TEnum> enumTags = new List<TEnum>();
+            List<TEnum> enumTags = new();
             foreach (string tag in tags)
             {
                 if (Enum.TryParse(tag, out TEnum parsedTag))
@@ -247,7 +247,7 @@ public class OpenAIController : Singleton<OpenAIController>
         StateController.Instance.SetState(GameState.Loading);
         CharacterManager.Instance.ClearCharacters();
 
-        ChatRequest chatRequest = new ChatRequest();
+        ChatRequest chatRequest = new();
         //chatRequest.Model = Model.GPT4;
         Chat = api.Chat.CreateConversation(chatRequest);
 
@@ -311,7 +311,7 @@ public class OpenAIController : Singleton<OpenAIController>
             return;
         }
 
-        ChatRequest chatRequest = new ChatRequest();
+        ChatRequest chatRequest = new();
         //chatRequest.Model = Model.GPT4;
         Chat = api.Chat.CreateConversation(chatRequest);
 
@@ -320,7 +320,7 @@ public class OpenAIController : Singleton<OpenAIController>
             string roleName = saveData.ConversationRoles[i];
             string message = saveData.ConversationMessages[i];
             ChatMessageRole role = ChatMessageRole.FromString(roleName);
-            ChatMessage chatMessage = new ChatMessage(role, message);
+            ChatMessage chatMessage = new(role, message);
 
             Chat.AppendMessage(chatMessage);
 

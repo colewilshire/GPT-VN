@@ -5,15 +5,15 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
 {
     [SerializeField] private CharacterPortraitController characterPortaitPrefab;
 
-    private List<Accessory> accessories = new List<Accessory>();
-    private List<Hair> hairs = new List<Hair>();
-    private List<Outfit> outfits = new List<Outfit>();
-    private List<Face> faces = new List<Face>();
+    private List<Accessory> accessories = new();
+    private List<Hair> hairs = new();
+    private List<Outfit> outfits = new();
+    private List<Face> faces = new();
 
-    private Dictionary<AccessoryTag, List<Accessory>> accessoryDictionary = new Dictionary<AccessoryTag, List<Accessory>>();
-    private Dictionary<HairTag, List<Hair>> hairDictionary = new Dictionary<HairTag, List<Hair>>();
-    private Dictionary<OutfitTag, List<Outfit>> outfitDictionary = new Dictionary<OutfitTag, List<Outfit>>();
-    private Dictionary<FaceTag, List<Face>> faceDictionary = new Dictionary<FaceTag, List<Face>>();
+    private Dictionary<AccessoryTag, List<Accessory>> accessoryDictionary = new();
+    private Dictionary<HairTag, List<Hair>> hairDictionary = new();
+    private Dictionary<OutfitTag, List<Outfit>> outfitDictionary = new();
+    private Dictionary<FaceTag, List<Face>> faceDictionary = new();
 
     protected override void Awake()
     {
@@ -91,7 +91,7 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
             string characterName = saveData.CharacterNames[i];
             string serializedCharacterAppearance = saveData.CharacterAppearances[i];
             CharacterAppearance characterAppearance = CharacterAppearance.CreateInstance<CharacterAppearance>();
-            List<string> deserializedCharacterAppearance = new List<string>(serializedCharacterAppearance.Split('|'));
+            List<string> deserializedCharacterAppearance = new(serializedCharacterAppearance.Split('|'));
 
             string accessoryName = deserializedCharacterAppearance[0];
             string hairName = deserializedCharacterAppearance[1];

@@ -4,9 +4,9 @@ using UnityEngine.UI;
 
 public class BackgroundController : Singleton<BackgroundController>
 {
-    private List<BackgroundImage> backgroundImages = new List<BackgroundImage>();
-    private Dictionary<BackgroundTag, List<BackgroundImage>> backgroundDictionary = new Dictionary<BackgroundTag, List<BackgroundImage>>();
-    private Dictionary<string, BackgroundImage> backgroundImageCache = new Dictionary<string, BackgroundImage>();
+    private List<BackgroundImage> backgroundImages = new();
+    private Dictionary<BackgroundTag, List<BackgroundImage>> backgroundDictionary = new();
+    private Dictionary<string, BackgroundImage> backgroundImageCache = new();
     private Image backgroundImage;
     public Dictionary<string, BackgroundImage> GeneratedBackgrounds {get; private set;} = new Dictionary<string, BackgroundImage>();
 

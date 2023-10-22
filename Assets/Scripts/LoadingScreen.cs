@@ -6,7 +6,7 @@ public class LoadingScreen : Singleton<LoadingScreen>
 {
     [SerializeField] private TextMeshProUGUI loadingMessage;
     [SerializeField] private ProgressBar progressBar;
-    private Dictionary<LoadingState, string> loadingMessages = new Dictionary<LoadingState, string>
+    private Dictionary<LoadingState, string> loadingMessages = new()
     {
         { LoadingState.Conversation, "Making first-contact..." },
         { LoadingState.Cast, "Casting characters..." },

@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class SaveController : Singleton<SaveController>
 {
+    [SerializeField]private int maxQuicksaves = 10;
     private int highestSceneIndex = 0;
-    private int maxQuicksaves = 10;
     private int nextQuicksaveIndex = 0;
     public string quicksaveName = "quicksave";
     public string autosaveName = "autosave";
@@ -27,12 +27,12 @@ public class SaveController : Singleton<SaveController>
     {
         if (!File.Exists(filePath)) return null;
 
-        Texture2D texture = new Texture2D(2, 2);
+        Texture2D texture = new(2, 2);
         byte[] fileData = File.ReadAllBytes(filePath);
         texture.LoadImage(fileData);
 
-        Rect rect = new Rect(0, 0, texture.width, texture.height);
-        Vector2 pivot = new Vector2(0.5f, 0.5f);
+        Rect rect = new(0, 0, texture.width, texture.height);
+        Vector2 pivot = new(0.5f, 0.5f);
         Sprite sprite = Sprite.Create(texture, rect, pivot);
 
         return sprite;
@@ -142,10 +142,6 @@ public class SaveController : Singleton<SaveController>
         JsonUtility.FromJsonOverwrite(serializedSaveData, saveData);
         highestSceneIndex = saveData.CurrentLineIndex;
 
-        //Debug.Log(serializedSaveData);    /yes ~
-        //Debug.Log(saveData.ConversationMessages);   //no ~
-        //Debug.Log(saveData.DialoguePath);   //yes ~
-
         return saveData;
     }
 
@@ -163,7 +159,7 @@ public class SaveController : Singleton<SaveController>
             Directory.EnumerateFileSystemEntries(d, "*.*", SearchOption.TopDirectoryOnly)
             .Max(e => (File.GetAttributes(e) & FileAttributes.Directory) == FileAttributes.Directory ? Directory.GetLastWriteTime(e) : File.GetLastWriteTimeUtc(e))
         ).ToList();
-        Dictionary<string, Sprite> screenshotDictionary = new Dictionary<string, Sprite>();
+        Dictionary<string, Sprite> screenshotDictionary = new();
 
         SetMostRecentQuicksaveIndex(sortedSaveFolderPaths);
 

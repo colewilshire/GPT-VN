@@ -5318,6 +5318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9bda1b89a10d2544a5a7fb0d397988b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxQuicksaves: 10
   quicksaveName: quicksave
   autosaveName: autosave
 --- !u!114 &888371919

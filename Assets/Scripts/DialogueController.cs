@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DialogueController : Singleton<DialogueController>
 {
-    private List<DialogueLine> dialoguePath = new List<DialogueLine>();
+    private List<DialogueLine> dialoguePath = new();
     public int CurrentLineIndex {get; private set;} = 0;
     public string SerializedDialoguePath {get; private set;} = "";
 
@@ -14,18 +14,18 @@ public class DialogueController : Singleton<DialogueController>
     {
         DialogueLine currentLine = dialoguePath[index];
 
-        if (currentLine.DialogueChoice)
-        {
-            ChoiceController.Instance.ShowChoices(currentLine.DialogueChoice);
-            return;
-        }
-
         UIEffectController.Instance.TerminateEffects();
         BackgroundController.Instance.SetBackground(currentLine.BackgroundImage);
         CharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
         NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
         TextController.Instance.SetText(currentLine.DialogueText);
         AudioController.Instance.PlaySound(currentLine.VoiceLine);
+
+        if (currentLine.DialogueChoice)
+        {
+            ChoiceController.Instance.ShowChoices(currentLine.DialogueChoice);
+            TextController.Instance.SetText("What should I chooose?");
+        }
     }
 
     public DialogueLine DeserializeLine(string serializedLine)
@@ -50,7 +50,7 @@ public class DialogueController : Singleton<DialogueController>
         }
         else if (splitLine.Count > 0)
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>()
+            Dictionary<string, string> dict = new()
             {
                 ["characterName"] = "",
                 ["dialogueText"] = "",
@@ -101,56 +101,42 @@ public class DialogueController : Singleton<DialogueController>
         dialogueLine.DialogueText = dialogueText;
         dialogueLine.Mood = characterMood;
         dialogueLine.BackgroundImage = BackgroundController.Instance.GetBackgroundImageFromName(backgroundName);
+        dialogueLine.SerializedLine = serializedLine;
 
         return dialogueLine;
     }
 
     private void AddToDialogue(string serializedDialogue)
     {
-        //Debug.Log(serializedDialogue[0]);
-
-        //if (serializedDialogue.StartsWith('~'))
-
-        // ^ Here lies the problem: when new, AddToDialogue is called twice on two different serializedDialogues, whereas there is only one combined on loading a save,
-        // which doesn't start with ~, since choices are never presented before the first on-rails dialogue segment
-        // Thus, deserialize line is probably the ideal place to do things
-
-        //{
-            //Debug.Log($"qqq: {serializedDialogue}");
-            //AddChoiceToDialogue(serializedDialogue);
-            //return;
-        //}
-
         List<string> serializedLines = new(serializedDialogue.Split('\n', StringSplitOptions.RemoveEmptyEntries));
         DialogueLine firstChoice = null;
 
         foreach (string serializedLine in serializedLines)
         {
-            //Debug.Log(serializedLine);
+            bool isDialogueChoice = serializedLine.StartsWith('~');
+            DialogueLine dialogueLine;
 
-            if (!firstChoice && serializedLine.StartsWith('~'))
+            if (isDialogueChoice && !firstChoice)
             {
-                Debug.Log("A: " + serializedLine);
-                
                 firstChoice = DeserializeLine(serializedLine.TrimStart('~'));
                 firstChoice.DialogueChoice = DialogueChoice.CreateInstance<DialogueChoice>();
-                firstChoice.DialogueChoice.Choices.Add(firstChoice);
 
+                firstChoice.DialogueChoice.Choices.Add(firstChoice);
                 dialoguePath.Add(firstChoice);
             }
-            else if (firstChoice && serializedLine.StartsWith('~'))
+            else if (isDialogueChoice && firstChoice)
             {
-                Debug.Log("B: " + serializedLine);
-
                 firstChoice.DialogueChoice.Choices.Add(DeserializeLine(serializedLine.TrimStart('~')));
             }
             else
             {
-                DialogueLine dialogueLine = DeserializeLine(serializedLine);
+                dialogueLine = DeserializeLine(serializedLine);
+                firstChoice = null;
+
                 dialoguePath.Add(dialogueLine);
             }
         }
-        ////Debug.Log($"{serializedDialogue}");
+
         SerializedDialoguePath += $"{serializedDialogue}";
 
         if (!SerializedDialoguePath.EndsWith('\n'))
@@ -161,55 +147,9 @@ public class DialogueController : Singleton<DialogueController>
 
     public void AddChoiceToDialogue(string serializedDialogue)
     {
-        Debug.Log($"Original: {serializedDialogue}");
-
-        // Main Character|We should invite Aiko and Yumi to join the basketball team too. What do you think?|Excited|School Rooftop
-        // Main Character|Do you have any tips for beginners like us?|Curious|School Gymnasium
-        // Main Character|I'm a bit nervous about joining the team. Can you help boost my confidence?|Nervous|School Classroom
-
-        // ~Main Character|We should invite Aiko and Yumi to join the basketball team too. What do you think?|Excited|School Rooftop~Main Character|Do you have any tips for
-        // beginners like us?|Curious|School Gymnasium~Main Character|I'm a bit nervous about joining the team. Can you help boost my confidence?|Nervous|School Classroom
-
-        //serializedDialogue = $"~{serializedDialogue.Trim('\n').Replace("\n", "~\n")}\n";
         serializedDialogue = $"~{serializedDialogue.Trim('\n').Replace("\n", "\n~")}";
-        //serializedDialogue = $"~{serializedDialogue}\r\n";
-
-        Debug.Log($"Modified: {serializedDialogue}");
-
-        //return;
         AddToDialogue(serializedDialogue);
     }
-
-    // private void AddChoiceToDialogue(string serializedDialogue)
-    // {
-    //     List<string> serializedLines = new(serializedDialogue.Split('~', StringSplitOptions.RemoveEmptyEntries));
-    //     List<DialogueLine> dialogueLines = new();
-    //     DialogueChoice dialogueChoice = DialogueChoice.CreateInstance<DialogueChoice>();
-
-    //     foreach (string serializedLine in serializedLines)
-    //     {
-    //         //Debug.Log($"www: {serializedLine}");
-    //         DialogueLine dialogueLine = DeserializeLine(serializedLine);
-    //         dialogueLine.SerializedLine = serializedLine;
-
-    //         dialogueChoice.Choices.Add(dialogueLine);
-    //         dialogueLines.Add(dialogueLine);
-    //     }
-
-    //     foreach (DialogueLine dialogueLine in dialogueLines)
-    //     {
-    //         dialogueLine.DialogueChoice = dialogueChoice;
-    //         dialoguePath.Add(dialogueLine);
-    //     }
-
-    //     //Debug.Log($"zzz: {serializedDialogue}");
-    //     SerializedDialoguePath += $"{serializedDialogue}";
-
-    //     if (!SerializedDialoguePath.EndsWith('\n'))
-    //     {
-    //         SerializedDialoguePath += '\n';
-    //     }
-    // }
 
     public async void StepForward()
     {
@@ -244,8 +184,6 @@ public class DialogueController : Singleton<DialogueController>
 
     public void StartDialogue(string serializedDialogue, int startingLineIndex = 0)
     {
-        //Debug.Log($"{serializedDialogue}");
-
         CurrentLineIndex = startingLineIndex;
         dialoguePath = new List<DialogueLine>();
         SerializedDialoguePath = "";
