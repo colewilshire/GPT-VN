@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class CharacterManager : Singleton<CharacterManager>
 {
-    private CharacterPortraitController activePortrait;
-    public Dictionary<string, CharacterPortraitController> Characters {get; private set;} = new Dictionary<string, CharacterPortraitController>();
+    private CharacterPortrait activePortrait;
+    public Dictionary<string, CharacterPortrait> Characters {get; private set;} = new Dictionary<string, CharacterPortrait>();
 
-    public void CacheCharacterPortrait(CharacterPortraitController characterPortrait)
+    public void CacheCharacterPortrait(CharacterPortrait characterPortrait)
     {
         Characters[characterPortrait.name] = characterPortrait;
     }
@@ -20,7 +20,7 @@ public class CharacterManager : Singleton<CharacterManager>
             activePortrait.HidePortrait();
         }
 
-        if (Characters.TryGetValue(characterName, out CharacterPortraitController characterPortrait))
+        if (Characters.TryGetValue(characterName, out CharacterPortrait characterPortrait))
         {
             activePortrait = characterPortrait;
 
@@ -31,11 +31,11 @@ public class CharacterManager : Singleton<CharacterManager>
 
     public void ClearCharacters()
     {
-        foreach (KeyValuePair<string, CharacterPortraitController> characterEntry in Characters)
+        foreach (KeyValuePair<string, CharacterPortrait> characterEntry in Characters)
         {
             Destroy(characterEntry.Value.gameObject);
         }
 
-        Characters = new Dictionary<string, CharacterPortraitController>();
+        Characters = new Dictionary<string, CharacterPortrait>();
     }
 }

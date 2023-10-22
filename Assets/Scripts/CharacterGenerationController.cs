@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CharacterGenerationController : Singleton<CharacterGenerationController>
 {
-    [SerializeField] private CharacterPortraitController characterPortaitPrefab;
+    [SerializeField] private CharacterPortrait characterPortaitPrefab;
 
     private List<Accessory> accessories = new();
     private List<Hair> hairs = new();
@@ -51,7 +51,7 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
 
     public void GenerateCharacterPortrait(string characterName, List<AccessoryTag> accessoryTags, List<HairTag> hairTags, List<OutfitTag> outfitTags, List <FaceTag> faceTags)
     {
-        CharacterPortraitController characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
+        CharacterPortrait characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
         CharacterAppearance characterAppearance = CharacterAppearance.CreateInstance<CharacterAppearance>();
         Accessory accessory = TaggedImageUtility.GetImageWithTags(accessoryTags, accessoryDictionary);
         Hair hair = TaggedImageUtility.GetImageWithTags(hairTags, hairDictionary);
@@ -103,7 +103,7 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
             characterAppearance.Outfit = Resources.Load<Outfit>($"Outfits/{outfitName}");
             characterAppearance.Face = Resources.Load<Face>($"Faces/{faceName}");
 
-            CharacterPortraitController characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
+            CharacterPortrait characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
 
             characterPortrait.name = characterName;
             characterPortrait.SetAppearance(characterAppearance);

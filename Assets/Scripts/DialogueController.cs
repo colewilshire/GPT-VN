@@ -23,8 +23,8 @@ public class DialogueController : Singleton<DialogueController>
 
         if (currentLine.DialogueChoice)
         {
-            ChoiceController.Instance.ShowChoices(currentLine.DialogueChoice);
             TextController.Instance.SetText("What should I chooose?");
+            ChoiceController.Instance.ShowChoices(currentLine.DialogueChoice);
         }
     }
 

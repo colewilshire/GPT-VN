@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterPortraitController : MonoBehaviour
+public class CharacterPortrait : MonoBehaviour
 {
     [SerializeField] private Image accessory;
     [SerializeField] private Image hairFront;

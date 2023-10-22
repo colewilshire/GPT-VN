@@ -108,7 +108,7 @@ public class SaveController : Singleton<SaveController>
             saveData.ConversationMessages.Add(message.Content);
         }
 
-        foreach(KeyValuePair<string, CharacterPortraitController> characterEntry in CharacterManager.Instance.Characters)
+        foreach(KeyValuePair<string, CharacterPortrait> characterEntry in CharacterManager.Instance.Characters)
         {
             CharacterAppearance characterAppearance = characterEntry.Value.Appearance;
             string serializedCharacterAppearance = SerializeCharacterAppearance(characterAppearance);
