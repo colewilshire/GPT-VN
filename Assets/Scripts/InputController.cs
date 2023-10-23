@@ -12,9 +12,6 @@ public class InputController : Singleton<InputController>
     private InputAction quickloadAction;
     private InputAction pauseAction;
     private bool inputEnabled = false;
-    [SerializeField] private Button stepForwardButton;
-    [SerializeField] private Button stepBackwardButton;
-    [SerializeField] private Button repeatLineButton;
 
     protected override void Awake()
     {
@@ -28,7 +25,6 @@ public class InputController : Singleton<InputController>
         StateController.Instance.OnStateChange += OnStateChange;
 
         CreateInputs();
-        SetUpButtons();
     }
 
     private void OnDestroy()
@@ -36,7 +32,6 @@ public class InputController : Singleton<InputController>
         StateController.Instance.OnStateChange -= OnStateChange;
 
         DestroyInputs();
-        TearDownButtons();
     }
 
     private void OnStateChange(GameState state)
@@ -90,42 +85,6 @@ public class InputController : Singleton<InputController>
         quicksaveAction.Disable();
         quickloadAction.Disable();
         pauseAction.Disable();
-    }
-
-    private void SetUpButtons()
-    {
-        if (stepForwardButton)
-        {
-            stepForwardButton.onClick.AddListener(() => OnStepForward());
-        }
-
-        if (stepBackwardButton)
-        {
-            stepBackwardButton.onClick.AddListener(() => OnStepBackward());
-        }
-
-        if (repeatLineButton)
-        {
-            repeatLineButton.onClick.AddListener(() => OnRepeatLine());
-        }
-    }
-
-    private void TearDownButtons()
-    {
-        if (stepForwardButton)
-        {
-            stepForwardButton.onClick.RemoveListener(() => OnStepForward());
-        }
-
-        if (stepBackwardButton)
-        {
-            stepBackwardButton.onClick.RemoveListener(() => OnStepBackward());
-        }
-
-        if (repeatLineButton)
-        {
-            repeatLineButton.onClick.RemoveListener(() => OnRepeatLine());
-        }
     }
 
     private void OnStepForward(InputAction.CallbackContext context = default)

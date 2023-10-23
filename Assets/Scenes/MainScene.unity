@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 21555422}
   - component: {fileID: 21555424}
   m_Layer: 0
-  m_Name: Forward Button
+  m_Name: Step Forward Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1422,8 +1422,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 21555421}
-  - {fileID: 545388186}
   - {fileID: 288037499}
+  - {fileID: 545388186}
   m_Father: {fileID: 1281550148}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1927,7 +1927,7 @@ GameObject:
   - component: {fileID: 288037500}
   - component: {fileID: 288037502}
   m_Layer: 0
-  m_Name: Backward Button
+  m_Name: Step Backward Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3414,7 +3414,7 @@ GameObject:
   - component: {fileID: 545388187}
   - component: {fileID: 545388189}
   m_Layer: 0
-  m_Name: Repeat Button
+  m_Name: Repeat Line Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14424,7 +14424,7 @@ GameObject:
   - component: {fileID: 1501606446}
   - component: {fileID: 1501606449}
   m_Layer: 0
-  m_Name: Dialogue Canvas
+  m_Name: Dialogue Submenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14526,6 +14526,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfe49b0904cf36c46ab59e9f16b146e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stepForwardButton: {fileID: 21555424}
+  stepBackwardButton: {fileID: 288037502}
+  repeatLineButton: {fileID: 545388189}
+  saveButton: {fileID: 1190219287}
+  loadButton: {fileID: 1178834995}
+  settingsButton: {fileID: 2043629496}
 --- !u!1 &1508583050
 GameObject:
   m_ObjectHideFlags: 0

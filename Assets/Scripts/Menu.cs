@@ -33,9 +33,9 @@ public abstract class Menu : MonoBehaviour
 
     protected virtual void ResetMenu()
     {
-        foreach (KeyValuePair<GameObject, bool> entry in defaultChildStates)
-        {
-            entry.Key.SetActive(entry.Value);
-        }
+        // foreach (KeyValuePair<GameObject, bool> entry in defaultChildStates)
+        // {
+        //     entry.Key.SetActive(entry.Value);
+        // }
     }
 }

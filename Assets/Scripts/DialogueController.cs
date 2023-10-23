@@ -166,8 +166,8 @@ public class DialogueController : Singleton<DialogueController>
         }
 
         CurrentLineIndex += 1;
-        ReadDialogueLine(CurrentLineIndex);
         SaveController.Instance.Autosave(CurrentLineIndex);
+        ReadDialogueLine(CurrentLineIndex);
     }
 
     public void StepBackward()
