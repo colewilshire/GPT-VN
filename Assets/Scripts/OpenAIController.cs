@@ -145,12 +145,20 @@ public class OpenAIController : Singleton<OpenAIController>
         return assistantResponse;
     }
 
-    private async Task<string> ContinueDialogue()
+    private async Task<string> ContinueDialogue(string choiceText = null)
     {
         LoadingScreen.Instance.SetLoadingState(LoadingState.AdditionalDialogue);
 
-        string prompt =
+        string prompt = "";
+
+        if (choiceText != null)
+        {
+            prompt += $"The player chose the dialogue option \"{choiceText}\". ";
+        }
+
+        prompt +=
             $"From where the story last left off, continue the visual novel's script with {linesPerScene} more lines of dialogue. ";
+
         Chat.AppendSystemMessage(prompt);
         finishedPrompt += prompt;
 
@@ -160,7 +168,7 @@ public class OpenAIController : Singleton<OpenAIController>
         return assistantResponse;
     }
 
-    public async Task<string> GenerateChoice()
+    private async Task<string> GenerateChoice()
     {
         LoadingScreen.Instance.SetLoadingState(LoadingState.AdditionalDialogue);
 
@@ -333,11 +341,11 @@ public class OpenAIController : Singleton<OpenAIController>
         StateController.Instance.SetState(GameState.Gameplay);
     }
 
-    public async void GenerateAdditionalDialogue()
+    public async void GenerateAdditionalDialogue(string choiceText = null)
     {
         StateController.Instance.SetState(GameState.Loading);
 
-        string additionalDialogue = await ContinueDialogue();
+        string additionalDialogue = await ContinueDialogue(choiceText);
         string additionalChoice = await GenerateChoice();
         DialogueController.Instance.ContinueDialogue(additionalDialogue);
         DialogueController.Instance.AddChoiceToDialogue(additionalChoice);

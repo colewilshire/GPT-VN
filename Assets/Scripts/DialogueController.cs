@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class DialogueController : Singleton<DialogueController>
 {
+    private readonly char choiceCharacter = '~';
     private List<DialogueLine> dialoguePath = new();
     public int CurrentLineIndex {get; private set;} = 0;
     public string SerializedDialoguePath {get; private set;} = "";
@@ -106,19 +107,19 @@ public class DialogueController : Singleton<DialogueController>
         return dialogueLine;
     }
 
-    private void AddToDialogue(string serializedDialogue)
+    public void AddToDialogue(string serializedDialogue)
     {
         List<string> serializedLines = new(serializedDialogue.Split('\n', StringSplitOptions.RemoveEmptyEntries));
         DialogueLine firstChoice = null;
 
         foreach (string serializedLine in serializedLines)
         {
-            bool isDialogueChoice = serializedLine.StartsWith('~');
+            bool isDialogueChoice = serializedLine.StartsWith(choiceCharacter);
             DialogueLine dialogueLine;
 
             if (isDialogueChoice && !firstChoice)
             {
-                firstChoice = DeserializeLine(serializedLine.TrimStart('~'));
+                firstChoice = DeserializeLine(serializedLine.TrimStart(choiceCharacter));
                 firstChoice.DialogueChoice = DialogueChoice.CreateInstance<DialogueChoice>();
 
                 firstChoice.DialogueChoice.Choices.Add(firstChoice);
@@ -126,7 +127,7 @@ public class DialogueController : Singleton<DialogueController>
             }
             else if (isDialogueChoice && firstChoice)
             {
-                firstChoice.DialogueChoice.Choices.Add(DeserializeLine(serializedLine.TrimStart('~')));
+                firstChoice.DialogueChoice.Choices.Add(DeserializeLine(serializedLine.TrimStart(choiceCharacter)));
             }
             else
             {
@@ -147,7 +148,7 @@ public class DialogueController : Singleton<DialogueController>
 
     public void AddChoiceToDialogue(string serializedDialogue)
     {
-        serializedDialogue = $"~{serializedDialogue.Trim('\n').Replace("\n", "\n~")}";
+        serializedDialogue = $"~{serializedDialogue.Trim('\n').Replace("\n", $"\n{choiceCharacter}")}";
         AddToDialogue(serializedDialogue);
     }
 

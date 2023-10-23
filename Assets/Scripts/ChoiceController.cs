@@ -26,6 +26,8 @@ public class ChoiceController : Singleton<ChoiceController>
     public void MakeChoice(DialogueLine dialogueLine)
     {
         DestroyChoices();
-        DialogueController.Instance.ContinueDialogue(dialogueLine.SerializedLine);
+        //DialogueController.Instance.ContinueDialogue(dialogueLine.SerializedLine);
+        DialogueController.Instance.AddToDialogue(dialogueLine.SerializedLine);
+        OpenAIController.Instance.GenerateAdditionalDialogue(dialogueLine.DialogueText);
     }
 }
