@@ -100,7 +100,7 @@ public class DialogueController : Singleton<DialogueController>
 
         dialogueLine.CharacterName = characterName;
         dialogueLine.DialogueText = dialogueText;
-        dialogueLine.Mood = characterMood;
+        dialogueLine.Mood = Thesaurus.Instance.GetMoodSynonym(characterMood);
         dialogueLine.BackgroundImage = BackgroundController.Instance.GetBackgroundImageFromName(backgroundName);
         dialogueLine.SerializedLine = serializedLine;
 

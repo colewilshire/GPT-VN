@@ -133,6 +133,7 @@ public class OpenAIController : Singleton<OpenAIController>
             "Create a script for the next act of the visual novel. " +
             $"The script should be {linesPerScene} lines of dialogue long. " +
             "Dialogue lines should start with the speaking character's name, followed by the dialogue's text, followed by the speaker's emotion, followed by the name of the background to display, each separated by a '|'." +
+            //"The speaker's emotion should be described in a single word. " +
             "Each line of dialogue should include a single emotion. The chosen emotion must come from the following list: " +
             GetEnumValues(mood) +
             " Backgrounds names should come from the previously generated list of backgrounds.";

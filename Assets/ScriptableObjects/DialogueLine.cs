@@ -5,7 +5,7 @@ public class DialogueLine : ScriptableObject
 {
     public string CharacterName;
     public string DialogueText;
-    public string Mood;
+    public Mood Mood;
     public Sprite BackgroundImage;
     public AudioClip VoiceLine;
     public DialogueChoice DialogueChoice;

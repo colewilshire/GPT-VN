@@ -1,8 +1,8 @@
 public class StateController : Singleton<StateController>
 {
-    private readonly GameState defaultState = GameState.MainMenu;
     private readonly SingletonStack<GameState> menuStates = new();
     private readonly SingletonStack<GameState> submenuStates = new();
+    private readonly GameState defaultState = GameState.MainMenu;
 
     public delegate void OnStateChangeHandler(GameState state);
     public delegate void OnSubmenuStateChangeHandler(GameState state);
