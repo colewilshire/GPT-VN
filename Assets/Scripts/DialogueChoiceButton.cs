@@ -20,7 +20,7 @@ public class DialogueChoiceButton : MonoBehaviour
 
     private void OnClick()
     {
-        ChoiceController.Instance.MakeChoice(dialogueLine);
+        DialogueChoiceController.Instance.MakeChoice(dialogueLine);
     }
 
     public void SetDialogueLine(DialogueLine newDialogueLine)

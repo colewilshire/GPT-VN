@@ -6,5 +6,6 @@ public enum GameState
     PauseMenu,
     Gameplay,
     Loading,
-    Saving
+    Saving,
+    Choice
 }

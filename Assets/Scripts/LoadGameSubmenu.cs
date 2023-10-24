@@ -14,6 +14,7 @@ public class LoadGameSubmenu : Submenu
     private Dictionary<string, Sprite> screenshotDictionary;
     private int currentPageIndex = 0;
     private bool deletionEnabled = false;
+
     [SerializeField] private List<SaveDisplay> saveDisplays;
     [SerializeField] private Button nextPageButton;
     [SerializeField] private Button previousPageButton;

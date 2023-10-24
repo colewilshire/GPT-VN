@@ -252,7 +252,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     public async void CreateNewConversation()
     {
-        StateController.Instance.SetState(GameState.Loading);
+        StateController.Instance.SetAllStates(GameState.Loading);
         CharacterManager.Instance.ClearCharacters();
 
         ChatRequest chatRequest = new();
@@ -303,19 +303,19 @@ public class OpenAIController : Singleton<OpenAIController>
         BackgroundController.Instance.GenerateBackgroundImages(backgroundDescriptions);
         DialogueController.Instance.StartDialogue(serializedDialogue);
         DialogueController.Instance.AddChoiceToDialogue(serializedChoice);
-        StateController.Instance.SetState(GameState.Gameplay);
+        StateController.Instance.SetAllStates(GameState.Gameplay);
     }
 
     public void LoadConversationFromSave(string saveName)
     {
-        StateController.Instance.SetState(GameState.Loading);
+        StateController.Instance.SetAllStates(GameState.Loading);
         CharacterManager.Instance.ClearCharacters();
 
         SaveData saveData = SaveController.Instance.Load(saveName);
 
         if (!saveData)
         {
-            StateController.Instance.SetState(GameState.MainMenu);
+            StateController.Instance.SetAllStates(GameState.MainMenu);
             return;
         }
 
@@ -338,18 +338,18 @@ public class OpenAIController : Singleton<OpenAIController>
         CharacterGenerationController.Instance.LoadCharactersFromSave(saveData);
         BackgroundController.Instance.LoadBackgroundImagesFromSave(saveData);
         DialogueController.Instance.LoadDialogueFromSave(saveData);
-        StateController.Instance.SetState(GameState.Gameplay);
+        StateController.Instance.SetMenuState(GameState.Gameplay);
     }
 
     public async void GenerateAdditionalDialogue(string choiceText = null)
     {
-        StateController.Instance.SetState(GameState.Loading);
+        StateController.Instance.SetAllStates(GameState.Loading);
 
         string additionalDialogue = await ContinueDialogue(choiceText);
         string additionalChoice = await GenerateChoice();
         DialogueController.Instance.ContinueDialogue(additionalDialogue);
         DialogueController.Instance.AddChoiceToDialogue(additionalChoice);
 
-        StateController.Instance.SetState(GameState.Gameplay);
+        StateController.Instance.SetAllStates(GameState.Gameplay);
     }
 }

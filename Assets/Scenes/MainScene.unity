@@ -1185,10 +1185,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 203216275}
-  - component: {fileID: 203216276}
   - component: {fileID: 203216277}
+  - component: {fileID: 203216278}
   m_Layer: 0
-  m_Name: Choices
+  m_Name: Dialogue Choice Submenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1213,19 +1213,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &203216276
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 203216274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92c47819a078a704c98e07e496888d33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  choiceButtonPrefab: {fileID: 3174218943036728074, guid: 627302928f26bfc4daafb7df05a7b893, type: 3}
 --- !u!114 &203216277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1252,6 +1239,19 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &203216278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 203216274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c972cfbbeb70a404c91b674f64fa8da3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  choiceButtonPrefab: {fileID: 3174218943036728074, guid: 627302928f26bfc4daafb7df05a7b893, type: 3}
 --- !u!1 &203511795
 GameObject:
   m_ObjectHideFlags: 0
@@ -5333,9 +5333,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dee248e24d776bc43abec72d977d055e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stepForwardButton: {fileID: 21555424}
-  stepBackwardButton: {fileID: 288037502}
-  repeatLineButton: {fileID: 545388189}
 --- !u!4 &888371920
 Transform:
   m_ObjectHideFlags: 0
@@ -5375,6 +5372,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2115513e06d6b0d439153554b117e5e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PreviousState: 0
+  PreviousSubmenuState: 0
+  CurrentMenuState: 0
+  CurrentSubmenuState: 0
 --- !u!1 &888588069
 GameObject:
   m_ObjectHideFlags: 0
@@ -22669,6 +22670,7 @@ GameObject:
   - component: {fileID: 2066826743}
   - component: {fileID: 2066826742}
   - component: {fileID: 2066826741}
+  - component: {fileID: 2066826744}
   m_Layer: 0
   m_Name: Choice Selection Menu
   m_TagString: Untagged
@@ -22759,6 +22761,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 10
   m_TargetDisplay: 0
+--- !u!114 &2066826744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066826739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 195174adb9c7e3b46bc1b2d8bcb67143, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2095358022
 GameObject:
   m_ObjectHideFlags: 0

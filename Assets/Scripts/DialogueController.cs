@@ -25,7 +25,7 @@ public class DialogueController : Singleton<DialogueController>
         if (currentLine.DialogueChoice)
         {
             TextController.Instance.SetText("What should I chooose?");
-            ChoiceController.Instance.ShowChoices(currentLine.DialogueChoice);
+            DialogueChoiceController.Instance.ShowChoices(currentLine.DialogueChoice);
         }
     }
 
@@ -152,20 +152,12 @@ public class DialogueController : Singleton<DialogueController>
         AddToDialogue(serializedDialogue);
     }
 
-    public async void StepForward()
+    public void StepForward()
     {
-        if (!(dialoguePath.Count > CurrentLineIndex + 1))
-        {
-            bool boolean = await ConfirmationPrompt.Instance.PromptConfirmation("continue story?");
-            if (boolean)
-            {
-                OpenAIController.Instance.GenerateAdditionalDialogue();
-            }
-
-            return;
-        }
+        if (!(dialoguePath.Count > CurrentLineIndex + 1)) return;
 
         CurrentLineIndex += 1;
+        StateController.Instance.SetSubmenuState(GameState.Gameplay);
         SaveController.Instance.Autosave(CurrentLineIndex);
         ReadDialogueLine(CurrentLineIndex);
     }
@@ -173,7 +165,9 @@ public class DialogueController : Singleton<DialogueController>
     public void StepBackward()
     {
         if (!(CurrentLineIndex - 1 >= 0)) return;
+
         CurrentLineIndex -= 1;
+        StateController.Instance.SetSubmenuState(GameState.Gameplay);
         ReadDialogueLine(CurrentLineIndex);
     }
 

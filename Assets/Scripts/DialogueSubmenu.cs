@@ -7,7 +7,8 @@ public class DialogueSubmenu : Submenu
     protected override HashSet<GameState> ActiveStates { get; set; } = new HashSet<GameState>
     {
         GameState.Gameplay,
-        GameState.Loading
+        GameState.Loading,
+        GameState.Choice
     };
 
     [Header("Navigation Buttons")]
@@ -29,8 +30,8 @@ public class DialogueSubmenu : Submenu
         repeatLineButton.onClick.AddListener(DialogueController.Instance.RepeatLine);
 
         saveButton.onClick.AddListener(SaveController.Instance.Quicksave);
-        loadButton.onClick.AddListener(() => StateController.Instance.SetState(GameState.LoadGameMenu));
-        settingsButton.onClick.AddListener(() => StateController.Instance.SetState(GameState.MainMenu));
+        loadButton.onClick.AddListener(() => StateController.Instance.SetAllStates(GameState.LoadGameMenu));
+        settingsButton.onClick.AddListener(() => StateController.Instance.SetAllStates(GameState.MainMenu));
     }
 
     protected override void OnDestroy()
@@ -42,8 +43,8 @@ public class DialogueSubmenu : Submenu
         repeatLineButton.onClick.AddListener(DialogueController.Instance.RepeatLine);
 
         saveButton.onClick.RemoveListener(SaveController.Instance.Quicksave);
-        loadButton.onClick.RemoveListener(() => StateController.Instance.SetState(GameState.LoadGameMenu));
-        settingsButton.onClick.RemoveListener(() => StateController.Instance.SetState(GameState.MainMenu));
+        loadButton.onClick.RemoveListener(() => StateController.Instance.SetAllStates(GameState.LoadGameMenu));
+        settingsButton.onClick.RemoveListener(() => StateController.Instance.SetAllStates(GameState.MainMenu));
     }
 
     // protected override void OnStateChange(GameState state)

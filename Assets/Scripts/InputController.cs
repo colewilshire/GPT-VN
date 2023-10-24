@@ -1,16 +1,16 @@
-using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 public class InputController : Singleton<InputController>
 {
     private PlayerInputActions playerInputActions;
+
     private InputAction stepForwardAction;
     private InputAction stepBackwardAction;
     private InputAction repeatLineAction;
     private InputAction quicksaveAction;
     private InputAction quickloadAction;
     private InputAction pauseAction;
+
     private bool inputEnabled = false;
 
     protected override void Awake()
@@ -120,7 +120,7 @@ public class InputController : Singleton<InputController>
     private void OnPause(InputAction.CallbackContext context)
     {
         if (!inputEnabled) return;
-        StateController.Instance.SetState(GameState.PauseMenu);
+        StateController.Instance.SetAllStates(GameState.PauseMenu);
     }
 
     public void EnableInputs()
