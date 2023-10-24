@@ -22,14 +22,14 @@ public class InputController : Singleton<InputController>
 
     private void Start()
     {
-        StateController.Instance.OnStateChange += OnStateChange;
+        StateController.Instance.OnMenuStateChange += OnStateChange;
 
         CreateInputs();
     }
 
     private void OnDestroy()
     {
-        StateController.Instance.OnStateChange -= OnStateChange;
+        StateController.Instance.OnMenuStateChange -= OnStateChange;
 
         DestroyInputs();
     }
@@ -120,7 +120,7 @@ public class InputController : Singleton<InputController>
     private void OnPause(InputAction.CallbackContext context)
     {
         if (!inputEnabled) return;
-        StateController.Instance.SetAllStates(GameState.PauseMenu);
+        StateController.Instance.SetStates(GameState.PauseMenu);
     }
 
     public void EnableInputs()

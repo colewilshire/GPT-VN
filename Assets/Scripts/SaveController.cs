@@ -86,7 +86,7 @@ public class SaveController : Singleton<SaveController>
 
     public void Save(string saveName)
     {
-        StateController.Instance.SetAllStates(GameState.Saving);
+        StateController.Instance.SetStates(GameState.Saving);
 
         string folderPath = Path.Combine(Application.persistentDataPath, saveName);
         string savePath = Path.Combine(folderPath, $"{saveName}.sav");
@@ -129,7 +129,8 @@ public class SaveController : Singleton<SaveController>
         File.WriteAllText(savePath, serializedSaveData);
         ScreenCapture.CaptureScreenshot(screenshotPath);
         StateController.Instance.SetMenuState(GameState.Gameplay);
-        StateController.Instance.SetSubmenuState(StateController.Instance.PreviousSubmenuState);
+        //StateController.Instance.SetSubmenuState(StateController.Instance.PreviousSubmenuState);
+        StateController.Instance.ReturnToPreviousSubmenuState();
     }
 
     public SaveData Load(string saveName)

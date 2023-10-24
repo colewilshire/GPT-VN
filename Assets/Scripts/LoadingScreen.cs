@@ -22,12 +22,12 @@ public class LoadingScreen : Singleton<LoadingScreen>
 
     private void Start()
     {
-        StateController.Instance.OnStateChange += OnStateChange;
+        StateController.Instance.OnMenuStateChange += OnStateChange;
     }
 
     private void OnDestroy()
     {
-        StateController.Instance.OnStateChange -= OnStateChange;
+        StateController.Instance.OnMenuStateChange -= OnStateChange;
     }
 
     private void OnStateChange(GameState state)

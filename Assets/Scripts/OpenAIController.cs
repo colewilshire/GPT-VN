@@ -252,7 +252,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     public async void CreateNewConversation()
     {
-        StateController.Instance.SetAllStates(GameState.Loading);
+        StateController.Instance.SetStates(GameState.Loading);
         CharacterManager.Instance.ClearCharacters();
 
         ChatRequest chatRequest = new();
@@ -303,19 +303,19 @@ public class OpenAIController : Singleton<OpenAIController>
         BackgroundController.Instance.GenerateBackgroundImages(backgroundDescriptions);
         DialogueController.Instance.StartDialogue(serializedDialogue);
         DialogueController.Instance.AddChoiceToDialogue(serializedChoice);
-        StateController.Instance.SetAllStates(GameState.Gameplay);
+        StateController.Instance.SetStates(GameState.Gameplay);
     }
 
     public void LoadConversationFromSave(string saveName)
     {
-        StateController.Instance.SetAllStates(GameState.Loading);
+        StateController.Instance.SetStates(GameState.Loading);
         CharacterManager.Instance.ClearCharacters();
 
         SaveData saveData = SaveController.Instance.Load(saveName);
 
         if (!saveData)
         {
-            StateController.Instance.SetAllStates(GameState.MainMenu);
+            StateController.Instance.SetStates(GameState.MainMenu);
             return;
         }
 
@@ -343,13 +343,13 @@ public class OpenAIController : Singleton<OpenAIController>
 
     public async void GenerateAdditionalDialogue(string choiceText = null)
     {
-        StateController.Instance.SetAllStates(GameState.Loading);
+        StateController.Instance.SetStates(GameState.Loading);
 
         string additionalDialogue = await ContinueDialogue(choiceText);
         string additionalChoice = await GenerateChoice();
         DialogueController.Instance.ContinueDialogue(additionalDialogue);
         DialogueController.Instance.AddChoiceToDialogue(additionalChoice);
 
-        StateController.Instance.SetAllStates(GameState.Gameplay);
+        StateController.Instance.SetStates(GameState.Gameplay);
     }
 }

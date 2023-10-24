@@ -30,8 +30,8 @@ public class DialogueSubmenu : Submenu
         repeatLineButton.onClick.AddListener(DialogueController.Instance.RepeatLine);
 
         saveButton.onClick.AddListener(SaveController.Instance.Quicksave);
-        loadButton.onClick.AddListener(() => StateController.Instance.SetAllStates(GameState.LoadGameMenu));
-        settingsButton.onClick.AddListener(() => StateController.Instance.SetAllStates(GameState.MainMenu));
+        loadButton.onClick.AddListener(() => StateController.Instance.SetStates(GameState.LoadGameMenu));
+        settingsButton.onClick.AddListener(() => StateController.Instance.SetStates(GameState.MainMenu));
     }
 
     protected override void OnDestroy()
@@ -43,8 +43,8 @@ public class DialogueSubmenu : Submenu
         repeatLineButton.onClick.AddListener(DialogueController.Instance.RepeatLine);
 
         saveButton.onClick.RemoveListener(SaveController.Instance.Quicksave);
-        loadButton.onClick.RemoveListener(() => StateController.Instance.SetAllStates(GameState.LoadGameMenu));
-        settingsButton.onClick.RemoveListener(() => StateController.Instance.SetAllStates(GameState.MainMenu));
+        loadButton.onClick.RemoveListener(() => StateController.Instance.SetStates(GameState.LoadGameMenu));
+        settingsButton.onClick.RemoveListener(() => StateController.Instance.SetStates(GameState.MainMenu));
     }
 
     // protected override void OnStateChange(GameState state)

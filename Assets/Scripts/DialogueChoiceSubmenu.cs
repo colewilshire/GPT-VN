@@ -4,6 +4,7 @@ using UnityEngine;
 public class DialogueChoiceSubmenu : Submenu
 {
     [SerializeField] private DialogueChoiceButton choiceButtonPrefab;
+    [SerializeField] private DialogueChoiceButton customChoiceButtonPrefab;
 
     protected override HashSet<GameState> ActiveStates { get; set; } = new HashSet<GameState>
     {

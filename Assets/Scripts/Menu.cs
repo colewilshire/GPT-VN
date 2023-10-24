@@ -8,7 +8,7 @@ public abstract class Menu : MonoBehaviour
 
     protected virtual void Start()
     {
-        StateController.Instance.OnStateChange += OnStateChange;
+        StateController.Instance.OnMenuStateChange += OnStateChange;
 
         // foreach (Transform child in transform)
         // {
@@ -18,7 +18,7 @@ public abstract class Menu : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        StateController.Instance.OnStateChange -= OnStateChange;
+        StateController.Instance.OnMenuStateChange -= OnStateChange;
     }
 
     protected virtual void OnStateChange(GameState state)

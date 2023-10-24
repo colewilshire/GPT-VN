@@ -1252,6 +1252,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   choiceButtonPrefab: {fileID: 3174218943036728074, guid: 627302928f26bfc4daafb7df05a7b893, type: 3}
+  customChoiceButtonPrefab: {fileID: 0}
 --- !u!1 &203511795
 GameObject:
   m_ObjectHideFlags: 0
@@ -5372,10 +5373,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2115513e06d6b0d439153554b117e5e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PreviousState: 0
-  PreviousSubmenuState: 0
-  CurrentMenuState: 0
-  CurrentSubmenuState: 0
 --- !u!1 &888588069
 GameObject:
   m_ObjectHideFlags: 0
@@ -22672,7 +22669,7 @@ GameObject:
   - component: {fileID: 2066826741}
   - component: {fileID: 2066826744}
   m_Layer: 0
-  m_Name: Choice Selection Menu
+  m_Name: Dialogue Choice Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

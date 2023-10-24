@@ -1,23 +1,20 @@
 public class StateController : Singleton<StateController>
 {
     private readonly GameState defaultState = GameState.MainMenu;
+    private readonly SingletonStack<GameState> menuStates = new();
+    private readonly SingletonStack<GameState> submenuStates = new();
 
     public delegate void OnStateChangeHandler(GameState state);
     public delegate void OnSubmenuStateChangeHandler(GameState state);
-    public event OnStateChangeHandler OnStateChange;
+    public event OnStateChangeHandler OnMenuStateChange;
     public event OnSubmenuStateChangeHandler OnSubmenuStateChange;
-
-    public GameState PreviousState;// { get; private set; }
-    public GameState PreviousSubmenuState;// { get; private set; }
-    public GameState CurrentMenuState;// { get; private set; }
-    public GameState CurrentSubmenuState;// { get; private set; }
 
     private void Start()
     {
-        SetAllStates(defaultState);
+        SetStates(defaultState);
     }
 
-    public void SetAllStates(GameState state)
+    public void SetStates(GameState state)
     {
         SetMenuState(state);
         SetSubmenuState(state);
@@ -25,15 +22,35 @@ public class StateController : Singleton<StateController>
 
     public void SetMenuState(GameState state)
     {
-        PreviousState = CurrentMenuState;
-        CurrentMenuState = state;
-        OnStateChange?.Invoke(state);
+        menuStates.Push(state);
+        OnMenuStateChange?.Invoke(state);
     }
 
     public void SetSubmenuState(GameState state)
     {
-        PreviousSubmenuState = CurrentSubmenuState;
-        CurrentSubmenuState = state;
+        submenuStates.Push(state);
         OnSubmenuStateChange?.Invoke(state);
+    }
+
+    public void ReturnToPreviousStates()
+    {
+        ReturnToPreviousMenuState();
+        ReturnToPreviousSubmenuState();
+    }
+
+    public void ReturnToPreviousMenuState()
+    {
+        if (menuStates.TryPop(out GameState currentState) && menuStates.TryPeek(out GameState previousState))
+        {
+            OnMenuStateChange?.Invoke(previousState);
+        }
+    }
+
+    public void ReturnToPreviousSubmenuState()
+    {
+        if (submenuStates.TryPop(out GameState currentState) && submenuStates.TryPeek(out GameState previousState))
+        {
+            OnSubmenuStateChange?.Invoke(previousState);
+        }
     }
 }

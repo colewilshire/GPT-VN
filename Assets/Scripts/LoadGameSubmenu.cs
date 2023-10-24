@@ -105,7 +105,8 @@ public class LoadGameSubmenu : Submenu
 
     private void ExitMenu()
     {
-        StateController.Instance.SetSubmenuState(StateController.Instance.PreviousSubmenuState);
+        //StateController.Instance.SetSubmenuState(StateController.Instance.PreviousSubmenuState);
+        StateController.Instance.ReturnToPreviousSubmenuState();
     }
 
     private void EnableSaveDeletion()

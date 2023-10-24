@@ -18,9 +18,19 @@ public class DialogueChoiceButton : MonoBehaviour
         button.onClick.RemoveListener(OnClick);
     }
 
-    private void OnClick()
+    private async void OnClick()
     {
-        DialogueChoiceController.Instance.MakeChoice(dialogueLine);
+        if (dialogueLine)
+        {
+            DialogueChoiceController.Instance.MakeChoice(dialogueLine);
+        }
+        else
+        {
+            if (await ConfirmationPrompt.Instance.PromptConfirmation("load this save?"))
+            {
+                
+            } 
+        }
     }
 
     public void SetDialogueLine(DialogueLine newDialogueLine)

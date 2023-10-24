@@ -39,7 +39,8 @@ public class PauseMenu : Menu
 
     private void OnResumeButtonClicked()
     {
-        StateController.Instance.SetAllStates(GameState.Gameplay);
+        //StateController.Instance.SetStates(GameState.Gameplay);
+        StateController.Instance.ReturnToPreviousStates();
     }
 
     private void OnLoadGameButtonClicked()
@@ -54,6 +55,6 @@ public class PauseMenu : Menu
 
     private void OnMainMenuButtonClicked()
     {
-        StateController.Instance.SetAllStates(GameState.MainMenu);
+        StateController.Instance.SetStates(GameState.MainMenu);
     }
 }
