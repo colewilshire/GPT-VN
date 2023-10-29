@@ -103,12 +103,6 @@ public class LoadGameSubmenu : Submenu
         scrollbar.value = (float)currentPageIndex / (scrollbar.numberOfSteps - 1);
     }
 
-    private void ExitMenu()
-    {
-        //StateController.Instance.SetSubmenuState(StateController.Instance.PreviousSubmenuState);
-        StateController.Instance.ReturnToPreviousSubmenuState();
-    }
-
     private void EnableSaveDeletion()
     {
         foreach (SaveDisplay saveDisplay in saveDisplays)

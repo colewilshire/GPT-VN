@@ -16,6 +16,7 @@ public class CharacterCreationMenu : Menu
     [SerializeField] private CharacterCreationButton faceButtons;
     [SerializeField] private Button resetButton;
     [SerializeField] private Button randomizeButton;
+    [SerializeField] private Button exitButton;
 
     private readonly List<Accessory> accessories = new();
     private readonly List<Hair> hairs = new();
@@ -51,6 +52,13 @@ public class CharacterCreationMenu : Menu
         randomizeButton.onClick.AddListener(SetRandomAppearance);
     }
 
+    protected override void Start()
+    {
+        base.Start();
+
+        exitButton.onClick.AddListener(ExitMenu);
+    }
+
     protected override void OnDestroy()
     {
         base.OnDestroy();
@@ -67,6 +75,7 @@ public class CharacterCreationMenu : Menu
 
         resetButton.onClick.RemoveListener(SetDefaultAppearance);
         randomizeButton.onClick.RemoveListener(SetRandomAppearance);
+        exitButton.onClick.RemoveListener(ExitMenu);
     }
 
     protected override void ResetMenu()

@@ -9,4 +9,9 @@ public abstract class Submenu : Menu
     {
         StateController.Instance.OnSubmenuStateChange -= OnStateChange;
     }
+
+    protected override void ExitMenu()
+    {
+        StateController.Instance.ReturnToPreviousSubmenuState();
+    }
 }

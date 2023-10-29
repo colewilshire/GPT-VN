@@ -49,6 +49,6 @@ public class MainMenu : Menu
 
     private void OnQuitButtonClicked()
     {
-        
+        Application.Quit();
     }
 }

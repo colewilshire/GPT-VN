@@ -9,11 +9,6 @@ public abstract class Menu : MonoBehaviour
     protected virtual void Start()
     {
         StateController.Instance.OnMenuStateChange += OnStateChange;
-
-        // foreach (Transform child in transform)
-        // {
-        //     defaultChildStates[child.gameObject] = child.gameObject.activeSelf;
-        // }
     }
 
     protected virtual void OnDestroy()
@@ -33,9 +28,11 @@ public abstract class Menu : MonoBehaviour
 
     protected virtual void ResetMenu()
     {
-        // foreach (KeyValuePair<GameObject, bool> entry in defaultChildStates)
-        // {
-        //     entry.Key.SetActive(entry.Value);
-        // }
+
+    }
+
+    protected virtual void ExitMenu()
+    {
+        StateController.Instance.ReturnToPreviousStates();
     }
 }
