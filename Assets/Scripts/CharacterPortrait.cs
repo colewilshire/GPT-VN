@@ -10,12 +10,15 @@ public class CharacterPortrait : MonoBehaviour
     [SerializeField] private Image outfit;
     [SerializeField] private Image face;
     [SerializeField] private Image hairBack;
-    public CharacterAppearance Appearance { get; private set; }
+    [SerializeField] private Image head;
+    public CharacterAppearance Appearance;
 
     [SerializeField] private Accessory accessoryScriptableObject;
     [SerializeField] private Hair hairScriptableObject;
     [SerializeField] private Outfit outfitScriptableObject;
     [SerializeField] private Face faceScriptableObject;
+
+    public string DisplayName = "";
 
     private void SetExpression(Mood expression)
     {
@@ -66,6 +69,7 @@ public class CharacterPortrait : MonoBehaviour
         outfit.gameObject.SetActive(outfit.sprite);
         face.gameObject.SetActive(face.sprite);
         hairBack.gameObject.SetActive(hairBack.sprite);
+        head.gameObject.SetActive(face.sprite);
 
         HidePortrait();
     }

@@ -50,6 +50,13 @@ public class CharacterCreationMenu : Menu
 
         resetButton.onClick.AddListener(SetDefaultAppearance);
         randomizeButton.onClick.AddListener(SetRandomAppearance);
+
+        //
+        characterPortrait.Appearance = ScriptableObject.CreateInstance<CharacterAppearance>();
+        characterPortrait.Appearance.Accessory = accessories[accessoryIndex];
+        characterPortrait.Appearance.Hair = hairs[hairIndex];
+        characterPortrait.Appearance.Outfit = outfits[outfitIndex];
+        characterPortrait.Appearance.Face = faces[faceIndex];
     }
 
     protected override void Start()
@@ -83,6 +90,18 @@ public class CharacterCreationMenu : Menu
         base.ResetMenu();
 
         SetDefaultAppearance();
+    }
+
+    protected override void ExitMenu()
+    {
+        //
+        characterPortrait.Appearance = ScriptableObject.CreateInstance<CharacterAppearance>();
+        characterPortrait.Appearance.Accessory = accessories[accessoryIndex];
+        characterPortrait.Appearance.Hair = hairs[hairIndex];
+        characterPortrait.Appearance.Outfit = outfits[outfitIndex];
+        characterPortrait.Appearance.Face = faces[faceIndex];
+
+        base.ExitMenu();
     }
 
     private void SetAppearance(int newAcessoryIndex, int newHairIndex, int newOutfitIndex, int newFaceIndex)

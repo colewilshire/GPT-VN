@@ -5357,6 +5357,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6115015120232068154, guid: c045c4fc654c4d6458dbe00e80d5e8c8, type: 3}
+      propertyPath: DisplayName
+      value: Mainest Characterest
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12622,7 +12626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c106e2136f563d44b44cb9b06af81ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  apiKey: 
+  apiKey: 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
   genre: romance
   setting: all-girls high school
   linesPerScene: 10
@@ -22170,6 +22174,7 @@ GameObject:
   - component: {fileID: 1930907439}
   - component: {fileID: 1930907438}
   - component: {fileID: 1930907441}
+  - component: {fileID: 1930907442}
   m_Layer: 0
   m_Name: Character Creation Canvas
   m_TagString: Untagged
@@ -22282,6 +22287,19 @@ MonoBehaviour:
   resetButton: {fileID: 643735839}
   randomizeButton: {fileID: 226785051}
   exitButton: {fileID: 23256082}
+--- !u!114 &1930907442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930907436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39a320a9958a2034a89f6eb79f3502d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MainCharacterPortait: {fileID: 843360598}
 --- !u!1 &1940736597
 GameObject:
   m_ObjectHideFlags: 0

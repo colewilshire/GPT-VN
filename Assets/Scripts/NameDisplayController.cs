@@ -15,14 +15,6 @@ public class NameDisplayController : Singleton<NameDisplayController>
     public void SetDisplayName(string characterName)
     {
         characterName = characterName.Trim();
-
-        if (characterName == null || characterName.ToLower() == "narrator")
-        {
-            textBox.text = "";
-        }
-        else
-        {
-            textBox.text = characterName.ToLower();
-        }
+        textBox.text = characterName.ToLower();
     }
 }

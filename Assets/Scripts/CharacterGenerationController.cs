@@ -79,6 +79,22 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
         }
 
         characterPortrait.name = characterName;
+
+        if (characterName.ToLower() == "main character" || characterName.ToLower() == "protagonist")
+        {
+            characterPortrait.DisplayName = CharacterCreationController.Instance.MainCharacterPortait.DisplayName;
+            characterAppearance = CharacterCreationController.Instance.MainCharacterPortait.Appearance;
+        }
+        else if (characterName.ToLower() == "narrator")
+        {
+            characterPortrait.DisplayName = "";
+            characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
+        }
+        else
+        {
+            characterPortrait.DisplayName = characterName.Split(' ')[0];
+        }
+
         characterPortrait.SetAppearance(characterAppearance);
 
         CharacterManager.Instance.CacheCharacterPortrait(characterPortrait);
@@ -106,6 +122,22 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
             CharacterPortrait characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
 
             characterPortrait.name = characterName;
+            
+            if (characterName.ToLower() == "main character" || characterName.ToLower() == "protagonist")
+            {
+                characterPortrait.DisplayName = CharacterCreationController.Instance.MainCharacterPortait.DisplayName;
+                characterAppearance = CharacterCreationController.Instance.MainCharacterPortait.Appearance;
+            }
+            else if (characterName.ToLower() == "narrator")
+            {
+                characterPortrait.DisplayName = "";
+                characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
+            }
+            else
+            {
+                characterPortrait.DisplayName = characterName.Split(' ')[0];
+            }
+
             characterPortrait.SetAppearance(characterAppearance);
 
             CharacterManager.Instance.CacheCharacterPortrait(characterPortrait);

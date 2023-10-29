@@ -17,8 +17,17 @@ public class DialogueController : Singleton<DialogueController>
 
         UIEffectController.Instance.TerminateEffects();
         BackgroundController.Instance.SetBackground(currentLine.BackgroundImage);
-        CharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
-        NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
+        CharacterPortrait characterPortrait = CharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
+
+        if (characterPortrait)
+        {
+            NameDisplayController.Instance.SetDisplayName(characterPortrait.DisplayName);
+        }
+        else
+        {
+            NameDisplayController.Instance.SetDisplayName("");
+        }
+
         TextController.Instance.SetText(currentLine.DialogueText);
         AudioController.Instance.PlaySound(currentLine.VoiceLine);
 

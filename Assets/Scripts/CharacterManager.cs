@@ -13,7 +13,7 @@ public class CharacterManager : Singleton<CharacterManager>
         Characters[characterPortrait.name] = characterPortrait;
     }
 
-    public void ShowPortrait(string characterName, Mood mood)
+    public CharacterPortrait ShowPortrait(string characterName, Mood mood)
     {
         if (activePortrait)
         {
@@ -27,7 +27,11 @@ public class CharacterManager : Singleton<CharacterManager>
             //Mood expression = Thesaurus.Instance.GetMoodSynonym(mood);
             //Enum.TryParse(expressionName, out Mood expression);
             characterPortrait.ShowPortrait(mood);
+
+            return characterPortrait;
         }
+
+        return null;
     }
 
     public void ClearCharacters()
