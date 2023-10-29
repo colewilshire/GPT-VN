@@ -7,5 +7,6 @@ public enum GameState
     Gameplay,
     Loading,
     Saving,
-    Choice
+    Choice,
+    CharacterCreation
 }

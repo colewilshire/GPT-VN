@@ -55,11 +55,11 @@ public class CharacterPortrait : MonoBehaviour
         hairScriptableObject = characterAppearance.Hair;
         faceScriptableObject = characterAppearance.Face;
 
-        accessory.sprite = characterAppearance.Accessory?.MainImage ?? null;
-        hairFront.sprite = characterAppearance.Hair?.MainImage ?? null;
-        outfit.sprite = characterAppearance.Outfit?.MainImage ?? null;
-        face.sprite = characterAppearance.Face?.MainImage ?? null;
-        hairBack.sprite = characterAppearance.Hair?.HairBackground ?? null;
+        accessory.sprite = characterAppearance.Accessory.MainImage;
+        hairFront.sprite = characterAppearance.Hair.MainImage;
+        outfit.sprite = characterAppearance.Outfit.MainImage;
+        face.sprite = characterAppearance.Face.MainImage;
+        hairBack.sprite = characterAppearance.Hair.HairBackground;
 
         accessory.gameObject.SetActive(accessory.sprite);
         hairFront.gameObject.SetActive(hairFront.sprite);
@@ -68,6 +68,32 @@ public class CharacterPortrait : MonoBehaviour
         hairBack.gameObject.SetActive(hairBack.sprite);
 
         HidePortrait();
+    }
+
+    public void SetAccessory(Accessory newAccessory)
+    {
+        accessory.sprite = newAccessory.MainImage;
+        accessory.gameObject.SetActive(accessory.sprite);
+    }
+
+    public void SetHair(Hair newHair)
+    {
+        hairFront.sprite = newHair.MainImage;
+        hairBack.sprite = newHair.HairBackground;
+        hairFront.gameObject.SetActive(hairFront.sprite);
+        hairBack.gameObject.SetActive(hairBack.sprite);
+    }
+
+    public void SetOutfit(Outfit newOutfit)
+    {
+        outfit.sprite = newOutfit.MainImage;
+        outfit.gameObject.SetActive(outfit.sprite);
+    }
+
+    public void SetFace(Face newFace)
+    {
+        face.sprite = newFace.MainImage;
+        face.gameObject.SetActive(face.sprite);
     }
 
     public void ShowPortrait(Mood expression = Mood.Neutral)
