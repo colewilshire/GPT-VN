@@ -339,7 +339,7 @@ public class OpenAIController : Singleton<OpenAIController>
         CharacterGenerationController.Instance.LoadCharactersFromSave(saveData);
         BackgroundController.Instance.LoadBackgroundImagesFromSave(saveData);
         DialogueController.Instance.LoadDialogueFromSave(saveData);
-        StateController.Instance.SetMenuState(GameState.Gameplay);
+        StateController.Instance.SetStates(GameState.Gameplay);
     }
 
     public async void GenerateAdditionalDialogue(string choiceText = null)

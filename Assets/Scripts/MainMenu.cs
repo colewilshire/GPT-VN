@@ -44,7 +44,7 @@ public class MainMenu : Menu
 
     private void OnSettingsButtonClicked()
     {
-        StateController.Instance.SetMenuState(GameState.CharacterCreation);
+        StateController.Instance.SetStates(GameState.CharacterCreation);
     }
 
     private void OnQuitButtonClicked()
