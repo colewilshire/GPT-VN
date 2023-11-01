@@ -78,28 +78,13 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
             characterAppearance.Face = face;
         }
 
-        characterPortrait.name = characterName;
-
         if (characterName.ToLower() == "narrator")
         {
             characterPortrait.DisplayName = "";
             characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
         }
-        // if (characterName.ToLower() == "main character" || characterName.ToLower() == "protagonist")
-        // {
-        //     characterPortrait.DisplayName = CharacterCreationController.Instance.MainCharacterPortait.DisplayName;
-        //     characterAppearance = CharacterCreationController.Instance.MainCharacterPortait.Appearance;
-        //     CharacterManager.Instance.MainCharacter = characterPortrait;
-        // }
-        // else if (characterName.ToLower() == "narrator")
-        // {
-        //     characterPortrait.DisplayName = "";
-        //     characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
-        // }
-        // else
-        // {
-        //     characterPortrait.DisplayName = characterName.Split(' ')[0];
-        // }
+
+        characterPortrait.name = characterName;
         characterPortrait.DisplayName = characterName.Split(' ')[0];
         characterPortrait.SetAppearance(characterAppearance);
 
@@ -127,24 +112,8 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
             characterAppearance.Face = Resources.Load<Face>($"Faces/{faceName}");
 
             CharacterPortrait characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
-
             characterPortrait.name = characterName;
-
-            // if (characterName.ToLower() == "main character" || characterName.ToLower() == "protagonist")
-            // {
-            //     characterPortrait.DisplayName = CharacterCreationController.Instance.MainCharacterPortait.DisplayName;
-            //     characterAppearance = CharacterCreationController.Instance.MainCharacterPortait.Appearance;
-            // }
-            // else if (characterName.ToLower() == "narrator")
-            // {
-            //     characterPortrait.DisplayName = "";
-            //     characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
-            // }
-            // else
-            // {
-            //     characterPortrait.DisplayName = characterName.Split(' ')[0];
-            // }
-            characterPortrait.DisplayName = displayName;//characterName.Split(' ')[0];
+            characterPortrait.DisplayName = displayName;
             characterPortrait.SetAppearance(characterAppearance);
 
             CharacterManager.Instance.CacheCharacterPortrait(characterPortrait);
