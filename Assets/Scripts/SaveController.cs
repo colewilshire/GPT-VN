@@ -6,11 +6,19 @@ using UnityEngine;
 
 public class SaveController : Singleton<SaveController>
 {
-    [SerializeField]private int maxQuicksaves = 10;
+    [SerializeField] private int maxQuicksaves = 10;
     private int highestSceneIndex = 0;
     private int nextQuicksaveIndex = 0;
+    private string rootSaveFolderPath;
     public string quicksaveName = "quicksave";
     public string autosaveName = "autosave";
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        rootSaveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
+    }
 
     private string SerializeCharacterAppearance(CharacterAppearance characterAppearance)
     {
@@ -78,7 +86,7 @@ public class SaveController : Singleton<SaveController>
     {
         int lastQuicksaveIndex = nextQuicksaveIndex - 1;
         string lastQuicksaveName = $"{quicksaveName}{lastQuicksaveIndex}";
-        string savePath = Path.Combine(Application.persistentDataPath, lastQuicksaveName, $"{lastQuicksaveName}.sav");
+        string savePath = Path.Combine(rootSaveFolderPath, lastQuicksaveName, $"{lastQuicksaveName}.sav");
 
         if (!File.Exists(savePath)) return;
         OpenAIController.Instance.LoadConversationFromSave(lastQuicksaveName);
@@ -88,7 +96,7 @@ public class SaveController : Singleton<SaveController>
     {
         StateController.Instance.SetStates(GameState.Saving);
 
-        string folderPath = Path.Combine(Application.persistentDataPath, saveName);
+        string folderPath = Path.Combine(rootSaveFolderPath, saveName);
         string savePath = Path.Combine(folderPath, $"{saveName}.sav");
         string screenshotPath = Path.Combine(folderPath, $"{saveName}.png");
         SaveData saveData = SaveData.CreateInstance<SaveData>();
@@ -97,6 +105,7 @@ public class SaveController : Singleton<SaveController>
         saveData.ConversationMessages = new List<string>();
         saveData.DialoguePath = DialogueController.Instance.SerializedDialoguePath;
         saveData.CharacterNames = new List<string>();
+        saveData.DisplayNames = new List<string>();
         saveData.CharacterAppearances = new List<string>();
         saveData.BackgroundIndexes = new List<string>();
         saveData.BackgroundNames = new List<string>();
@@ -114,6 +123,7 @@ public class SaveController : Singleton<SaveController>
             string serializedCharacterAppearance = SerializeCharacterAppearance(characterAppearance);
 
             saveData.CharacterNames.Add(characterEntry.Key);
+            saveData.DisplayNames.Add(characterEntry.Value.DisplayName);
             saveData.CharacterAppearances.Add(serializedCharacterAppearance);
         }
 
@@ -128,14 +138,14 @@ public class SaveController : Singleton<SaveController>
         Directory.CreateDirectory(folderPath);
         File.WriteAllText(savePath, serializedSaveData);
         ScreenCapture.CaptureScreenshot(screenshotPath);
-        StateController.Instance.SetMenuState(GameState.Gameplay);
+        StateController.Instance.SetStates(GameState.Gameplay);
         //StateController.Instance.SetSubmenuState(StateController.Instance.PreviousSubmenuState);
-        StateController.Instance.ReturnToPreviousSubmenuState();
+        //StateController.Instance.ReturnToPreviousSubmenuState();
     }
 
     public SaveData Load(string saveName)
     {
-        string savePath = Path.Combine(Application.persistentDataPath, saveName, $"{saveName}.sav");
+        string savePath = Path.Combine(rootSaveFolderPath, saveName, $"{saveName}.sav");
         if (!File.Exists(savePath)) return null;
 
         SaveData saveData = SaveData.CreateInstance<SaveData>();
@@ -149,13 +159,14 @@ public class SaveController : Singleton<SaveController>
 
     public void DeleteSave(string saveName)
     {
-        string folderPath = Path.Combine(Application.persistentDataPath, saveName);
+        string folderPath = Path.Combine(rootSaveFolderPath, saveName);
         Directory.Delete(folderPath, true);
     }
 
     public Dictionary<string, Sprite> GetSavesSortedByDate()
     {
-        string rootSaveFolderPath = Path.Combine(Application.persistentDataPath);
+        Directory.CreateDirectory(rootSaveFolderPath);
+
         string[] saveFolderPaths = Directory.GetDirectories(rootSaveFolderPath, "*", SearchOption.TopDirectoryOnly);
         List<string> sortedSaveFolderPaths = saveFolderPaths.OrderByDescending(d => 
             Directory.EnumerateFileSystemEntries(d, "*.*", SearchOption.TopDirectoryOnly)

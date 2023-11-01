@@ -7,6 +7,40 @@ public class CharacterManager : Singleton<CharacterManager>
 {
     private CharacterPortrait activePortrait;
     public Dictionary<string, CharacterPortrait> Characters {get; private set;} = new Dictionary<string, CharacterPortrait>();
+    public CharacterPortrait MainCharacter;
+
+    private void Start()
+    {
+        StateController.Instance.OnMenuStateChange += ResetMainCharacter;
+    }
+
+    private void OnDestroy()
+    {
+        StateController.Instance.OnMenuStateChange -= ResetMainCharacter;
+    }
+
+    private void ResetMainCharacter(GameState state)
+    {
+        if (state != GameState.MainMenu) return;
+        MainCharacter = null;
+    }
+
+    // Get specified character and replace their display name and appearance with that from Character Creation.
+    // In the off chance a bad name was given, search for some of ChatGPT's favorite names for Protag-kun.
+    public void SetMainCharacter(string characterName)
+    {
+        if (Characters.TryGetValue(characterName, out CharacterPortrait characterPortrait)
+            || Characters.TryGetValue("Main Character", out characterPortrait) 
+            || Characters.TryGetValue("Protagonist", out characterPortrait))
+        {
+            if (!CharacterCreationController.Instance.MainCharacterPortait) return;
+
+            MainCharacter = characterPortrait;
+            characterPortrait.DisplayName = CharacterCreationController.Instance.MainCharacterPortait.DisplayName;
+            characterPortrait.Appearance = CharacterCreationController.Instance.MainCharacterPortait.Appearance;
+            characterPortrait.SetAppearance(characterPortrait.Appearance);
+        }
+    }
 
     public void CacheCharacterPortrait(CharacterPortrait characterPortrait)
     {

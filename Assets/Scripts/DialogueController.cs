@@ -116,7 +116,7 @@ public class DialogueController : Singleton<DialogueController>
         return dialogueLine;
     }
 
-    public void AddToDialogue(string serializedDialogue)
+    public void AddToDialogue(string serializedDialogue, bool isNewGame = false)
     {
         List<string> serializedLines = new(serializedDialogue.Split('\n', StringSplitOptions.RemoveEmptyEntries));
         DialogueLine firstChoice = null;
@@ -133,6 +133,12 @@ public class DialogueController : Singleton<DialogueController>
 
                 firstChoice.DialogueChoice.Choices.Add(firstChoice);
                 dialoguePath.Add(firstChoice);
+
+                // Chances are, the character making decisions is intended by the AI to be the main character
+                if (firstChoice.CharacterName != null && CharacterManager.Instance.MainCharacter == null && isNewGame)
+                {
+                    CharacterManager.Instance.SetMainCharacter(firstChoice.CharacterName);
+                }
             }
             else if (isDialogueChoice && firstChoice)
             {
@@ -158,7 +164,7 @@ public class DialogueController : Singleton<DialogueController>
     public void AddChoiceToDialogue(string serializedDialogue)
     {
         serializedDialogue = $"~{serializedDialogue.Trim('\n').Replace("\n", $"\n{choiceCharacter}")}";
-        AddToDialogue(serializedDialogue);
+        AddToDialogue(serializedDialogue, true);
     }
 
     public void StepForward()

@@ -8,6 +8,7 @@ public class SaveData : ScriptableObject
     public List<string> ConversationMessages;
     public string DialoguePath;
     public List<string> CharacterNames;
+    public List<string> DisplayNames;
     public List<string> CharacterAppearances;
     public List<string> BackgroundIndexes;
     public List<string> BackgroundNames;

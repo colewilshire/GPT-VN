@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,7 @@ public class CharacterCreationMenu : Menu
     [SerializeField] private Button resetButton;
     [SerializeField] private Button randomizeButton;
     [SerializeField] private Button exitButton;
+    [SerializeField] private TMP_Text characterName;
 
     private readonly List<Accessory> accessories = new();
     private readonly List<Hair> hairs = new();
@@ -90,6 +92,7 @@ public class CharacterCreationMenu : Menu
         base.ResetMenu();
 
         SetDefaultAppearance();
+        characterName.text = "";
     }
 
     protected override void ExitMenu()
@@ -100,6 +103,7 @@ public class CharacterCreationMenu : Menu
         characterPortrait.Appearance.Hair = hairs[hairIndex];
         characterPortrait.Appearance.Outfit = outfits[outfitIndex];
         characterPortrait.Appearance.Face = faces[faceIndex];
+        characterPortrait.DisplayName = characterName.text;
 
         base.ExitMenu();
     }
