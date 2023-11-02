@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 
 public class NameDisplayController : Singleton<NameDisplayController>

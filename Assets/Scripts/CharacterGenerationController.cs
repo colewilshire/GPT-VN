@@ -52,40 +52,42 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
     public void GenerateCharacterPortrait(string characterName, List<AccessoryTag> accessoryTags, List<HairTag> hairTags, List<OutfitTag> outfitTags, List <FaceTag> faceTags)
     {
         CharacterPortrait characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
-        CharacterAppearance characterAppearance = CharacterAppearance.CreateInstance<CharacterAppearance>();
+        CharacterAppearance characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
         Accessory accessory = TaggedImageUtility.GetImageWithTags(accessoryTags, accessoryDictionary);
         Hair hair = TaggedImageUtility.GetImageWithTags(hairTags, hairDictionary);
         Outfit outfit = TaggedImageUtility.GetImageWithTags(outfitTags, outfitDictionary);
         Face face = TaggedImageUtility.GetImageWithTags(faceTags, faceDictionary);
 
-        if (accessory)
+        if (characterName.ToLower() != "narrator")
         {
-            characterAppearance.Accessory = accessory;
-        }
+            if (accessory)
+            {
+                characterAppearance.Accessory = accessory;
+            }
 
-        if (hair)
-        {
-            characterAppearance.Hair = hair;
-        }
+            if (hair)
+            {
+                characterAppearance.Hair = hair;
+            }
 
-        if (outfit)
-        {
-            characterAppearance.Outfit = outfit;
-        }
+            if (outfit)
+            {
+                characterAppearance.Outfit = outfit;
+            }
 
-        if (face)
-        {
-            characterAppearance.Face = face;
-        }
+            if (face)
+            {
+                characterAppearance.Face = face;
+            }
 
-        if (characterName.ToLower() == "narrator")
+            characterPortrait.DisplayName = characterName.Split(' ')[0];
+        }
+        else
         {
             characterPortrait.DisplayName = "";
-            characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
         }
 
         characterPortrait.name = characterName;
-        characterPortrait.DisplayName = characterName.Split(' ')[0];
         characterPortrait.SetAppearance(characterAppearance);
 
         CharacterManager.Instance.CacheCharacterPortrait(characterPortrait);

@@ -37,7 +37,7 @@ public static class TaggedImageUtility
     // Get an image that matches the provided tags. If multiple images match, prioritize based on enum index. Retrieve a cached image if tags are identical.
     public static U GetImageWithTags<T, U>(List<T> desiredTags, Dictionary<T, List<U>> tagDictionary, Dictionary<string, U> imageCache = null) where T : Enum where U : TaggedImage<T>
     {
-        if (desiredTags.Count == 0)
+        if (desiredTags == null || desiredTags.Count == 0)
         {
             if (typeof(T) == typeof(AccessoryTag)) return null;
             return GetRandomImage(tagDictionary);

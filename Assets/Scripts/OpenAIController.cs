@@ -281,29 +281,20 @@ public class OpenAIController : Singleton<OpenAIController>
 
         foreach (string characterName in castList)
         {
-            List<HairTag> hairTags;
-            List<OutfitTag> outfitTags;
-            List<FaceTag> eyeColorTags;
-            List<AccessoryTag> accessoryTags;
+            hairDescriptions.TryGetValue(characterName, out List<HairTag> hairTags);
+            outfitDescriptions.TryGetValue(characterName, out List<OutfitTag> outfitTags);
+            eyeColorDescriptions.TryGetValue(characterName, out List<FaceTag> eyeColorTags);
+            accessoryDescriptions.TryGetValue(characterName, out List<AccessoryTag> accessoryTags);
+            CharacterGenerationController.Instance.GenerateCharacterPortrait(characterName, accessoryTags, hairTags, outfitTags, eyeColorTags);
 
-            hairDescriptions.TryGetValue(characterName, out hairTags);
-            outfitDescriptions.TryGetValue(characterName, out outfitTags);
-            eyeColorDescriptions.TryGetValue(characterName, out eyeColorTags);
-            accessoryDescriptions.TryGetValue(characterName, out accessoryTags);
-
-            if (hairTags != null && outfitTags != null && eyeColorTags != null && accessoryTags != null)
+            if (!(hairTags != null && outfitTags != null && eyeColorTags != null && accessoryTags != null))
             {
-                CharacterGenerationController.Instance.GenerateCharacterPortrait(characterName, accessoryTags, hairTags, outfitTags, eyeColorTags);
-            }
-            else
-            {
-                Debug.Log($"Error generating {characterName}.");
+                Debug.Log($"Error generating {characterName}. HairTags: {hairTags != null}, outfitTags: {outfitTags != null}, eyeColorTags: {eyeColorTags != null}, accessoryTags: {accessoryTags != null}");
             }
         }
 
         BackgroundController.Instance.GenerateBackgroundImages(backgroundDescriptions);
-        DialogueController.Instance.StartDialogue(serializedDialogue);
-        DialogueController.Instance.AddChoiceToDialogue(serializedChoice);
+        DialogueController.Instance.StartDialogue(serializedDialogue, serializedChoice);
         StateController.Instance.SetStates(GameState.Gameplay);
     }
 

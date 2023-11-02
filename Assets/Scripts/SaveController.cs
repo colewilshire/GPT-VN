@@ -138,9 +138,8 @@ public class SaveController : Singleton<SaveController>
         Directory.CreateDirectory(folderPath);
         File.WriteAllText(savePath, serializedSaveData);
         ScreenCapture.CaptureScreenshot(screenshotPath);
-        StateController.Instance.SetStates(GameState.Gameplay);
-        //StateController.Instance.SetSubmenuState(StateController.Instance.PreviousSubmenuState);
-        //StateController.Instance.ReturnToPreviousSubmenuState();
+        StateController.Instance.SetMenuState(GameState.Gameplay);
+        StateController.Instance.ReturnToPreviousSubmenuState();
     }
 
     public SaveData Load(string saveName)

@@ -192,13 +192,19 @@ public class DialogueController : Singleton<DialogueController>
         ReadDialogueLine(CurrentLineIndex);
     }
 
-    public void StartDialogue(string serializedDialogue, int startingLineIndex = 0)
+    public void StartDialogue(string serializedDialogue, string serializedChoice = null, int startingLineIndex = 0)
     {
         CurrentLineIndex = startingLineIndex;
         dialoguePath = new List<DialogueLine>();
         SerializedDialoguePath = "";
 
         AddToDialogue(serializedDialogue);
+
+        if (serializedChoice != null)
+        {
+            AddChoiceToDialogue(serializedChoice);
+        }
+
         ReadDialogueLine(CurrentLineIndex);
     }
 
@@ -213,6 +219,6 @@ public class DialogueController : Singleton<DialogueController>
 
     public void LoadDialogueFromSave(SaveData saveData)
     {
-        StartDialogue(saveData.DialoguePath, saveData.CurrentLineIndex);
+        StartDialogue(saveData.DialoguePath, null, saveData.CurrentLineIndex);
     }
 }
