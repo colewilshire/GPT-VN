@@ -1,5 +1,6 @@
 using OpenAI_API;
 using OpenAI_API.Chat;
+using OpenAI_API.Models;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -251,33 +252,53 @@ public class OpenAIController : Singleton<OpenAIController>
         return tagsByCharacter;
     }
 
+    private bool VerifyChatResponses(Dictionary<string, string> chatResponses)
+    {
+        foreach (KeyValuePair<string, string> chatResponse in chatResponses)
+        {
+            if (chatResponse.Value == null)
+            {
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public async void CreateNewConversation()
     {
         StateController.Instance.SetStates(GameState.Loading);
         CharacterManager.Instance.ClearCharacters();
 
-        ChatRequest chatRequest = new();
-        //chatRequest.Model = Model.GPT4;
+        ChatRequest chatRequest = new()
+        {
+            Model = Model.GPT4Turbo
+        };
         Chat = api.Chat.CreateConversation(chatRequest);
 
         PromptWithInitialInstructions();
-        string serializedCastList = await GenerateCastList();
-        string serializedDialogue = await GenerateDialogue();
-        string serializedChoice = await GenerateChoice();
-        string serializedHairDescriptions = await GenerateHairDescriptions();
-        string serializedOutfitDescriptions = await GenerateOutfitDescriptions();
-        string serializedEyeColorDescriptions = await GenerateEyeColorDescriptions();
-        string serializedAccessoryDescriptions = await GenerateAccessoryDescriptions();
-        string serializedBackgroundDescriptions = await GenerateBackgroundDescription();
+        Dictionary<string, string> chatResponses = new()
+        {
+            ["serializedCastList"] = await GenerateCastList(),
+            ["serializedDialogue"] = await GenerateDialogue(),
+            ["serializedChoice"] = await GenerateChoice(),
+            ["serializedHairDescriptions"] = await GenerateHairDescriptions(),
+            ["serializedOutfitDescriptions"] = await GenerateOutfitDescriptions(),
+            ["serializedEyeColorDescriptions"] = await GenerateEyeColorDescriptions(),
+            ["serializedAccessoryDescriptions"] = await GenerateAccessoryDescriptions(),
+            ["serializedBackgroundDescriptions"] = await GenerateBackgroundDescription()
+        };
+        if (!VerifyChatResponses(chatResponses)) return;    // Now add fail conditions to each of the functions
 
-        List<string> castList = serializedCastList.Split('|', StringSplitOptions.RemoveEmptyEntries)
+        List<string> castList = chatResponses["serializedCastList"].Split('|', StringSplitOptions.RemoveEmptyEntries)
             .Select(str => str.Trim())
             .ToList();
-        Dictionary<string, List<HairTag>> hairDescriptions = DeserializeTags<HairTag>(serializedHairDescriptions);
-        Dictionary<string, List<OutfitTag>> outfitDescriptions = DeserializeTags<OutfitTag>(serializedOutfitDescriptions);
-        Dictionary<string, List<FaceTag>> eyeColorDescriptions = DeserializeTags<FaceTag>(serializedEyeColorDescriptions);
-        Dictionary<string, List<AccessoryTag>> accessoryDescriptions = DeserializeTags<AccessoryTag>(serializedAccessoryDescriptions);
-        Dictionary<string, List<BackgroundTag>> backgroundDescriptions = DeserializeTags<BackgroundTag>(serializedBackgroundDescriptions);
+        Dictionary<string, List<HairTag>> hairDescriptions = DeserializeTags<HairTag>(chatResponses["serializedHairDescriptions"]);
+        Dictionary<string, List<OutfitTag>> outfitDescriptions = DeserializeTags<OutfitTag>(chatResponses["serializedOutfitDescriptions"]);
+        Dictionary<string, List<FaceTag>> eyeColorDescriptions = DeserializeTags<FaceTag>(chatResponses["serializedEyeColorDescriptions"]);
+        Dictionary<string, List<AccessoryTag>> accessoryDescriptions = DeserializeTags<AccessoryTag>(chatResponses["serializedAccessoryDescriptions"]);
+        Dictionary<string, List<BackgroundTag>> backgroundDescriptions = DeserializeTags<BackgroundTag>(chatResponses["serializedBackgroundDescriptions"]);
 
         foreach (string characterName in castList)
         {
@@ -294,7 +315,7 @@ public class OpenAIController : Singleton<OpenAIController>
         }
 
         BackgroundController.Instance.GenerateBackgroundImages(backgroundDescriptions);
-        DialogueController.Instance.StartDialogue(serializedDialogue, serializedChoice);
+        DialogueController.Instance.StartDialogue(chatResponses["serializedDialogue"], chatResponses["serializedChoice"]);
         StateController.Instance.SetStates(GameState.Gameplay);
     }
 
@@ -311,8 +332,10 @@ public class OpenAIController : Singleton<OpenAIController>
             return;
         }
 
-        ChatRequest chatRequest = new();
-        //chatRequest.Model = Model.GPT4;
+        ChatRequest chatRequest = new()
+        {
+            Model = Model.GPT4Turbo
+        };
         Chat = api.Chat.CreateConversation(chatRequest);
 
         for (int i = 0; i < saveData.ConversationRoles.Count; ++i)
