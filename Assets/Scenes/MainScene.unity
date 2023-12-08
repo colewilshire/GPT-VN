@@ -5852,6 +5852,7 @@ GameObject:
   - component: {fileID: 888371921}
   - component: {fileID: 888371922}
   - component: {fileID: 888371923}
+  - component: {fileID: 888371924}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -5935,6 +5936,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: beeb1d05af4bda149b61746f89bff2d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &888371924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 888371917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2835d4471cf72b4bbb42721ff6948bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &888588069
@@ -13135,7 +13148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c106e2136f563d44b44cb9b06af81ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  apiKey: 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
+  apiKey: 
   genre: romance
   setting: all-girls high school
   linesPerScene: 10

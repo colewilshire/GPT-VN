@@ -24,13 +24,11 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         api = new OpenAIAPI(apiKey);
     }
 
-    private void Start()
+    public async void CreateNewConversation()
     {
-        Initialize();
-    }
+        StateController.Instance.SetStates(GameState.Loading);
+        CharacterManager.Instance.ClearCharacters();
 
-    private async void Initialize()
-    {
         ChatRequest chatRequest = new()
         {
             Model = Model.GPT4Turbo,
@@ -44,32 +42,37 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         Dictionary<string, Character> characterDictionary = JsonConvert.DeserializeObject<Dictionary<string, Character>>(castList);
 
         string initialDialogue = await GenerateInitialDialogue();
-        DialogueScene dialogueScene = JsonConvert.DeserializeObject<DialogueScene>(initialDialogue);
+        DialogueScene initialDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(initialDialogue);
 
-        string choice = await GenerateChoice();
-        Choice choices = JsonConvert.DeserializeObject<Choice>(choice);
+        //NewDialogueController.Instance.AddSceneToDialogue(initialDialogueScene);
+
+        // string choice = await GenerateChoice();
+        // Choice choices = JsonConvert.DeserializeObject<Choice>(choice);
+
+        NewDialogueController.Instance.StartDialogue(initialDialogueScene);
+        StateController.Instance.SetStates(GameState.Gameplay);
 
         //string additionalDialogue = await GenerateAdditionalDialogue();
         //DialogueScene dialogueScene2 = JsonConvert.DeserializeObject<DialogueScene>(additionalDialogue);
 
         //
-        foreach (KeyValuePair<string, Character> keyValuePair in characterDictionary)
-        {
-            string characterName = keyValuePair.Key;
-            Character character = keyValuePair.Value;
+        // foreach (KeyValuePair<string, Character> keyValuePair in characterDictionary)
+        // {
+        //     string characterName = keyValuePair.Key;
+        //     Character character = keyValuePair.Value;
 
-            Debug.Log($"{characterName}: {character.Accessory}, {character.Eyes}, {character.Hair}, {character.Outfit}");
-        }
+        //     Debug.Log($"{characterName}: {character.Accessory}, {character.Eyes}, {character.Hair}, {character.Outfit}");
+        // }
 
-        foreach (NewDialogueLine dialogueLine in dialogueScene.DialogueLines)
-        {
-             Debug.Log($"{dialogueLine.CharacterName}: {dialogueLine.DialogueText} <{dialogueLine.Mood}>");
-        }
+        // foreach (NewDialogueLine dialogueLine in dialogueScene.DialogueLines)
+        // {
+        //      Debug.Log($"{dialogueLine.CharacterName}: {dialogueLine.DialogueText} <{dialogueLine.Mood}>");
+        // }
 
-        foreach (NewDialogueLine dialogueLine in choices.Choices)
-        {
-             Debug.Log($"{dialogueLine.CharacterName}: {dialogueLine.DialogueText} <{dialogueLine.Mood}>");
-        }
+        // foreach (NewDialogueLine dialogueLine in choices.Choices)
+        // {
+        //      Debug.Log($"{dialogueLine.CharacterName}: {dialogueLine.DialogueText} <{dialogueLine.Mood}>");
+        // }
 
         // foreach (NewDialogueLine dialogueLine in dialogueScene2.DialogueLines)
         // {
