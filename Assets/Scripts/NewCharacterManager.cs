@@ -23,11 +23,20 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
         faces = Resources.LoadAll<Face>("").ToList();
     }
 
-    private CharacterPortrait GenerateCharacterPortrait()
+    private void ClearCharacterPortraits()
+    {
+        foreach(KeyValuePair<string, CharacterPortrait> keyValuePair in characterPortraits)
+        {
+            Destroy(characterPortraits[keyValuePair.Key].gameObject);
+        }
+    }
+
+    private CharacterPortrait GenerateCharacterPortrait(string characterName)
     {
         CharacterPortrait characterPortrait = Instantiate(characterPortaitPrefab, transform);
         CharacterAppearance characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
 
+        characterPortrait.gameObject.name = characterName;
         characterAppearance.Accessory = accessories[UnityEngine.Random.Range(0, accessories.Count)];
         characterAppearance.Hair = hairs[UnityEngine.Random.Range(0, hairs.Count)];
         characterAppearance.Outfit = outfits[UnityEngine.Random.Range(0, outfits.Count)];
@@ -40,11 +49,13 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
 
     public void GenerateCharacterPortraits(Dictionary<string, Character> characterDictionary)
     {
+        ClearCharacterPortraits();
         characterPortraits = new();
     
         foreach(KeyValuePair<string, Character> keyValuePair in characterDictionary)
         {
-            characterPortraits[keyValuePair.Key] = GenerateCharacterPortrait();
+            string characterName = keyValuePair.Key;
+            characterPortraits[characterName] = GenerateCharacterPortrait(characterName);
         }
     }
 
