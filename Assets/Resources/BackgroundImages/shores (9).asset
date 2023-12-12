@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 165fe50e4dff2c346b1f93748f771271, type: 3}
   Tags: 07000000
+  Description: shore

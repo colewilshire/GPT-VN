@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 2794e250a8f46db438d7a64c6d663354, type: 3}
   Tags: 02000000
+  Description: forest

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: e6a594572d5aaf942bf9850edba865ea, type: 3}
   Tags: 03000000
+  Description: house

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 98d1481337e8dde44803301f0cbd5af7, type: 3}
   Tags: 00000000
+  Description: city

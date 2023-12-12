@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 6c2a16f5cf690f245b6b87214b98d517, type: 3}
   Tags: 04000000
+  Description: mountains

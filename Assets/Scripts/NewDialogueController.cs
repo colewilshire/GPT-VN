@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class NewDialogueController : Singleton<NewDialogueController>
 {
@@ -10,7 +11,7 @@ public class NewDialogueController : Singleton<NewDialogueController>
         currentLineIndex = lineIndex;
         NewDialogueLine currentLine = dialoguePath[currentLineIndex];
         CharacterPortrait characterPortrait = NewCharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
-
+        NewBackgroundController.Instance.ShowBackground(currentLine.BackgroundDescription);
         NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
         TextController.Instance.SetText(currentLine.DialogueText);
     }

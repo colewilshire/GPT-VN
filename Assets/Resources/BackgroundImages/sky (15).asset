@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 963aab14ae1137441a72d4bd222fb40d, type: 3}
   Tags: 08000000
+  Description: sky

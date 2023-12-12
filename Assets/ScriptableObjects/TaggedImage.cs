@@ -6,4 +6,5 @@ public abstract class TaggedImage<T> : ScriptableObject where T : Enum
 {
     public Sprite MainImage;
     public List<T> Tags;
+    public string Description;
 }

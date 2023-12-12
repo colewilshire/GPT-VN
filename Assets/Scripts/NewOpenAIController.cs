@@ -116,9 +116,10 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             $"Generate a script for the next scene of a '{genre}' genre visual novel set in the setting '{setting}', consisting of {linesPerScene} lines of dialogue. " +
             "Only a few characters from the cast list should appear in every scene. Some characters should be rarely appearing side characters, and the Main Character and Narrator should appear frequently." +
             "The cast of the story should consist of characters from the previously generated cast list." +
-            "Each line should include the speaking character's name, the text of the dialogue, and the speaker's mood. " +
+            "Each line should include the speaking character's name, the text of the dialogue, the speaker's mood, and the background image to be displayed. " +
             "Format the response as a plain JSON object with a top-level key 'DialogueLines'. " +
-            "Each entry under 'DialogueLines' should be an object with the keys 'CharacterName', 'DialogueText', and 'Mood'. " +
+            "Each entry under 'DialogueLines' should be an object with the keys 'CharacterName', 'DialogueText', 'Mood', and 'BackgroundDescription'." +
+            $"BackgroundsDescriptions should be chosen from the following list: {NewBackgroundController.Instance.ListBackgrounds()}." +
             "Do not include any additional formatting or markers such as markdown code block markers.";
 
         Chat.AppendSystemMessage(prompt);
@@ -165,7 +166,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         return extractedJson;
     }
 
-    private async Task<string> GenerateAdditionalDialogue(string castList = "")
+    private async Task<string> GenerateAdditionalDialogue()
     { 
         string prompt =
             $"From where the story last left off, continue the visual novel's script with {linesPerScene} more lines of dialogue. ";

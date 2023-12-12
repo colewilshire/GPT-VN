@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 939e2ff77e2c28344a0d98f082144841, type: 3}
   Tags: 05000000
+  Description: campsite

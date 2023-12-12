@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: aa77232bcfb350346836ff40e04cc784, type: 3}
   Tags: 09000000
+  Description: underwater

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: c16176b2eec9f5f4ca9b7baf124e8fe7, type: 3}
   Tags: 01000000
+  Description: factory
