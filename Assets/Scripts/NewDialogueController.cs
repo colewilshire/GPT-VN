@@ -9,6 +9,7 @@ public class NewDialogueController : Singleton<NewDialogueController>
     {
         currentLineIndex = lineIndex;
         NewDialogueLine currentLine = dialoguePath[currentLineIndex];
+        CharacterPortrait characterPortrait = NewCharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
 
         NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
         TextController.Instance.SetText(currentLine.DialogueText);
@@ -31,7 +32,7 @@ public class NewDialogueController : Singleton<NewDialogueController>
     }
 
     public void StepForward()
-    {;
+    {
         int newIndex = currentLineIndex + 1;
         if (!(dialoguePath.Count > newIndex)) return;
         ReadDialogueLine(newIndex);

@@ -49,6 +49,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         // string choice = await GenerateChoice();
         // Choice choices = JsonConvert.DeserializeObject<Choice>(choice);
 
+        NewCharacterManager.Instance.GenerateCharacterPortraits(characterDictionary);
         NewDialogueController.Instance.StartDialogue(initialDialogueScene);
         StateController.Instance.SetStates(GameState.Gameplay);
 
