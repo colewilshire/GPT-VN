@@ -39,7 +39,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
         // Make chat requests
         string castList = await GenerateCastList();
-        Dictionary<string, Character> characterDictionary = JsonConvert.DeserializeObject<Dictionary<string, Character>>(castList);
+        Dictionary<string, CharacterDescription> characterDescriptions = JsonConvert.DeserializeObject<Dictionary<string, CharacterDescription>>(castList);
 
         string initialDialogue = await GenerateInitialDialogue();
         DialogueScene initialDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(initialDialogue);
@@ -50,7 +50,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         // Choice choices = JsonConvert.DeserializeObject<Choice>(choice);
 
         // Interpret chat requests
-        NewCharacterManager.Instance.GenerateCharacterPortraits(characterDictionary);
+        NewCharacterManager.Instance.GenerateCharacterPortraits(characterDescriptions);
         NewDialogueController.Instance.StartDialogue(initialDialogueScene);
         StateController.Instance.SetStates(GameState.Gameplay);
     }
@@ -62,14 +62,15 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             "One of the characters should be named 'Main Character', and serve as the protagonist of the story. " +
             "One of the characters should be named 'Narrator', and serve as the story's narrator. " +
             $"The other {numberOfCharacters - 2} characters are up to you to create. Characters other than 'Main Character' and 'Narrator' should have actual human names for their name, not titles. " +
-            "Each character in the list should have a name, hair style, face/hair accessory, outfit, and eye color. " +
+            "Each character in the list should have a name, body type, hair style, face/hair accessory, outfit, and eye color. " +
+            $"Body types must be chosen from the following list: 'none', 'feminine', 'masculine'. " +
             $"Accessories must be chosen from the following list: {NewCharacterManager.Instance.ListAccessories()}. " +
             $"Hairs must be chosen from the following list: {NewCharacterManager.Instance.ListHairs()}. " +
             $"Outfits must be chosen from the following list: {NewCharacterManager.Instance.ListOutfits()}. " +
             "Chosen outfits and accessories should be appropriate for the story's setting, if possible. For example, in a uniformed setting, all characters of the same geneder and position should be wearing the same uniform. " +
             $"Eye colors must be chosen from the following list: {NewCharacterManager.Instance.ListFaces()}. " +
             "Format the response as a plain JSON object with only the characters' names as top-level keys'. " +
-            "Each entry under a top-level key should be an object with the keys 'Hair', 'Outfit', 'Accessory', and 'Eyes'. " +
+            "Each entry under a top-level key should be an object with the keys 'BodyType', 'Hair', 'Outfit', 'Accessory', and 'Eyes'. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
 
         Chat.AppendSystemMessage(prompt);
@@ -99,6 +100,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             "Format the response as a plain JSON object with a top-level key 'DialogueLines'. " +
             "Each entry under 'DialogueLines' should be an object with the keys 'CharacterName', 'DialogueText', 'Mood', and 'BackgroundDescription'." +
             $"BackgroundsDescriptions should be chosen from the following list: {NewBackgroundController.Instance.ListBackgrounds()}. " +
+            "Unless the story calls for a change in location, the BackgroundDescription should not change from one line of dialogue to the next. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
 
         Chat.AppendSystemMessage(prompt);

@@ -1,5 +1,6 @@
-public class Character
+public class CharacterDescription
 {
+    public string BodyType;
     public string Hair;
     public string Outfit;
     public string Accessory;

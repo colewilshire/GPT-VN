@@ -56,7 +56,7 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
         }
     }
 
-    private CharacterPortrait GenerateCharacterPortrait(string characterName, Character characterDescription)
+    private CharacterPortrait GenerateCharacterPortrait(string characterName, CharacterDescription characterDescription)
     {
         CharacterPortrait characterPortrait = Instantiate(characterPortaitPrefab, transform);
         CharacterAppearance characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
@@ -72,15 +72,15 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
         return characterPortrait;
     }
 
-    public void GenerateCharacterPortraits(Dictionary<string, Character> characterDictionary)
+    public void GenerateCharacterPortraits(Dictionary<string, CharacterDescription> characterDescriptions)
     {
         ClearCharacterPortraits();
         characterPortraits = new();
     
-        foreach(KeyValuePair<string, Character> keyValuePair in characterDictionary)
+        foreach(KeyValuePair<string, CharacterDescription> keyValuePair in characterDescriptions)
         {
             string characterName = keyValuePair.Key;
-            Character characterDescription = keyValuePair.Value;
+            CharacterDescription characterDescription = keyValuePair.Value;
             characterPortraits[characterName] = GenerateCharacterPortrait(characterName, characterDescription);
         }
     }
