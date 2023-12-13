@@ -115,7 +115,7 @@ public class LoadGameSubmenu : Submenu
 
     public void ReloadPage()
     {
-        screenshotDictionary = SaveController.Instance.GetSavesSortedByDate();
+        screenshotDictionary = NewSaveController.Instance.GetSavesSortedByDate();
         scrollbar.numberOfSteps = (int)Math.Ceiling((double)screenshotDictionary.Count / saveDisplays.Count);
 
         if (scrollbar.numberOfSteps > 1)

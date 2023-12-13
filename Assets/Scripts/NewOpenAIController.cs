@@ -5,6 +5,7 @@ using OpenAI_API.Models;
 using Newtonsoft.Json;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class NewOpenAIController : Singleton<NewOpenAIController>
 {
@@ -28,6 +29,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
     {
         StateController.Instance.SetStates(GameState.Loading);
         CharacterManager.Instance.ClearCharacters();
+        NewSaveController.Instance.ClearActiveSaveData();
 
         ChatRequest chatRequest = new()
         {
@@ -41,8 +43,9 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         string castList = await GenerateCastList();
         Dictionary<string, CharacterDescription> characterDescriptions = JsonConvert.DeserializeObject<Dictionary<string, CharacterDescription>>(castList);
 
-        string initialDialogue = await GenerateInitialDialogue();
-        DialogueScene initialDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(initialDialogue);
+        //string initialDialogue = await GenerateInitialDialogue();
+        DialogueScene initialDialogueScene = await GenerateInitialDialogue();
+        //DialogueScene initialDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(initialDialogue);
 
         //NewDialogueController.Instance.AddSceneToDialogue(initialDialogueScene);
 
@@ -52,7 +55,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         // Interpret chat requests
         NewCharacterManager.Instance.GenerateCharacterPortraits(characterDescriptions);
         NewDialogueController.Instance.StartDialogue(initialDialogueScene);
-        NewSaveController.Instance.SaveToFile("Save 0");
+        NewSaveController.Instance.SaveToFile(UnityEngine.Random.Range(0, 10000).ToString());
         StateController.Instance.SetStates(GameState.Gameplay);
     }
 
@@ -88,12 +91,12 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             return await GenerateCastList();
         }
 
-        NewSaveController.Instance.SaveData("CharacterDescriptions", extractedJson);
+        NewSaveController.Instance.SaveData(SaveDataType.CharacterDescriptions, extractedJson);
 
         return extractedJson;
     }
 
-    private async Task<string> GenerateInitialDialogue()
+    private async Task<DialogueScene> GenerateInitialDialogue()
     { 
         string prompt =
             $"Generate a script for the next scene of a '{genre}' genre visual novel set in the setting '{setting}', consisting of {linesPerScene} lines of dialogue. " +
@@ -111,18 +114,30 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         string extractedJson = ExtractJson(assistantResponse);
+        DialogueScene initialDialogueScene;
 
         Debug.Log(assistantResponse);
 
-        if (extractedJson == null)
+        try
+        {
+            initialDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(extractedJson);
+        }
+        catch
         {
             Debug.Log("Error generating usable response. Retrying.");
+            Chat.AppendSystemMessage("Formatting error. Please reread instructions and alter the format next time.");
             return await GenerateInitialDialogue();
-        };
+        }
 
-        NewSaveController.Instance.SaveData("DialogueScenes", extractedJson);
+        // if (extractedJson == null)
+        // {
+        //     Debug.Log("Error generating usable response. Retrying.");
+        //     return await GenerateInitialDialogue();
+        // };
 
-        return extractedJson;
+        NewSaveController.Instance.SaveData(SaveDataType.DialogueScenes, extractedJson);
+
+        return initialDialogueScene;
     }
 
     private async Task<string> GenerateChoice()
@@ -146,7 +161,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         if (extractedJson == null)
         {
             Debug.Log("Error generating usable response. Retrying.");
-            return await GenerateInitialDialogue();
+            return await GenerateChoice();
         };
 
         return extractedJson;
