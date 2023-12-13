@@ -5,4 +5,5 @@ public class CharacterDescription
     public string Outfit;
     public string Accessory;
     public string Eyes;
+    public string SerializedCharacterDescription;
 }

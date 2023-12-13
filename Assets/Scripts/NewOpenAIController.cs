@@ -52,6 +52,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         // Interpret chat requests
         NewCharacterManager.Instance.GenerateCharacterPortraits(characterDescriptions);
         NewDialogueController.Instance.StartDialogue(initialDialogueScene);
+        NewSaveController.Instance.SaveToFile("Save 0");
         StateController.Instance.SetStates(GameState.Gameplay);
     }
 
@@ -85,7 +86,9 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         {
             Debug.Log("Error generating usable response. Retrying.");
             return await GenerateCastList();
-        };
+        }
+
+        NewSaveController.Instance.SaveData("CharacterDescriptions", extractedJson);
 
         return extractedJson;
     }
@@ -116,6 +119,8 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             Debug.Log("Error generating usable response. Retrying.");
             return await GenerateInitialDialogue();
         };
+
+        NewSaveController.Instance.SaveData("DialogueScenes", extractedJson);
 
         return extractedJson;
     }
