@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: e808254c03dc8024ab465706b4e7b194, type: 3}
   Tags: 00000000050000000d00000006000000
+  Description: green shirt with tie

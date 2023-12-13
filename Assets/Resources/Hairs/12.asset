@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 2cf16007e75db264cbc2ea7aa2672697, type: 3}
   Tags: 0000000005000000
+  Description: pink pixie cut
   HairBackground: {fileID: 21300000, guid: f1e16683bd4ab3c4da3639c9ddbfb998, type: 3}

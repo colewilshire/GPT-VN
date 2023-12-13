@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 6cc8aa8458ca7ff4095cb7f6b0633936, type: 3}
   Tags: 0100000003000000
+  Description: blonde lob
   HairBackground: {fileID: 21300000, guid: 0f998ca8b496b30498b06aae4ac1401e, type: 3}

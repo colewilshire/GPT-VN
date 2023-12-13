@@ -33,11 +33,11 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         {
             Model = Model.GPT4Turbo,
             Temperature = 1,
-            TopP = 1
+            MaxTokens = 4096
         };
         Chat = api.Chat.CreateConversation(chatRequest);
 
-        //
+        // Make chat requests
         string castList = await GenerateCastList();
         Dictionary<string, Character> characterDictionary = JsonConvert.DeserializeObject<Dictionary<string, Character>>(castList);
 
@@ -49,36 +49,10 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         // string choice = await GenerateChoice();
         // Choice choices = JsonConvert.DeserializeObject<Choice>(choice);
 
+        // Interpret chat requests
         NewCharacterManager.Instance.GenerateCharacterPortraits(characterDictionary);
         NewDialogueController.Instance.StartDialogue(initialDialogueScene);
         StateController.Instance.SetStates(GameState.Gameplay);
-
-        //string additionalDialogue = await GenerateAdditionalDialogue();
-        //DialogueScene dialogueScene2 = JsonConvert.DeserializeObject<DialogueScene>(additionalDialogue);
-
-        //
-        // foreach (KeyValuePair<string, Character> keyValuePair in characterDictionary)
-        // {
-        //     string characterName = keyValuePair.Key;
-        //     Character character = keyValuePair.Value;
-
-        //     Debug.Log($"{characterName}: {character.Accessory}, {character.Eyes}, {character.Hair}, {character.Outfit}");
-        // }
-
-        // foreach (NewDialogueLine dialogueLine in dialogueScene.DialogueLines)
-        // {
-        //      Debug.Log($"{dialogueLine.CharacterName}: {dialogueLine.DialogueText} <{dialogueLine.Mood}>");
-        // }
-
-        // foreach (NewDialogueLine dialogueLine in choices.Choices)
-        // {
-        //      Debug.Log($"{dialogueLine.CharacterName}: {dialogueLine.DialogueText} <{dialogueLine.Mood}>");
-        // }
-
-        // foreach (NewDialogueLine dialogueLine in dialogueScene2.DialogueLines)
-        // {
-        //      Debug.Log($"{dialogueLine.CharacterName}: {dialogueLine.DialogueText} <{dialogueLine.Mood}>");
-        // }
     }
 
     private async Task<string> GenerateCastList()

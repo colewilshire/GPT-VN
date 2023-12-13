@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 2aae0be32094a644d8ee0a03dfcd80cc, type: 3}
   Tags: 0100000002000000
+  Description: long brown
   HairBackground: {fileID: 21300000, guid: f07bff97eb969b640ba1207ed24d16e3, type: 3}

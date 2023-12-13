@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: a93263ee50079e54aab73958c48c7856, type: 3}
   Tags: 01000000
+  Description: periwinkle
   Sad: {fileID: 21300000, guid: 7755beae2b2bda540989627110d26bb8, type: 3}
   Happy: {fileID: 21300000, guid: b695fedc29c79fc4d9a5556487ba69eb, type: 3}
   Angry: {fileID: 21300000, guid: f03b9735224a81d47b0e67b697b54a54, type: 3}

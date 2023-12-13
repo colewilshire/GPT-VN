@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 29fbc601ef824534d9cd441293116f1a, type: 3}
   Tags: 03000000
+  Description: pink
   Sad: {fileID: 21300000, guid: 3c1cab95481eb374dac2a46c279db9c2, type: 3}
   Happy: {fileID: 21300000, guid: 74c62722f680fd3459f9eb01c6764bc4, type: 3}
   Angry: {fileID: 21300000, guid: 7156cd677db30fc4886c7b7614db0d24, type: 3}

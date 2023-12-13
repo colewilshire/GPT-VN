@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 69348d043890e894d94821ffce91456a, type: 3}
   Tags: 0100000003000000
+  Description: curly blonde updo
   HairBackground: {fileID: 21300000, guid: fabe35532669ae44083fb80f362140ac, type: 3}

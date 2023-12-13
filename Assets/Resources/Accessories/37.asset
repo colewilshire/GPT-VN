@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 00646dab1d49a9a43a8cd5da2a78eeda, type: 3}
   Tags: 02000000
+  Description: hair clip

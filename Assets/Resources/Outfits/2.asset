@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: b6fb1c6ac922d204f8b081905a76a013, type: 3}
   Tags: 01000000050000000a000000
+  Description: blue blouse

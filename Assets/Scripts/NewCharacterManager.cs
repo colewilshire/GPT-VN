@@ -17,10 +17,10 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
     {
         base.Awake();
 
-        accessories = Resources.LoadAll<Accessory>("").ToList();
-        hairs = Resources.LoadAll<Hair>("").ToList();
-        outfits = Resources.LoadAll<Outfit>("").ToList();
-        faces = Resources.LoadAll<Face>("").ToList();
+        accessories = Resources.LoadAll<Accessory>("Accessories").ToList();
+        hairs = Resources.LoadAll<Hair>("Hairs").ToList();
+        outfits = Resources.LoadAll<Outfit>("Outfits").ToList();
+        faces = Resources.LoadAll<Face>("Faces").ToList();
     }
 
     private void ClearCharacterPortraits()

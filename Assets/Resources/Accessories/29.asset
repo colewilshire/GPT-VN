@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainImage: {fileID: 21300000, guid: 65213d6fc3080c444a26bef0dd30166a, type: 3}
   Tags: 00000000
+  Description: bow
