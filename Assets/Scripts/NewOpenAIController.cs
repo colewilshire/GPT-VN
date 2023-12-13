@@ -59,7 +59,40 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         StateController.Instance.SetStates(GameState.Gameplay);
     }
 
-    private async Task<string> GenerateCastList()
+    public async void LoadConversationFromSave(string saveName)
+    {
+        Dictionary<SaveDataType, List<string>> saveData = NewSaveController.Instance.LoadSaveFile(saveName);
+        Debug.Log(saveData.Count);
+        if (saveData.Count < 1)
+        {
+            return;
+        }
+
+        StateController.Instance.SetStates(GameState.Loading);
+        CharacterManager.Instance.ClearCharacters();
+        NewSaveController.Instance.ClearActiveSaveData();
+
+        ChatRequest chatRequest = new()
+        {
+            Model = Model.GPT4Turbo,
+            Temperature = 1,
+            MaxTokens = 4096
+        };
+        Chat = api.Chat.CreateConversation(chatRequest);
+
+        // Make chat requests
+        string castList = await GenerateCastList(saveData[SaveDataType.CharacterDescriptions][0]);
+        Dictionary<string, CharacterDescription> characterDescriptions = JsonConvert.DeserializeObject<Dictionary<string, CharacterDescription>>(castList);
+        DialogueScene initialDialogueScene = await GenerateInitialDialogue(saveData[SaveDataType.DialogueScenes][0]);
+
+        // Interpret chat requests
+        NewCharacterManager.Instance.GenerateCharacterPortraits(characterDescriptions);
+        NewDialogueController.Instance.StartDialogue(initialDialogueScene);
+        NewSaveController.Instance.SaveToFile(UnityEngine.Random.Range(0, 10000).ToString());
+        StateController.Instance.SetStates(GameState.Gameplay);
+    }
+
+    private async Task<string> GenerateCastList(string saveData = null)
     {
         string prompt =
             $"Generate a cast list of {numberOfCharacters} characters for the next scene of a '{genre}' genre visual novel set in the setting '{setting}'. " +
@@ -80,6 +113,11 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         Chat.AppendSystemMessage(prompt);
         finishedPrompt += prompt;
 
+        if (saveData != null)
+        {
+            return saveData;
+        }
+
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         string extractedJson = ExtractJson(assistantResponse);
 
@@ -96,7 +134,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         return extractedJson;
     }
 
-    private async Task<DialogueScene> GenerateInitialDialogue()
+    private async Task<DialogueScene> GenerateInitialDialogue(string saveData = null)
     { 
         string prompt =
             $"Generate a script for the next scene of a '{genre}' genre visual novel set in the setting '{setting}', consisting of {linesPerScene} lines of dialogue. " +
@@ -111,6 +149,11 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
         Chat.AppendSystemMessage(prompt);
         finishedPrompt += prompt;
+
+        if (saveData != null)
+        {
+            return JsonConvert.DeserializeObject<DialogueScene>(saveData);
+        }
 
         string assistantResponse = await Chat.GetResponseFromChatbotAsync();
         string extractedJson = ExtractJson(assistantResponse);

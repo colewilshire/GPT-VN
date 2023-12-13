@@ -7,11 +7,7 @@ using UnityEngine;
 public class NewSaveController : Singleton<NewSaveController>
 {
     private string rootSaveFolderPath;
-    private Dictionary<SaveDataType, List<string>> activeSaveData = new()
-    {
-        [SaveDataType.CharacterDescriptions] = new(),
-        [SaveDataType.DialogueScenes] = new()
-    };
+    private Dictionary<SaveDataType, List<string>> activeSaveData;
 
     protected override void Awake()
     {
@@ -38,11 +34,12 @@ public class NewSaveController : Singleton<NewSaveController>
 
     public void ClearActiveSaveData()
     {
-        activeSaveData = new()
+        activeSaveData = new();
+
+        foreach (SaveDataType saveDataType in Enum.GetValues(typeof(SaveDataType)))
         {
-            [SaveDataType.CharacterDescriptions] = new(),
-            [SaveDataType.DialogueScenes] = new()
-        };
+            activeSaveData[saveDataType] = new();
+        }
     }
 
     public void SaveData(SaveDataType dataType, string serializedData)
@@ -50,12 +47,12 @@ public class NewSaveController : Singleton<NewSaveController>
         activeSaveData[dataType].Add(serializedData);
     }
 
-    public void SaveToFile(string fileName)
+    public void SaveToFile(string saveName)
     {
-        string saveFolderPath = Path.Combine(rootSaveFolderPath, fileName);
+        string saveFolderPath = Path.Combine(rootSaveFolderPath, saveName);
         string screenshotPath = Path.Combine(saveFolderPath, "Screenshot.png");
 
-        DeleteSaveFile(fileName);
+        DeleteSaveFile(saveName);
         Directory.CreateDirectory(saveFolderPath);
 
         foreach(KeyValuePair<SaveDataType, List<string>> keyValuePair in activeSaveData)
@@ -74,9 +71,35 @@ public class NewSaveController : Singleton<NewSaveController>
         ScreenCapture.CaptureScreenshot(screenshotPath);
     }
 
-    public void DeleteSaveFile(string fileName)
+    public Dictionary<SaveDataType, List<string>> LoadSaveFile(string saveName)
     {
-        string saveFolderPath = Path.Combine(rootSaveFolderPath, fileName);
+        string saveFolderPath = Path.Combine(rootSaveFolderPath, saveName);
+
+        if (!Directory.Exists(saveFolderPath))
+        {
+            return null;
+        }
+
+        ClearActiveSaveData();
+
+        foreach (SaveDataType saveDataType in Enum.GetValues(typeof(SaveDataType)))
+        {
+            string dataFolderPath = Path.Combine(saveFolderPath, saveDataType.ToString());
+            List<string> filePaths = Directory.GetFiles(dataFolderPath).ToList();
+
+            foreach (string filePath in filePaths)
+            {
+                string fileContents = File.ReadAllText(filePath);
+                activeSaveData[saveDataType].Add(fileContents);
+            }
+        }
+
+        return activeSaveData;
+    }
+
+    public void DeleteSaveFile(string saveName)
+    {
+        string saveFolderPath = Path.Combine(rootSaveFolderPath, saveName);
         if (Directory.Exists(saveFolderPath))
         {
             Directory.Delete(saveFolderPath, true);
