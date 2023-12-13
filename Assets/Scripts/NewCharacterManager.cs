@@ -8,19 +8,44 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
     [SerializeField] private CharacterPortrait characterPortaitPrefab;
     private Dictionary<string, CharacterPortrait> characterPortraits = new();
     private CharacterPortrait activePortrait;
-    private List<Accessory> accessories;
-    private List<Hair> hairs;
-    private List<Outfit> outfits;
-    private List<Face> faces;
+    private readonly Dictionary<string, Accessory> accessories = new();
+    private readonly Dictionary<string, Hair> hairs = new();
+    private readonly Dictionary<string, Outfit> outfits = new();
+    private readonly Dictionary<string, Face> faces = new();
 
     protected override void Awake()
     {
         base.Awake();
 
-        accessories = Resources.LoadAll<Accessory>("Accessories").ToList();
-        hairs = Resources.LoadAll<Hair>("Hairs").ToList();
-        outfits = Resources.LoadAll<Outfit>("Outfits").ToList();
-        faces = Resources.LoadAll<Face>("Faces").ToList();
+        SortCharacterParts();
+    }
+
+    private void SortCharacterParts()
+    {
+        List<Accessory> unsortedAccessories = Resources.LoadAll<Accessory>("Accessories").ToList();
+        List<Hair> unsortedHairs = Resources.LoadAll<Hair>("Hairs").ToList();
+        List<Outfit> unsortedOutfits = Resources.LoadAll<Outfit>("Outfits").ToList();
+        List<Face> unsortedFaces = Resources.LoadAll<Face>("Faces").ToList();
+
+        foreach(Accessory accessory in unsortedAccessories)
+        {
+            accessories[accessory.Description] = accessory;
+        }
+
+        foreach(Hair hair in unsortedHairs)
+        {
+            hairs[hair.Description] = hair;
+        }
+
+        foreach(Outfit outfit in unsortedOutfits)
+        {
+            outfits[outfit.Description] = outfit;
+        }
+
+        foreach(Face face in unsortedFaces)
+        {
+            faces[face.Description] = face;
+        }
     }
 
     private void ClearCharacterPortraits()
@@ -31,16 +56,16 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
         }
     }
 
-    private CharacterPortrait GenerateCharacterPortrait(string characterName)
+    private CharacterPortrait GenerateCharacterPortrait(string characterName, Character characterDescription)
     {
         CharacterPortrait characterPortrait = Instantiate(characterPortaitPrefab, transform);
         CharacterAppearance characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
 
         characterPortrait.gameObject.name = characterName;
-        characterAppearance.Accessory = accessories[UnityEngine.Random.Range(0, accessories.Count)];
-        characterAppearance.Hair = hairs[UnityEngine.Random.Range(0, hairs.Count)];
-        characterAppearance.Outfit = outfits[UnityEngine.Random.Range(0, outfits.Count)];
-        characterAppearance.Face = faces[UnityEngine.Random.Range(0, faces.Count)];
+        accessories.TryGetValue(characterDescription.Accessory, out characterAppearance.Accessory);
+        hairs.TryGetValue(characterDescription.Hair, out characterAppearance.Hair);
+        outfits.TryGetValue(characterDescription.Outfit, out characterAppearance.Outfit);
+        faces.TryGetValue(characterDescription.Eyes, out characterAppearance.Face);
 
         characterPortrait.SetAppearance(characterAppearance);
 
@@ -55,7 +80,8 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
         foreach(KeyValuePair<string, Character> keyValuePair in characterDictionary)
         {
             string characterName = keyValuePair.Key;
-            characterPortraits[characterName] = GenerateCharacterPortrait(characterName);
+            Character characterDescription = keyValuePair.Value;
+            characterPortraits[characterName] = GenerateCharacterPortrait(characterName, characterDescription);
         }
     }
 
@@ -77,5 +103,65 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
         }
 
         return null;
+    }
+
+    public string ListAccessories()
+    {
+        string listedAccessories = "none, ";
+
+        foreach(KeyValuePair<string, Accessory> keyValuePair in accessories)
+        {
+            string accessoryDescription = $"'{keyValuePair.Key}'";
+            listedAccessories += $"{accessoryDescription}, ";
+        }
+
+        listedAccessories = listedAccessories.TrimEnd(',', ' ');
+
+        return listedAccessories;
+    }
+
+    public string ListHairs()
+    {
+        string listedHairs = "none, ";
+
+        foreach(KeyValuePair<string, Hair> keyValuePair in hairs)
+        {
+            string hairDescription = $"'{keyValuePair.Key}'";
+            listedHairs += $"{hairDescription}, ";
+        }
+
+        listedHairs = listedHairs.TrimEnd(',', ' ');
+
+        return listedHairs;
+    }
+
+    public string ListOutfits()
+    {
+        string listedOutfits = "none, ";
+
+        foreach(KeyValuePair<string, Outfit> keyValuePair in outfits)
+        {
+            string outfitDescription = $"'{keyValuePair.Key}'";
+            listedOutfits += $"{outfitDescription}, ";
+        }
+
+        listedOutfits = listedOutfits.TrimEnd(',', ' ');
+
+        return listedOutfits;
+    }
+
+    public string ListFaces()
+    {
+        string listedFaces = "none, ";
+
+        foreach(KeyValuePair<string, Face> keyValuePair in faces)
+        {
+            string faceDescription = $"'{keyValuePair.Key}'";
+            listedFaces += $"{faceDescription}, ";
+        }
+
+        listedFaces = listedFaces.TrimEnd(',', ' ');
+
+        return listedFaces;
     }
 }

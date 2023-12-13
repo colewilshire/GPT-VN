@@ -7,22 +7,21 @@ public class NewBackgroundController : Singleton<NewBackgroundController>
 {
     private BackgroundImage activeBackground;
     private Image displayImage;
-    private Dictionary<string, BackgroundImage> backgroundImages = new();
+    private readonly Dictionary<string, BackgroundImage> backgroundImages = new();
 
     protected override void Awake()
     {
         base.Awake();
 
         displayImage = GetComponent<Image>();
-        IndexbackgroundImages();
+        SortBackgroundImages();
     }
 
-    private void IndexbackgroundImages()
+    private void SortBackgroundImages()
     {
-        List<BackgroundImage> unindexedBackgroundImages = Resources.LoadAll<BackgroundImage>("BackgroundImages").ToList();
-        backgroundImages = new();
+        List<BackgroundImage> unsortedBackgroundImages = Resources.LoadAll<BackgroundImage>("BackgroundImages").ToList();
 
-        foreach(BackgroundImage backgroundImage in unindexedBackgroundImages)
+        foreach(BackgroundImage backgroundImage in unsortedBackgroundImages)
         {
             backgroundImages[backgroundImage.Description] = backgroundImage;
         }

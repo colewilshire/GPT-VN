@@ -63,6 +63,11 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             "One of the characters should be named 'Narrator', and serve as the story's narrator. " +
             $"The other {numberOfCharacters - 2} characters are up to you to create. Characters other than 'Main Character' and 'Narrator' should have actual human names for their name, not titles. " +
             "Each character in the list should have a name, hair style, face/hair accessory, outfit, and eye color. " +
+            $"Accessories must be chosen from the following list: {NewCharacterManager.Instance.ListAccessories()}. " +
+            $"Hairs must be chosen from the following list: {NewCharacterManager.Instance.ListHairs()}. " +
+            $"Outfits must be chosen from the following list: {NewCharacterManager.Instance.ListOutfits()}. " +
+            "Chosen outfits and accessories should be appropriate for the story's setting, if possible. For example, in a uniformed setting, all characters of the same geneder and position should be wearing the same uniform. " +
+            $"Eye colors must be chosen from the following list: {NewCharacterManager.Instance.ListFaces()}. " +
             "Format the response as a plain JSON object with only the characters' names as top-level keys'. " +
             "Each entry under a top-level key should be an object with the keys 'Hair', 'Outfit', 'Accessory', and 'Eyes'. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
@@ -88,12 +93,12 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
     { 
         string prompt =
             $"Generate a script for the next scene of a '{genre}' genre visual novel set in the setting '{setting}', consisting of {linesPerScene} lines of dialogue. " +
-            "Only a few characters from the cast list should appear in every scene. Some characters should be rarely appearing side characters, and the Main Character and Narrator should appear frequently." +
-            "The cast of the story should consist of characters from the previously generated cast list." +
+            "Only a few characters from the cast list should appear in every scene. Some characters should be rarely appearing side characters, and the Main Character and Narrator should appear frequently. " +
+            "The cast of the story should consist of characters from the previously generated cast list. " +
             "Each line should include the speaking character's name, the text of the dialogue, the speaker's mood, and the background image to be displayed. " +
             "Format the response as a plain JSON object with a top-level key 'DialogueLines'. " +
             "Each entry under 'DialogueLines' should be an object with the keys 'CharacterName', 'DialogueText', 'Mood', and 'BackgroundDescription'." +
-            $"BackgroundsDescriptions should be chosen from the following list: {NewBackgroundController.Instance.ListBackgrounds()}." +
+            $"BackgroundsDescriptions should be chosen from the following list: {NewBackgroundController.Instance.ListBackgrounds()}. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
 
         Chat.AppendSystemMessage(prompt);

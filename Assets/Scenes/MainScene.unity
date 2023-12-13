@@ -3941,7 +3941,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   apiKey: 
   genre: romance
-  setting: Warhammer 40k
+  setting: high school
   linesPerScene: 10
   numberOfCharacters: 5
   finishedPrompt: 
