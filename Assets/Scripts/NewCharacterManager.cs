@@ -56,32 +56,47 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
         }
     }
 
-    private CharacterPortrait GenerateCharacterPortrait(string characterName, CharacterDescription characterDescription)
+    private CharacterPortrait GenerateCharacterPortrait(string characterName, CharacterDescription characterDescription, CharacterAppearance appearanceOverride = null)
     {
         CharacterPortrait characterPortrait = Instantiate(characterPortaitPrefab, transform);
         CharacterAppearance characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
 
         characterPortrait.gameObject.name = characterName;
-        accessories.TryGetValue(characterDescription.Accessory, out characterAppearance.Accessory);
-        hairs.TryGetValue(characterDescription.Hair, out characterAppearance.Hair);
-        outfits.TryGetValue(characterDescription.Outfit, out characterAppearance.Outfit);
-        faces.TryGetValue(characterDescription.Eyes, out characterAppearance.Face);
 
-        characterPortrait.SetAppearance(characterAppearance);
+        if (!appearanceOverride)
+        {
+            accessories.TryGetValue(characterDescription.Accessory, out characterAppearance.Accessory);
+            hairs.TryGetValue(characterDescription.Hair, out characterAppearance.Hair);
+            outfits.TryGetValue(characterDescription.Outfit, out characterAppearance.Outfit);
+            faces.TryGetValue(characterDescription.Eyes, out characterAppearance.Face);
+            characterPortrait.SetAppearance(characterAppearance);
+        }
+        else
+        {
+            characterPortrait.SetAppearance(appearanceOverride);
+        }
 
         return characterPortrait;
     }
 
-    public void GenerateCharacterPortraits(Dictionary<string, CharacterDescription> characterDescriptions)
+    public void GenerateCharacterPortraits(Dictionary<string, CharacterDescription> castList)
     {
         ClearCharacterPortraits();
         characterPortraits = new();
     
-        foreach(KeyValuePair<string, CharacterDescription> keyValuePair in characterDescriptions)
+        foreach(KeyValuePair<string, CharacterDescription> keyValuePair in castList)
         {
             string characterName = keyValuePair.Key;
             CharacterDescription characterDescription = keyValuePair.Value;
-            characterPortraits[characterName] = GenerateCharacterPortrait(characterName, characterDescription);
+
+            if (characterName.ToLower() == "main character" || characterName.ToLower() == "protagonist")
+            {
+                characterPortraits[characterName] = GenerateCharacterPortrait(characterName, characterDescription, CharacterCreationController.Instance.MainCharacterPortait.Appearance);
+            }
+            else
+            {
+                characterPortraits[characterName] = GenerateCharacterPortrait(characterName, characterDescription);
+            }
         }
     }
 
@@ -90,6 +105,11 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
         if (activePortrait)
         {
             activePortrait.HidePortrait();
+        }
+
+        if (characterName.ToLower() == "narrator")
+        {
+            return null;
         }
 
         if (characterPortraits.TryGetValue(characterName, out CharacterPortrait characterPortrait))
