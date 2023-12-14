@@ -62,11 +62,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
     public async void LoadConversationFromSave(string saveName)
     {
         Dictionary<SaveDataType, List<string>> saveData = NewSaveController.Instance.LoadSaveFile(saveName);
-        Debug.Log(saveData.Count);
-        if (saveData.Count < 1)
-        {
-            return;
-        }
+        if (saveData == null) return;
 
         StateController.Instance.SetStates(GameState.Loading);
         CharacterManager.Instance.ClearCharacters();
@@ -88,7 +84,6 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         // Interpret chat requests
         NewCharacterManager.Instance.GenerateCharacterPortraits(characterDescriptions);
         NewDialogueController.Instance.StartDialogue(initialDialogueScene);
-        NewSaveController.Instance.SaveToFile(UnityEngine.Random.Range(0, 10000).ToString());
         StateController.Instance.SetStates(GameState.Gameplay);
     }
 
@@ -115,6 +110,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
         if (saveData != null)
         {
+            NewSaveController.Instance.CacheData(SaveDataType.CharacterDescriptions, saveData);
             return saveData;
         }
 
@@ -129,13 +125,13 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             return await GenerateCastList();
         }
 
-        NewSaveController.Instance.SaveData(SaveDataType.CharacterDescriptions, extractedJson);
+        NewSaveController.Instance.CacheData(SaveDataType.CharacterDescriptions, extractedJson);
 
         return extractedJson;
     }
 
     private async Task<DialogueScene> GenerateInitialDialogue(string saveData = null)
-    { 
+    {
         string prompt =
             $"Generate a script for the next scene of a '{genre}' genre visual novel set in the setting '{setting}', consisting of {linesPerScene} lines of dialogue. " +
             "Only a few characters from the cast list should appear in every scene. Some characters should be rarely appearing side characters, and the Main Character and Narrator should appear frequently. " +
@@ -152,6 +148,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
         if (saveData != null)
         {
+            NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, saveData);
             return JsonConvert.DeserializeObject<DialogueScene>(saveData);
         }
 
@@ -178,7 +175,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         //     return await GenerateInitialDialogue();
         // };
 
-        NewSaveController.Instance.SaveData(SaveDataType.DialogueScenes, extractedJson);
+        NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, extractedJson);
 
         return initialDialogueScene;
     }

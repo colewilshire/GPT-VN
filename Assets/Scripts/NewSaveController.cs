@@ -32,17 +32,24 @@ public class NewSaveController : Singleton<NewSaveController>
         return sprite;
     }
 
-    public void ClearActiveSaveData()
+    private Dictionary<SaveDataType, List<string>> CreateNewSaveData()
     {
-        activeSaveData = new();
+        Dictionary<SaveDataType, List<string>> newSavaData = new();
 
         foreach (SaveDataType saveDataType in Enum.GetValues(typeof(SaveDataType)))
         {
-            activeSaveData[saveDataType] = new();
+            newSavaData[saveDataType] = new();
         }
+
+        return newSavaData;
     }
 
-    public void SaveData(SaveDataType dataType, string serializedData)
+    public void ClearActiveSaveData()
+    {
+        activeSaveData = CreateNewSaveData();
+    }
+
+    public void CacheData(SaveDataType dataType, string serializedData)
     {
         activeSaveData[dataType].Add(serializedData);
     }
@@ -80,7 +87,7 @@ public class NewSaveController : Singleton<NewSaveController>
             return null;
         }
 
-        ClearActiveSaveData();
+        Dictionary<SaveDataType, List<string>> loadedSaveData = CreateNewSaveData();
 
         foreach (SaveDataType saveDataType in Enum.GetValues(typeof(SaveDataType)))
         {
@@ -90,11 +97,11 @@ public class NewSaveController : Singleton<NewSaveController>
             foreach (string filePath in filePaths)
             {
                 string fileContents = File.ReadAllText(filePath);
-                activeSaveData[saveDataType].Add(fileContents);
+                loadedSaveData[saveDataType].Add(fileContents);
             }
         }
 
-        return activeSaveData;
+        return loadedSaveData;
     }
 
     public void DeleteSaveFile(string saveName)
