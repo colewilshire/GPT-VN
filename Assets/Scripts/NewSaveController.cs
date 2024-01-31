@@ -8,6 +8,8 @@ public class NewSaveController : Singleton<NewSaveController>
 {
     private string rootSaveFolderPath;
     private Dictionary<SaveDataType, List<string>> activeSaveData;
+    [SerializeField] private string quicksaveName = "quicksave";
+    [SerializeField] private string autosaveName = "autosave";
 
     protected override void Awake()
     {
@@ -76,6 +78,8 @@ public class NewSaveController : Singleton<NewSaveController>
         }
 
         ScreenCapture.CaptureScreenshot(screenshotPath);
+        string metadataPath = Path.Combine(saveFolderPath, "CurrentSceneNumber.txt");
+        File.WriteAllText(metadataPath, $"{NewDialogueController.Instance.CurrentLineIndex}");
     }
 
     public Dictionary<SaveDataType, List<string>> LoadSaveFile(string saveName)
@@ -130,6 +134,21 @@ public class NewSaveController : Singleton<NewSaveController>
         }
 
         return screenshotDictionary;
+    }
+
+    public void Quicksave()
+    {
+        SaveToFile(quicksaveName);
+    }
+
+    public void Autosave()
+    {
+        SaveToFile(autosaveName);
+    }
+
+    public void Quickload()
+    {
+        NewOpenAIController.Instance.LoadConversationFromSave(quicksaveName);
     }
 
     // public Dictionary<string, Sprite> GetSavesSortedByDate2()

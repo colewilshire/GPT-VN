@@ -5978,6 +5978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2835d4471cf72b4bbb42721ff6948bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentLineIndex: 0
 --- !u!114 &888371925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5990,6 +5991,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33ff58d6005054445b56de7f136521d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  quicksaveName: quicksave
+  autosaveName: autosave
 --- !u!1 &888588069
 GameObject:
   m_ObjectHideFlags: 0

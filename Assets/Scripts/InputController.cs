@@ -108,13 +108,13 @@ public class InputController : Singleton<InputController>
     private void OnQuicksave(InputAction.CallbackContext context)
     {
         if (!inputEnabled) return;
-        SaveController.Instance.Quicksave();
+        NewSaveController.Instance.Quicksave();
     }
 
     private void OnQuickload(InputAction.CallbackContext context)
     {
         if (!inputEnabled) return;
-        SaveController.Instance.Quickload();
+        NewSaveController.Instance.Quickload();
     }
 
     private void OnPause(InputAction.CallbackContext context)

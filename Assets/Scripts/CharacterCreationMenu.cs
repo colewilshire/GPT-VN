@@ -53,7 +53,6 @@ public class CharacterCreationMenu : Menu
         resetButton.onClick.AddListener(SetDefaultAppearance);
         randomizeButton.onClick.AddListener(SetRandomAppearance);
 
-        //
         characterPortrait.Appearance = ScriptableObject.CreateInstance<CharacterAppearance>();
         characterPortrait.Appearance.Accessory = accessories[accessoryIndex];
         characterPortrait.Appearance.Hair = hairs[hairIndex];
@@ -97,7 +96,6 @@ public class CharacterCreationMenu : Menu
 
     protected override void ExitMenu()
     {
-        //
         characterPortrait.Appearance = ScriptableObject.CreateInstance<CharacterAppearance>();
         characterPortrait.Appearance.Accessory = accessories[accessoryIndex];
         characterPortrait.Appearance.Hair = hairs[hairIndex];

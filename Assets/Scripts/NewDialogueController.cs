@@ -1,15 +1,14 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 public class NewDialogueController : Singleton<NewDialogueController>
 {
-    private int currentLineIndex = 0;
     private List<NewDialogueLine> dialoguePath;
+    public int CurrentLineIndex = 0;
 
     private void ReadDialogueLine(int lineIndex)
     {
-        currentLineIndex = lineIndex;
-        NewDialogueLine currentLine = dialoguePath[currentLineIndex];
+        CurrentLineIndex = lineIndex;
+        NewDialogueLine currentLine = dialoguePath[CurrentLineIndex];
         CharacterPortrait characterPortrait = NewCharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
         NewBackgroundController.Instance.ShowBackground(currentLine.BackgroundDescription);
         NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
@@ -34,14 +33,14 @@ public class NewDialogueController : Singleton<NewDialogueController>
 
     public void StepForward()
     {
-        int newIndex = currentLineIndex + 1;
+        int newIndex = CurrentLineIndex + 1;
         if (!(dialoguePath.Count > newIndex)) return;
         ReadDialogueLine(newIndex);
     }
 
     public void StepBackward()
     {
-        int newIndex = currentLineIndex - 1;
+        int newIndex = CurrentLineIndex - 1;
         if (!(newIndex >= 0)) return;
         ReadDialogueLine(newIndex);
     }
@@ -49,6 +48,6 @@ public class NewDialogueController : Singleton<NewDialogueController>
     public void RepeatLine()
     {
         if (!(dialoguePath.Count > 0)) return;
-        ReadDialogueLine(currentLineIndex);
+        ReadDialogueLine(CurrentLineIndex);
     }
 }
