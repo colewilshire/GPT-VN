@@ -82,6 +82,7 @@ public class NewSaveController : Singleton<NewSaveController>
         File.WriteAllText(metadataPath, $"{NewDialogueController.Instance.CurrentLineIndex}");
     }
 
+    // Need to get the CurrentSceneIndex to this
     public Dictionary<SaveDataType, List<string>> LoadSaveFile(string saveName)
     {
         string saveFolderPath = Path.Combine(rootSaveFolderPath, saveName);

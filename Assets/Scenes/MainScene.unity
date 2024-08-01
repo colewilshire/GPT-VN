@@ -3939,7 +3939,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 019d6c34efec6a045aadf8ac6e5b7c1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  apiKey: 
+  apiKey: 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
   genre: romance
   setting: high school
   linesPerScene: 10
