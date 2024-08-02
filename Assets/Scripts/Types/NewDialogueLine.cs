@@ -8,6 +8,5 @@ public class NewDialogueLine
     public string BackgroundDescription { get; set; }
     public AudioClip VoiceLine { get; set; }
     public DialogueChoice DialogueChoice { get; set; }
-    public string SerializedLine { get; set; }
     public Choice Choice { get; set; }
 }
