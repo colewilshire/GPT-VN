@@ -63,6 +63,7 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
         CharacterAppearance characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
 
         characterPortrait.gameObject.name = characterName;
+        characterPortrait.DisplayName = characterName;
 
         if (!appearanceOverride)
         {
@@ -92,9 +93,9 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
             string characterName = keyValuePair.Key;
             CharacterDescription characterDescription = keyValuePair.Value;
 
-            if (characterName.ToLower() == "main character" || characterName.ToLower() == "protagonist")
+            if (characterName.ToLower() == "main character" || characterName.ToLower() == "protagonist" || characterName.ToLower() == "mc")
             {
-                characterPortraits[characterName] = GenerateCharacterPortrait(characterName, characterDescription, CharacterCreationController.Instance.MainCharacterPortait.Appearance);
+                characterPortraits[characterName] = GenerateCharacterPortrait(CharacterCreationController.Instance.MainCharacterPortait.DisplayName, characterDescription, CharacterCreationController.Instance.MainCharacterPortait.Appearance);
             }
             else
             {

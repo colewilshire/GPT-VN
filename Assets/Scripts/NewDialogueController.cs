@@ -12,7 +12,7 @@ public class NewDialogueController : Singleton<NewDialogueController>
         NewDialogueLine currentLine = DialoguePath[CurrentLineIndex];
         CharacterPortrait characterPortrait = NewCharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
         NewBackgroundController.Instance.ShowBackground(currentLine.BackgroundDescription);
-        NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
+        NameDisplayController.Instance.SetDisplayName(characterPortrait != null ? characterPortrait.DisplayName : null ?? currentLine.CharacterName);
         TextController.Instance.SetText(currentLine.DialogueText);
 
         if (currentLine.Choice != null)
