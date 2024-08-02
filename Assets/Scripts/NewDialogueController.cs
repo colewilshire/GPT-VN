@@ -4,6 +4,7 @@ public class NewDialogueController : Singleton<NewDialogueController>
 {
     private List<NewDialogueLine> dialoguePath;
     public int CurrentLineIndex = 0;
+    public Choice CurrentChoice;
 
     private void ReadDialogueLine(int lineIndex)
     {
@@ -13,6 +14,31 @@ public class NewDialogueController : Singleton<NewDialogueController>
         NewBackgroundController.Instance.ShowBackground(currentLine.BackgroundDescription);
         NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
         TextController.Instance.SetText(currentLine.DialogueText);
+
+        if (currentLine.Choice != null)
+        {
+            ReadChoices(currentLine.Choice);
+        }
+    }
+
+    private void ReadChoices(Choice choice)
+    {
+        CurrentChoice = choice;
+        StateController.Instance.SetSubmenuState(GameState.Choice);
+    }
+
+    public async void MakeChoice(NewDialogueLine chosenLine)
+    {
+        dialoguePath[CurrentLineIndex] = chosenLine;
+        CurrentChoice = null;
+        //StateController.Instance.SetSubmenuState(GameState.Gameplay);
+        StateController.Instance.SetStates(GameState.Loading);
+        
+        DialogueScene newDialogueScene = await NewOpenAIController.Instance.GenerateAdditionalDialogue(chosenLine.DialogueText);
+        AddSceneToDialogue(newDialogueScene);
+        StateController.Instance.SetStates(GameState.Gameplay);
+
+        RepeatLine();
     }
 
     public void AddSceneToDialogue(DialogueScene dialogueScene)

@@ -169,6 +169,15 @@ namespace OpenAI_API.Models
 		/// </summary>
 		public static Model GPT4Turbo => new Model("gpt-4-1106-preview") { OwnedBy = "openai" };
 
+		/// <summary>
+		/// Full-spec GPT4 omni
+		/// </summary>
+		public static Model GPT4o => new Model("gpt-4o") { OwnedBy = "openai" };
+
+		/// <summary>
+		/// Cheap GPT4 omni
+		/// </summary>
+		public static Model GPT4o_Mini => new Model("gpt-4o-mini") { OwnedBy = "openai" };
 
 		/// <summary>
 		/// Gets more details about this Model from the API, specifically properties such as <see cref="OwnedBy"/> and permissions.

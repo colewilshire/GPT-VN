@@ -11,4 +11,5 @@ public class NewDialogueLine
     public AudioClip VoiceLine;
     public DialogueChoice DialogueChoice;
     public string SerializedLine;
+    public Choice Choice;
 }

@@ -29,6 +29,8 @@ public class NewBackgroundController : Singleton<NewBackgroundController>
 
     public void ShowBackground(string backgroundDescription)
     {
+        if (backgroundDescription == null) return;
+
         backgroundDescription = backgroundDescription.ToLower().Trim('\'').Trim();
 
         if (backgroundImages.TryGetValue(backgroundDescription, out activeBackground))

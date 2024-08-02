@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3229,7 +3228,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: settings
+  m_text: main menu
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 756f48672873f664798bbb48d9b1bf7a, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 44451191653d8954587d2eaa2efdf297, type: 2}
@@ -3939,7 +3938,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 019d6c34efec6a045aadf8ac6e5b7c1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  apiKey: 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
+  apiKey: sk-proj-Q0tfgxkgVXjYfoZqrME9T3BlbkFJ5xH3ecmXdpBNmMGSqPhr
   genre: romance
   setting: high school
   linesPerScene: 10
@@ -4904,7 +4903,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: settings
+  m_text: customize
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 756f48672873f664798bbb48d9b1bf7a, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: f4fde04597db8ad428217bf0f69a7755, type: 2}

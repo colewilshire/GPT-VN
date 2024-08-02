@@ -6,7 +6,7 @@ public class DialogueChoiceButton : MonoBehaviour
 {
     [SerializeField] private TMP_Text dialogueText;
     [SerializeField] private Button button;
-    private DialogueLine dialogueLine;
+    private NewDialogueLine dialogueLine;
 
     private void Awake()
     {
@@ -18,22 +18,15 @@ public class DialogueChoiceButton : MonoBehaviour
         button.onClick.RemoveListener(OnClick);
     }
 
-    private async void OnClick()
+    private void OnClick()
     {
-        if (dialogueLine)
+        if (dialogueLine != null)
         {
-            DialogueChoiceController.Instance.MakeChoice(dialogueLine);
-        }
-        else
-        {
-            if (await ConfirmationPrompt.Instance.PromptConfirmation("load this save?"))
-            {
-                
-            } 
+            NewDialogueController.Instance.MakeChoice(dialogueLine);
         }
     }
 
-    public void SetDialogueLine(DialogueLine newDialogueLine)
+    public void SetDialogueLine(NewDialogueLine newDialogueLine)
     {
         dialogueLine = newDialogueLine;
         dialogueText.text = dialogueLine.DialogueText.ToLower();
