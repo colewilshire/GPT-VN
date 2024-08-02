@@ -12,6 +12,7 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
     private readonly Dictionary<string, Hair> hairs = new();
     private readonly Dictionary<string, Outfit> outfits = new();
     private readonly Dictionary<string, Face> faces = new();
+    public Dictionary<string, CharacterDescription> CharacterDescriptions;
 
     protected override void Awake()
     {
@@ -81,6 +82,8 @@ public class NewCharacterManager : Singleton<NewCharacterManager>
 
     public void GenerateCharacterPortraits(Dictionary<string, CharacterDescription> castList)
     {
+        CharacterDescriptions = castList;
+
         ClearCharacterPortraits();
         characterPortraits = new();
     

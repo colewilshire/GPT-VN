@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using OpenAI_API.Chat;
 using UnityEngine;
 
 public class NewSaveController : Singleton<NewSaveController>
@@ -18,6 +22,80 @@ public class NewSaveController : Singleton<NewSaveController>
         rootSaveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
         Directory.CreateDirectory(rootSaveFolderPath);
     }
+
+    public void Save(string saveName)
+    {
+        string folderPath = Path.Combine(rootSaveFolderPath, saveName);
+        Directory.CreateDirectory(folderPath);
+    
+        string characterDescriptionsPath = Path.Combine(folderPath, $"CharacterDescriptions.json");
+        string dialoguePath = Path.Combine(folderPath, $"DialoguePath.json");
+        string indexPath = Path.Combine(folderPath, $"CurrentDialogueIndex.json");
+        string messagesPath = Path.Combine(folderPath, $"Messages.json");
+        string screenshotPath = Path.Combine(folderPath, "Screenshot.png");
+        JsonSerializerOptions jsonSerializerOptions = new()
+        {
+            WriteIndented = true,
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+
+        string serializedCharacterDescriptions = JsonSerializer.Serialize<Dictionary<string, CharacterDescription>>(NewCharacterManager.Instance.CharacterDescriptions, jsonSerializerOptions);
+        string serializedDialogue = JsonSerializer.Serialize(NewDialogueController.Instance.DialoguePath, jsonSerializerOptions);
+        string serializedIndex = JsonSerializer.Serialize(NewDialogueController.Instance.CurrentLineIndex, jsonSerializerOptions);
+        string serializedMessages = JsonSerializer.Serialize(NewOpenAIController.Instance.Chat.Messages, jsonSerializerOptions);
+
+        File.WriteAllText(characterDescriptionsPath, serializedCharacterDescriptions, Encoding.Unicode);
+        File.WriteAllText(dialoguePath, serializedDialogue, Encoding.Unicode);
+        File.WriteAllText(indexPath, serializedIndex, Encoding.Unicode);
+        File.WriteAllText(messagesPath, serializedMessages, Encoding.Unicode);
+        ScreenCapture.CaptureScreenshot(screenshotPath);
+    }
+
+    public NewSaveData LoadSave(string saveName)
+    {
+        string folderPath = Path.Combine(rootSaveFolderPath, saveName);
+        string characterDescriptionsPath = Path.Combine(folderPath, $"CharacterDescriptions.json");
+        string dialoguePath = Path.Combine(folderPath, $"DialoguePath.json");
+        string indexPath = Path.Combine(folderPath, $"CurrentDialogueIndex.json");
+        string messagesPath = Path.Combine(folderPath, $"Messages.json");
+
+        string serializedCharacterDescriptions = File.ReadAllText(characterDescriptionsPath);
+        string serializedDialogue = File.ReadAllText(dialoguePath);
+        string serializedIndex = File.ReadAllText(indexPath);
+        string serializedMessages = File.ReadAllText(messagesPath);
+
+        NewSaveData saveData = new()
+        {
+            CharacterDescriptions = JsonSerializer.Deserialize<Dictionary<string, CharacterDescription>>(serializedCharacterDescriptions),
+            DialoguePath = JsonSerializer.Deserialize<List<NewDialogueLine>>(serializedDialogue),
+            CurrentLineIndex = JsonSerializer.Deserialize<int>(serializedIndex),
+            Messages = JsonSerializer.Deserialize<IList<ChatMessage>>(serializedMessages)
+        };
+
+        return saveData;
+    }
+
+    // private Dictionary<string, CharacterDescription> LoadCharacterDescriptions()
+    // {
+    //     //string savedListPath = Path.Combine(Application.persistentDataPath, $"{saveName}.{SaveFileExtension}");
+    //     string path = "C:\\Users\\colew\\AppData\\LocalLow\\DefaultCompany\\GPT-VN\\Saves\\quicksave\\CharacterDescriptions\\CharacterDescriptions0.json";
+    //     if (!File.Exists(path))
+    //     {
+    //         Debug.Log("0");
+    //         return null;
+    //     }
+
+    //     string serializedCharacterDescriptions = File.ReadAllText(path);
+    //     if (serializedCharacterDescriptions == null)
+    //     {
+    //         Debug.Log("1");
+    //         return null;
+    //     };
+
+    //     Dictionary<string, CharacterDescription> characterDescriptions = JsonSerializer.Deserialize<Dictionary<string, CharacterDescription>>(serializedCharacterDescriptions);
+    //     Debug.Log("2");
+    //     return characterDescriptions;
+    // }
 
     private Sprite LoadPNGAsSprite(string filePath)
     {
@@ -148,12 +226,12 @@ public class NewSaveController : Singleton<NewSaveController>
 
     public void Quicksave()
     {
-        SaveToFile(quicksaveName);
+        Save(quicksaveName);
     }
 
     public void Autosave()
     {
-        SaveToFile(autosaveName);
+        Save(autosaveName);
     }
 
     public void Quickload()

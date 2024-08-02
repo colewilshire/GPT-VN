@@ -2,14 +2,14 @@ using System.Collections.Generic;
 
 public class NewDialogueController : Singleton<NewDialogueController>
 {
-    private List<NewDialogueLine> dialoguePath;
+    public List<NewDialogueLine> DialoguePath;
     public int CurrentLineIndex = 0;
     public Choice CurrentChoice;
 
     private void ReadDialogueLine(int lineIndex)
     {
         CurrentLineIndex = lineIndex;
-        NewDialogueLine currentLine = dialoguePath[CurrentLineIndex];
+        NewDialogueLine currentLine = DialoguePath[CurrentLineIndex];
         CharacterPortrait characterPortrait = NewCharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
         NewBackgroundController.Instance.ShowBackground(currentLine.BackgroundDescription);
         NameDisplayController.Instance.SetDisplayName(currentLine.CharacterName);
@@ -39,7 +39,7 @@ public class NewDialogueController : Singleton<NewDialogueController>
 
     public async void MakeChoice(NewDialogueLine chosenLine)
     {
-        dialoguePath[CurrentLineIndex] = chosenLine;
+        DialoguePath[CurrentLineIndex] = chosenLine;
         CurrentChoice = null;
 
         StateController.Instance.SetStates(GameState.Loading);
@@ -54,13 +54,13 @@ public class NewDialogueController : Singleton<NewDialogueController>
     {
         foreach (NewDialogueLine dialogueLine in dialogueScene.DialogueLines)
         {
-            dialoguePath.Add(dialogueLine);
+            DialoguePath.Add(dialogueLine);
         }
     }
 
     public void StartDialogue(DialogueScene initialDialogueScene, int startingLineIndex = 0)
     {
-        dialoguePath = new();
+        DialoguePath = new();
 
         AddSceneToDialogue(initialDialogueScene);
         ReadDialogueLine(startingLineIndex);
@@ -69,7 +69,7 @@ public class NewDialogueController : Singleton<NewDialogueController>
     public void StepForward()
     {
         int newIndex = CurrentLineIndex + 1;
-        if (!(dialoguePath.Count > newIndex)) return;
+        if (!(DialoguePath.Count > newIndex)) return;
         ReadDialogueLine(newIndex);
     }
 
@@ -82,7 +82,7 @@ public class NewDialogueController : Singleton<NewDialogueController>
 
     public void RepeatLine()
     {
-        if (!(dialoguePath.Count > 0)) return;
+        if (!(DialoguePath.Count > 0)) return;
         ReadDialogueLine(CurrentLineIndex);
     }
 }

@@ -58,23 +58,16 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             return;
         }
 
-        // initialDialogueScene.DialogueLines.Add(new()
-        // {
-        //     CharacterName = "Main Character",
-        //     DialogueText = "What should I choose?",
-        //     Choice = choice
-        // });
-
         // Interpret chat requests
         NewCharacterManager.Instance.GenerateCharacterPortraits(castList);
         NewDialogueController.Instance.StartDialogue(initialDialogueScene);
-        NewSaveController.Instance.SaveToFile(UnityEngine.Random.Range(0, 10000).ToString());
+        NewSaveController.Instance.Save(Random.Range(0, 10000).ToString());
         StateController.Instance.SetStates(GameState.Gameplay);
     }
 
-    public async void LoadConversationFromSave(string saveName)
+    public void LoadConversationFromSave(string saveName)
     {
-        Dictionary<SaveDataType, List<string>> saveData = NewSaveController.Instance.LoadSaveFile(saveName);
+        NewSaveData saveData = NewSaveController.Instance.LoadSave(saveName);
         if (saveData == null) return;
 
         StateController.Instance.SetStates(GameState.Loading);
@@ -85,25 +78,27 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         {
             Model = Model.GPT4o,
             Temperature = 1,
-            MaxTokens = 4096
+            MaxTokens = 4096,
+            Messages = saveData.Messages
         };
+
         Chat = api.Chat.CreateConversation(chatRequest);
 
         // Make chat requests
-        Dictionary<string, CharacterDescription> castList = await GenerateCastList(saveData[SaveDataType.CharacterDescriptions][0]);
-        DialogueScene initialDialogueScene = await GenerateInitialDialogue(saveData);
+        // Dictionary<string, CharacterDescription> castList = await GenerateCastList(saveData.CharacterDescriptions);
+        // DialogueScene initialDialogueScene = await GenerateInitialDialogue(saveData);
 
-        // Verify requests are good
-        if (castList == null || initialDialogueScene == null)
-        {
-            StateController.Instance.SetStates(GameState.MainMenu);
-            return;
-        }
+        // // Verify requests are good
+        // if (castList == null || initialDialogueScene == null)
+        // {
+        //     StateController.Instance.SetStates(GameState.MainMenu);
+        //     return;
+        // }
 
         // Interpret chat requests
-        NewCharacterManager.Instance.GenerateCharacterPortraits(castList);
-        NewDialogueController.Instance.StartDialogue(initialDialogueScene, int.Parse(saveData[SaveDataType.CurrentScene][0]));
-        NewDialogueController.Instance.AddSceneToDialogue(initialDialogueScene);
+        NewCharacterManager.Instance.GenerateCharacterPortraits(saveData.CharacterDescriptions);
+        NewDialogueController.Instance.StartDialogue(new DialogueScene() { DialogueLines = saveData.DialoguePath }, saveData.CurrentLineIndex);
+        //NewDialogueController.Instance.AddSceneToDialogue(initialDialogueScene);
         StateController.Instance.SetStates(GameState.Gameplay);
     }
 
@@ -130,7 +125,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
         if (saveData != null)
         {
-            NewSaveController.Instance.CacheData(SaveDataType.CharacterDescriptions, saveData);
+            //NewSaveController.Instance.CacheData(SaveDataType.CharacterDescriptions, saveData);
             return JsonConvert.DeserializeObject<Dictionary<string, CharacterDescription>>(saveData);
         }
 
@@ -150,7 +145,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             return null;
         }
 
-        NewSaveController.Instance.CacheData(SaveDataType.CharacterDescriptions, extractedJson);
+        //NewSaveController.Instance.CacheData(SaveDataType.CharacterDescriptions, extractedJson);
 
         return characterDescriptions;
     }
@@ -183,7 +178,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
             foreach(string serializedDialogueScene in saveData[SaveDataType.DialogueScenes])
             {
-                NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, serializedDialogueScene);
+                //NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, serializedDialogueScene);
                 DialogueScene dialogueScene = JsonConvert.DeserializeObject<DialogueScene>(serializedDialogueScene);
 
                 Chat.AppendExampleChatbotOutput(serializedDialogueScene);
@@ -215,7 +210,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
                 return null;
             }
 
-            NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, extractedJson);
+            //NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, extractedJson);
         }
 
         initialDialogueScene.DialogueLines.Add(new()
@@ -299,7 +294,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             Choice = await GenerateChoice()
         });
 
-        NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, extractedJson);
+        //NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, extractedJson);
 
         return newDialogueScene;
     }
