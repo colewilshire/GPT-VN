@@ -1,5 +1,6 @@
 public enum SaveDataType
 {
     CharacterDescriptions,
-    DialogueScenes
+    DialogueScenes,
+    CurrentScene
 }

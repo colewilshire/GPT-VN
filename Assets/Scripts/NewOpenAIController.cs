@@ -83,7 +83,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
         ChatRequest chatRequest = new()
         {
-            Model = Model.GPT4Turbo,
+            Model = Model.GPT4o,
             Temperature = 1,
             MaxTokens = 4096
         };
@@ -91,7 +91,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
         // Make chat requests
         Dictionary<string, CharacterDescription> castList = await GenerateCastList(saveData[SaveDataType.CharacterDescriptions][0]);
-        DialogueScene initialDialogueScene = await GenerateInitialDialogue(saveData[SaveDataType.DialogueScenes][0]);
+        DialogueScene initialDialogueScene = await GenerateInitialDialogue(saveData);
 
         // Verify requests are good
         if (castList == null || initialDialogueScene == null)
@@ -102,7 +102,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
         // Interpret chat requests
         NewCharacterManager.Instance.GenerateCharacterPortraits(castList);
-        NewDialogueController.Instance.StartDialogue(initialDialogueScene);
+        NewDialogueController.Instance.StartDialogue(initialDialogueScene, int.Parse(saveData[SaveDataType.CurrentScene][0]));
         NewDialogueController.Instance.AddSceneToDialogue(initialDialogueScene);
         StateController.Instance.SetStates(GameState.Gameplay);
     }
@@ -155,7 +155,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         return characterDescriptions;
     }
 
-    private async Task<DialogueScene> GenerateInitialDialogue(string saveData = null)
+    private async Task<DialogueScene> GenerateInitialDialogue(Dictionary<SaveDataType, List<string>> saveData = null)
     {
         string prompt =
             $"Generate a script for the next scene of a '{genre}' genre visual novel set in the setting '{setting}', consisting of {linesPerScene} lines of dialogue. " +
@@ -171,30 +171,51 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         Chat.AppendSystemMessage(prompt);
         finishedPrompt += prompt;
 
+        DialogueScene initialDialogueScene;
+        string extractedJson;
+
         if (saveData != null)
         {
-            NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, saveData);
-            return JsonConvert.DeserializeObject<DialogueScene>(saveData);
+            DialogueScene combinedDialogueScene = new()
+            {
+                DialogueLines = new()
+            };
+
+            foreach(string serializedDialogueScene in saveData[SaveDataType.DialogueScenes])
+            {
+                NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, serializedDialogueScene);
+                DialogueScene dialogueScene = JsonConvert.DeserializeObject<DialogueScene>(serializedDialogueScene);
+
+                Chat.AppendExampleChatbotOutput(serializedDialogueScene);
+                combinedDialogueScene.DialogueLines.AddRange(dialogueScene.DialogueLines);
+            }
+
+            //NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, saveData);
+            initialDialogueScene = combinedDialogueScene;
+            //extractedJson = saveData;
         }
-
-        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
-        string extractedJson = ExtractJson(assistantResponse);
-        DialogueScene initialDialogueScene;
-
-        Debug.Log(assistantResponse);
-
-        try
+        else
         {
-            initialDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(extractedJson);
-        }
-        catch
-        {
-            // Debug.Log("Error generating usable response. Retrying.");
-            // Chat.AppendSystemMessage("Formatting error. Please reread instructions and alter the format next time.");
-            // return await GenerateInitialDialogue();
+            string assistantResponse = await Chat.GetResponseFromChatbotAsync();
+            extractedJson = ExtractJson(assistantResponse);
 
-            Debug.Log("Error generating usable response.");
-            return null;
+            Debug.Log(assistantResponse);
+
+            try
+            {
+                initialDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(extractedJson);
+            }
+            catch
+            {
+                // Debug.Log("Error generating usable response. Retrying.");
+                // Chat.AppendSystemMessage("Formatting error. Please reread instructions and alter the format next time.");
+                // return await GenerateInitialDialogue();
+
+                Debug.Log("Error generating usable response.");
+                return null;
+            }
+
+            NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, extractedJson);
         }
 
         initialDialogueScene.DialogueLines.Add(new()
@@ -203,8 +224,6 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             DialogueText = "What should I choose?",
             Choice = await GenerateChoice()
         });
-
-        NewSaveController.Instance.CacheData(SaveDataType.DialogueScenes, extractedJson);
 
         return initialDialogueScene;
     }

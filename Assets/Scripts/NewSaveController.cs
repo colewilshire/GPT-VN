@@ -64,6 +64,15 @@ public class NewSaveController : Singleton<NewSaveController>
         DeleteSaveFile(saveName);
         Directory.CreateDirectory(saveFolderPath);
 
+        if (activeSaveData[SaveDataType.CurrentScene].Count > 0)
+        {
+            activeSaveData[SaveDataType.CurrentScene][0] = $"{NewDialogueController.Instance.CurrentLineIndex}";
+        }
+        else
+        {
+            CacheData(SaveDataType.CurrentScene, $"{NewDialogueController.Instance.CurrentLineIndex}");
+        }
+
         foreach(KeyValuePair<SaveDataType, List<string>> keyValuePair in activeSaveData)
         {
             string dataFolderPath = Path.Combine(saveFolderPath, keyValuePair.Key.ToString());
@@ -78,8 +87,8 @@ public class NewSaveController : Singleton<NewSaveController>
         }
 
         ScreenCapture.CaptureScreenshot(screenshotPath);
-        string metadataPath = Path.Combine(saveFolderPath, "CurrentSceneNumber.txt");
-        File.WriteAllText(metadataPath, $"{NewDialogueController.Instance.CurrentLineIndex}");
+        //string metadataPath = Path.Combine(saveFolderPath, "CurrentSceneNumber.txt");
+        //File.WriteAllText(metadataPath, $"{NewDialogueController.Instance.CurrentLineIndex}");
     }
 
     // Need to get the CurrentSceneIndex to this

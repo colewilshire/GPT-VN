@@ -19,6 +19,10 @@ public class NewDialogueController : Singleton<NewDialogueController>
         {
             ReadChoices(currentLine.Choice);
         }
+        else
+        {
+            HideChoices();
+        }
     }
 
     private void ReadChoices(Choice choice)
@@ -27,17 +31,22 @@ public class NewDialogueController : Singleton<NewDialogueController>
         StateController.Instance.SetSubmenuState(GameState.Choice);
     }
 
+    private void HideChoices()
+    {
+        CurrentChoice = null;
+        StateController.Instance.SetSubmenuState(GameState.Gameplay);
+    }
+
     public async void MakeChoice(NewDialogueLine chosenLine)
     {
         dialoguePath[CurrentLineIndex] = chosenLine;
         CurrentChoice = null;
-        //StateController.Instance.SetSubmenuState(GameState.Gameplay);
+
         StateController.Instance.SetStates(GameState.Loading);
-        
         DialogueScene newDialogueScene = await NewOpenAIController.Instance.GenerateAdditionalDialogue(chosenLine.DialogueText);
         AddSceneToDialogue(newDialogueScene);
-        StateController.Instance.SetStates(GameState.Gameplay);
 
+        StateController.Instance.SetStates(GameState.Gameplay);
         RepeatLine();
     }
 
