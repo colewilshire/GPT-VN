@@ -24,7 +24,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         api = new OpenAIAPI(apiKey);
     }
 
-    public async void CreateNewConversation()
+    public async void CreateNewConversation(string storyGenre = null, string storySetting = null)
     {
         StateController.Instance.SetStates(GameState.Loading);
         CharacterManager.Instance.ClearCharacters();
@@ -36,6 +36,13 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             MaxTokens = 4096
         };
         Chat = api.Chat.CreateConversation(chatRequest);
+
+        // Use given genre and setting, or the default
+        if (storyGenre != null && storySetting != null)
+        {
+            genre = storyGenre;
+            setting = storySetting;
+        }
 
         // Make chat requests
         Dictionary<string, CharacterDescription> castList = await GenerateCastList();

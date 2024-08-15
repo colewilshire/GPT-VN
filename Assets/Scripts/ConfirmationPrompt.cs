@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -47,7 +45,7 @@ public class ConfirmationPrompt : Singleton<ConfirmationPrompt>
         InputController.Instance.DisableInputs();
         gameObject.SetActive(true);
 
-        bool isPromptConfirmed = await confirmed.Task == true;
+        bool isPromptConfirmed = await confirmed.Task;
         InputController.Instance.EnableInputs();
 
         return isPromptConfirmed;

@@ -32,10 +32,15 @@ public class MainMenu : Menu
         quitButton.onClick.RemoveListener(OnQuitButtonClicked);
     }
 
-    private void OnNewGameButtonClicked()
+    private async void OnNewGameButtonClicked()
     {
-        //OpenAIController.Instance.CreateNewConversation();
-        NewOpenAIController.Instance.CreateNewConversation();
+        string genre = await InputPrompt.Instance.PromptInput("enter a genre", "romance");
+        if (genre == null) return;
+
+        string setting = await InputPrompt.Instance.PromptInput("enter a setting", "high school");
+        if (setting == null) return;
+
+        NewOpenAIController.Instance.CreateNewConversation(genre, setting);
     }
 
     private void OnLoadGameButtonClicked()
