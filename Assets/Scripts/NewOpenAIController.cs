@@ -8,13 +8,19 @@ using System.Collections.Generic;
 
 public class NewOpenAIController : Singleton<NewOpenAIController>
 {
+    [Header("API")]
     [SerializeField] private string apiKey;
-    [SerializeField] private string genre = "romance";
-    [SerializeField] private string setting = "high school";
+
+    [Header("Story Settings")]
     [SerializeField] private int linesPerScene = 10;
     [SerializeField] private int numberOfCharacters = 5;
+
+    [Header("Debug")]
     [SerializeField] private string finishedPrompt = "";
+
     private OpenAIAPI api;
+    public string Genre { get; private set; }
+    public string Setting { get; private set; }
     public Conversation Chat { get; private set; }
 
     protected override void Awake()
@@ -24,8 +30,16 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         api = new OpenAIAPI(apiKey);
     }
 
-    public async void CreateNewConversation(string storyGenre = null, string storySetting = null)
+    public async void CreateNewConversation()
     {
+        // Get user input for genre and setting
+        Genre = await InputPrompt.Instance.PromptInput("enter a genre", "romance");
+        if (Genre == null) return;
+
+        Setting = await InputPrompt.Instance.PromptInput("enter a setting", "high school");
+        if (Setting == null) return;
+
+        // Start loading
         StateController.Instance.SetStates(GameState.Loading);
         CharacterManager.Instance.ClearCharacters();
 
@@ -36,13 +50,6 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             MaxTokens = 4096
         };
         Chat = api.Chat.CreateConversation(chatRequest);
-
-        // Use given genre and setting, or the default
-        if (storyGenre != null && storySetting != null)
-        {
-            genre = storyGenre;
-            setting = storySetting;
-        }
 
         // Make chat requests
         Dictionary<string, CharacterDescription> castList = await GenerateCastList();
@@ -95,6 +102,9 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             }
         }
 
+        Genre = saveData.Genre;
+        Setting = saveData.Setting;
+
         NewCharacterManager.Instance.GenerateCharacterPortraits(saveData.CharacterDescriptions);
         StateController.Instance.SetStates(GameState.Gameplay);
         NewDialogueController.Instance.StartDialogue(new DialogueScene() { DialogueLines = saveData.DialoguePath }, saveData.CurrentLineIndex);
@@ -103,7 +113,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
     private async Task<Dictionary<string, CharacterDescription>> GenerateCastList()
     {
         string prompt =
-            $"Generate a cast list of {numberOfCharacters} characters for the next scene of a '{genre}' genre visual novel set in the setting '{setting}'. " +
+            $"Generate a cast list of {numberOfCharacters} characters for the next scene of a '{Genre}' genre visual novel set in the setting '{Setting}'. " +
             "One of the characters should be named 'Main Character', and serve as the protagonist of the story. " +
             "One of the characters should be named 'Narrator', and serve as the story's narrator. " +
             $"The other {numberOfCharacters - 2} characters are up to you to create. Characters other than 'Main Character' and 'Narrator' should have actual human names for their name, not titles. " +
@@ -143,7 +153,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
     private async Task<DialogueScene> GenerateInitialDialogue()
     {
         string prompt =
-            $"Generate a script for the next scene of a '{genre}' genre visual novel set in the setting '{setting}', consisting of {linesPerScene} lines of dialogue. " +
+            $"Generate a script for the next scene of a '{Genre}' genre visual novel set in the setting '{Setting}', consisting of {linesPerScene} lines of dialogue. " +
             "Only a few characters from the cast list should appear in every scene. Some characters should be rarely appearing side characters, and the Main Character and Narrator should appear frequently. " +
             "The cast of the story should consist of characters from the previously generated cast list. " +
             "Each line should include the speaking character's name, the text of the dialogue, the speaker's mood, and the background image to be displayed. " +

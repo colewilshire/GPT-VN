@@ -9,8 +9,17 @@ using UnityEngine;
 
 public class NewSaveController : Singleton<NewSaveController>
 {
+    [Header("Save Names")]
     [SerializeField] private string quicksaveName = "quicksave";
     [SerializeField] private string autosaveName = "autosave";
+    [SerializeField] private string genreSaveName = "Genre.json";
+    [SerializeField] private string settingSaveName = "Setting.json";
+    [SerializeField] private string characterDescriptionsSaveName = "CharacterDescriptions.json";
+    [SerializeField] private string dialogueSaveName = "DialoguePath.json";
+    [SerializeField] private string indexSaveName = "CurrentDialogueIndex.json";
+    [SerializeField] private string messagesSaveName = "Messages.json";
+    [SerializeField] private string screenshotSaveName = "Screenshot.png";
+
     private string rootSaveFolderPath;
 
     protected override void Awake()
@@ -41,11 +50,13 @@ public class NewSaveController : Singleton<NewSaveController>
         string folderPath = Path.Combine(rootSaveFolderPath, saveName);
         Directory.CreateDirectory(folderPath);
     
-        string characterDescriptionsPath = Path.Combine(folderPath, $"CharacterDescriptions.json");
-        string dialoguePath = Path.Combine(folderPath, $"DialoguePath.json");
-        string indexPath = Path.Combine(folderPath, $"CurrentDialogueIndex.json");
-        string messagesPath = Path.Combine(folderPath, $"Messages.json");
-        string screenshotPath = Path.Combine(folderPath, "Screenshot.png");
+        string genrePath = Path.Combine(folderPath, genreSaveName);
+        string settingPath = Path.Combine(folderPath, settingSaveName);
+        string characterDescriptionsPath = Path.Combine(folderPath, characterDescriptionsSaveName);
+        string dialoguePath = Path.Combine(folderPath, dialogueSaveName);
+        string indexPath = Path.Combine(folderPath, indexSaveName);
+        string messagesPath = Path.Combine(folderPath, messagesSaveName);
+        string screenshotPath = Path.Combine(folderPath, screenshotSaveName);
         JsonSerializerOptions jsonSerializerOptions = new()
         {
             WriteIndented = true,
@@ -53,11 +64,15 @@ public class NewSaveController : Singleton<NewSaveController>
             Converters = { new ChatMessageRoleConverter() }
         };
 
+        string serializedGenre = JsonSerializer.Serialize(NewOpenAIController.Instance.Genre, jsonSerializerOptions);
+        string serializedSetting = JsonSerializer.Serialize(NewOpenAIController.Instance.Setting, jsonSerializerOptions);
         string serializedCharacterDescriptions = JsonSerializer.Serialize(NewCharacterManager.Instance.CharacterDescriptions, jsonSerializerOptions);
         string serializedDialogue = JsonSerializer.Serialize(NewDialogueController.Instance.DialoguePath, jsonSerializerOptions);
         string serializedIndex = JsonSerializer.Serialize(NewDialogueController.Instance.CurrentLineIndex, jsonSerializerOptions);
         string serializedMessages = JsonSerializer.Serialize(NewOpenAIController.Instance.Chat.Messages, jsonSerializerOptions);
 
+        File.WriteAllText(genrePath, serializedGenre, Encoding.Unicode);
+        File.WriteAllText(settingPath, serializedSetting, Encoding.Unicode);
         File.WriteAllText(characterDescriptionsPath, serializedCharacterDescriptions, Encoding.Unicode);
         File.WriteAllText(dialoguePath, serializedDialogue, Encoding.Unicode);
         File.WriteAllText(indexPath, serializedIndex, Encoding.Unicode);
@@ -68,11 +83,15 @@ public class NewSaveController : Singleton<NewSaveController>
     public NewSaveData LoadSave(string saveName)
     {
         string folderPath = Path.Combine(rootSaveFolderPath, saveName);
-        string characterDescriptionsPath = Path.Combine(folderPath, $"CharacterDescriptions.json");
-        string dialoguePath = Path.Combine(folderPath, $"DialoguePath.json");
-        string indexPath = Path.Combine(folderPath, $"CurrentDialogueIndex.json");
-        string messagesPath = Path.Combine(folderPath, $"Messages.json");
+        string genrePath = Path.Combine(folderPath, genreSaveName);
+        string settingPath = Path.Combine(folderPath, settingSaveName);
+        string characterDescriptionsPath = Path.Combine(folderPath, characterDescriptionsSaveName);
+        string dialoguePath = Path.Combine(folderPath, dialogueSaveName);
+        string indexPath = Path.Combine(folderPath, indexSaveName);
+        string messagesPath = Path.Combine(folderPath, messagesSaveName);
 
+        string serializedGenre = File.ReadAllText(genrePath);
+        string serializedSetting = File.ReadAllText(settingPath);
         string serializedCharacterDescriptions = File.ReadAllText(characterDescriptionsPath);
         string serializedDialogue = File.ReadAllText(dialoguePath);
         string serializedIndex = File.ReadAllText(indexPath);
@@ -86,6 +105,8 @@ public class NewSaveController : Singleton<NewSaveController>
         };
         NewSaveData saveData = new()
         {
+            Genre = JsonSerializer.Deserialize<string>(serializedGenre, jsonSerializerOptions),
+            Setting = JsonSerializer.Deserialize<string>(serializedSetting, jsonSerializerOptions),
             CharacterDescriptions = JsonSerializer.Deserialize<Dictionary<string, CharacterDescription>>(serializedCharacterDescriptions, jsonSerializerOptions),
             DialoguePath = JsonSerializer.Deserialize<List<NewDialogueLine>>(serializedDialogue, jsonSerializerOptions),
             CurrentLineIndex = JsonSerializer.Deserialize<int>(serializedIndex, jsonSerializerOptions),

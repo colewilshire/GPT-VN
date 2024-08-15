@@ -1399,7 +1399,7 @@ GameObject:
   - component: {fileID: 203511797}
   - component: {fileID: 203511796}
   m_Layer: 0
-  m_Name: AudioController
+  m_Name: Audio Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4195,7 +4195,7 @@ GameObject:
   - component: {fileID: 557262268}
   - component: {fileID: 557262267}
   m_Layer: 0
-  m_Name: New Open AI Controller
+  m_Name: OpenAI Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4214,8 +4214,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   apiKey: 
-  genre: romance
-  setting: high school
   linesPerScene: 10
   numberOfCharacters: 5
   finishedPrompt: 
@@ -6149,34 +6147,16 @@ GameObject:
   m_Component:
   - component: {fileID: 888371920}
   - component: {fileID: 888371919}
-  - component: {fileID: 888371918}
-  - component: {fileID: 888371921}
   - component: {fileID: 888371922}
-  - component: {fileID: 888371923}
   - component: {fileID: 888371924}
   - component: {fileID: 888371925}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: Game Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &888371918
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 888371917}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9bda1b89a10d2544a5a7fb0d397988b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxQuicksaves: 10
-  quicksaveName: quicksave
-  autosaveName: autosave
 --- !u!114 &888371919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6204,18 +6184,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &888371921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 888371917}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32c678be1822a6a4a858e2f5c5f546a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &888371922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6226,18 +6194,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2115513e06d6b0d439153554b117e5e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &888371923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 888371917}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: beeb1d05af4bda149b61746f89bff2d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &888371924
@@ -6267,6 +6223,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   quicksaveName: quicksave
   autosaveName: autosave
+  genreSaveName: Genre.json
+  settingSaveName: Setting.json
+  characterDescriptionsSaveName: CharacterDescriptions.json
+  dialogueSaveName: DialoguePath.json
+  indexSaveName: CurrentDialogueIndex.json
+  messagesSaveName: Messages.json
+  screenshotSaveName: Screenshot.png
 --- !u!1 &888588069
 GameObject:
   m_ObjectHideFlags: 0
@@ -14079,56 +14042,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!1 &1217434016
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1217434018}
-  - component: {fileID: 1217434017}
-  m_Layer: 0
-  m_Name: OpenAIController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1217434017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1217434016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c106e2136f563d44b44cb9b06af81ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  apiKey: 
-  genre: romance
-  setting: all-girls high school
-  linesPerScene: 10
-  numberOfCharacters: 10
-  finishedPrompt: 
---- !u!4 &1217434018
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1217434016}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1218539905
 GameObject:
   m_ObjectHideFlags: 0
@@ -25712,5 +25625,4 @@ SceneRoots:
   - {fileID: 1448996989}
   - {fileID: 888371920}
   - {fileID: 203511798}
-  - {fileID: 1217434018}
   - {fileID: 557262268}
