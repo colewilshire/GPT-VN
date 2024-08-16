@@ -3191,8 +3191,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce927ee318ef8b0479407fbf837a49df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  confirmButton: {fileID: 1053719154}
-  backButton: {fileID: 1691727680}
+  confirmButton: {fileID: 1691727680}
+  backButton: {fileID: 1053719154}
   prompt: {fileID: 1141974581}
   inputField: {fileID: 958781583}
 --- !u!1 &489126242
@@ -12012,8 +12012,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1053719153}
   - {fileID: 1691727679}
+  - {fileID: 1053719153}
   - {fileID: 1141974580}
   - {fileID: 958781582}
   m_Father: {fileID: 474532756}
@@ -12835,7 +12835,7 @@ GameObject:
   - component: {fileID: 1053719155}
   - component: {fileID: 1053719154}
   m_Layer: 0
-  m_Name: Confirm Button
+  m_Name: Back Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15640,7 +15640,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: back
+  m_text: confirm
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 756f48672873f664798bbb48d9b1bf7a, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 44451191653d8954587d2eaa2efdf297, type: 2}
@@ -18275,7 +18275,7 @@ GameObject:
   - component: {fileID: 1691727681}
   - component: {fileID: 1691727680}
   m_Layer: 0
-  m_Name: Back Button
+  m_Name: Confirm Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24441,7 +24441,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: confirm
+  m_text: back
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 756f48672873f664798bbb48d9b1bf7a, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 44451191653d8954587d2eaa2efdf297, type: 2}
@@ -25219,7 +25219,6 @@ GameObject:
   - component: {fileID: 2066826743}
   - component: {fileID: 2066826742}
   - component: {fileID: 2066826741}
-  - component: {fileID: 2066826744}
   m_Layer: 0
   m_Name: Dialogue Choice Canvas
   m_TagString: Untagged
@@ -25310,18 +25309,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 4
   m_TargetDisplay: 0
---- !u!114 &2066826744
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2066826739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 195174adb9c7e3b46bc1b2d8bcb67143, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2095358022
 GameObject:
   m_ObjectHideFlags: 0

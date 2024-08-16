@@ -43,15 +43,6 @@ public class LoadingScreen : Singleton<LoadingScreen>
         progressBar.SetProgress(0, 0);
     }
 
-    public void SetLoadingState(LoadingState state, int currentIndex = 0)
-    {
-        currentLoadingMessages = loadingMessages[state];
-        loadingMessage.text = currentLoadingMessages[currentIndex];
-
-        float loadingProgress = (float) (currentIndex + 1) / currentLoadingMessages.Count;
-        progressBar.SetProgress(loadingProgress);
-    }
-
     public void StartLoading(LoadingState state)
     {
         currentIndex = 0;
