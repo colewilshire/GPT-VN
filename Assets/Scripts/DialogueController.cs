@@ -10,8 +10,8 @@ public class DialogueController : Singleton<DialogueController>
     {
         CurrentLineIndex = lineIndex;
         DialogueLine currentLine = DialoguePath[CurrentLineIndex];
-        CharacterPortrait characterPortrait = NewCharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
-        NewBackgroundController.Instance.ShowBackground(currentLine.BackgroundDescription);
+        CharacterPortrait characterPortrait = CharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
+        BackgroundController.Instance.ShowBackground(currentLine.BackgroundDescription);
         NameDisplayController.Instance.SetDisplayName(characterPortrait != null ? characterPortrait.DisplayName : null ?? currentLine.CharacterName);
         TextController.Instance.SetText(currentLine.DialogueText);
 

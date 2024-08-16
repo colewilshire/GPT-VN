@@ -90,35 +90,6 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
         characterPortrait.name = characterName;
         characterPortrait.SetAppearance(characterAppearance);
 
-        CharacterManager.Instance.CacheCharacterPortrait(characterPortrait);
+        //CharacterManager.Instance.CacheCharacterPortrait(characterPortrait);
     }
-
-    // public void LoadCharactersFromSave(SaveData saveData)
-    // {
-    //     for (int i = 0; i < saveData.CharacterNames.Count; ++i)
-    //     {
-    //         string characterName = saveData.CharacterNames[i];
-    //         string displayName = saveData.DisplayNames[i];
-    //         string serializedCharacterAppearance = saveData.CharacterAppearances[i];
-    //         CharacterAppearance characterAppearance = CharacterAppearance.CreateInstance<CharacterAppearance>();
-    //         List<string> deserializedCharacterAppearance = new(serializedCharacterAppearance.Split('|'));
-
-    //         string accessoryName = deserializedCharacterAppearance[0];
-    //         string hairName = deserializedCharacterAppearance[1];
-    //         string outfitName = deserializedCharacterAppearance[2];
-    //         string faceName = deserializedCharacterAppearance[3];
-
-    //         characterAppearance.Accessory = Resources.Load<Accessory>($"Accessories/{accessoryName}");
-    //         characterAppearance.Hair = Resources.Load<Hair>($"Hairs/{hairName}");
-    //         characterAppearance.Outfit = Resources.Load<Outfit>($"Outfits/{outfitName}");
-    //         characterAppearance.Face = Resources.Load<Face>($"Faces/{faceName}");
-
-    //         CharacterPortrait characterPortrait = Instantiate(characterPortaitPrefab, Instance.transform);
-    //         characterPortrait.name = characterName;
-    //         characterPortrait.DisplayName = displayName;
-    //         characterPortrait.SetAppearance(characterAppearance);
-
-    //         CharacterManager.Instance.CacheCharacterPortrait(characterPortrait);
-    //     }
-    // }
 }

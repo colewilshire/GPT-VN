@@ -1,62 +1,126 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class CharacterManager : Singleton<CharacterManager>
 {
+    [SerializeField] private CharacterPortrait characterPortaitPrefab;
+    private Dictionary<string, CharacterPortrait> characterPortraits = new();
     private CharacterPortrait activePortrait;
-    public Dictionary<string, CharacterPortrait> Characters {get; private set;} = new Dictionary<string, CharacterPortrait>();
-    public CharacterPortrait MainCharacter;
+    private readonly Dictionary<string, Accessory> accessories = new();
+    private readonly Dictionary<string, Hair> hairs = new();
+    private readonly Dictionary<string, Outfit> outfits = new();
+    private readonly Dictionary<string, Face> faces = new();
+    public Dictionary<string, CharacterDescription> CharacterDescriptions;
 
-    private void Start()
+    protected override void Awake()
     {
-        StateController.Instance.OnMenuStateChange += ResetMainCharacter;
+        base.Awake();
+
+        SortCharacterParts();
     }
 
-    private void OnDestroy()
+    private void SortCharacterParts()
     {
-        StateController.Instance.OnMenuStateChange -= ResetMainCharacter;
-    }
+        List<Accessory> unsortedAccessories = Resources.LoadAll<Accessory>("Accessories").ToList();
+        List<Hair> unsortedHairs = Resources.LoadAll<Hair>("Hairs").ToList();
+        List<Outfit> unsortedOutfits = Resources.LoadAll<Outfit>("Outfits").ToList();
+        List<Face> unsortedFaces = Resources.LoadAll<Face>("Faces").ToList();
 
-    private void ResetMainCharacter(GameState state)
-    {
-        if (state != GameState.MainMenu) return;
-        MainCharacter = null;
-    }
-
-    // Get specified character and replace their display name and appearance with that from Character Creation.
-    // In the off chance a bad name was given, search for some of ChatGPT's favorite names for Protag-kun.
-    public void SetMainCharacter(string characterName)
-    {
-        if (Characters.TryGetValue(characterName, out CharacterPortrait characterPortrait)
-            || Characters.TryGetValue("Main Character", out characterPortrait) 
-            || Characters.TryGetValue("Protagonist", out characterPortrait))
+        foreach(Accessory accessory in unsortedAccessories)
         {
-            if (!CharacterCreationController.Instance.MainCharacterPortait) return;
+            accessories[accessory.Description] = accessory;
+        }
 
-            MainCharacter = characterPortrait;
-            characterPortrait.DisplayName = CharacterCreationController.Instance.MainCharacterPortait.DisplayName;
-            characterPortrait.Appearance = CharacterCreationController.Instance.MainCharacterPortait.Appearance;
-            characterPortrait.SetAppearance(characterPortrait.Appearance);
+        foreach(Hair hair in unsortedHairs)
+        {
+            hairs[hair.Description] = hair;
+        }
+
+        foreach(Outfit outfit in unsortedOutfits)
+        {
+            outfits[outfit.Description] = outfit;
+        }
+
+        foreach(Face face in unsortedFaces)
+        {
+            faces[face.Description] = face;
         }
     }
 
-    public void CacheCharacterPortrait(CharacterPortrait characterPortrait)
+    private void ClearCharacterPortraits()
     {
-        Characters[characterPortrait.name] = characterPortrait;
+        foreach(KeyValuePair<string, CharacterPortrait> keyValuePair in characterPortraits)
+        {
+            Destroy(characterPortraits[keyValuePair.Key].gameObject);
+        }
     }
 
-    public CharacterPortrait ShowPortrait(string characterName, Mood mood)
+    private CharacterPortrait GenerateCharacterPortrait(string characterName, CharacterDescription characterDescription, CharacterAppearance appearanceOverride = null)
+    {
+        CharacterPortrait characterPortrait = Instantiate(characterPortaitPrefab, transform);
+        CharacterAppearance characterAppearance = ScriptableObject.CreateInstance<CharacterAppearance>();
+
+        characterPortrait.gameObject.name = characterName;
+        characterPortrait.DisplayName = characterName;
+
+        if (!appearanceOverride)
+        {
+            accessories.TryGetValue(characterDescription.Accessory, out characterAppearance.Accessory);
+            hairs.TryGetValue(characterDescription.Hair, out characterAppearance.Hair);
+            outfits.TryGetValue(characterDescription.Outfit, out characterAppearance.Outfit);
+            faces.TryGetValue(characterDescription.Eyes, out characterAppearance.Face);
+            characterPortrait.SetAppearance(characterAppearance);
+        }
+        else
+        {
+            characterPortrait.SetAppearance(appearanceOverride);
+        }
+
+        return characterPortrait;
+    }
+
+    public void GenerateCharacterPortraits(Dictionary<string, CharacterDescription> castList)
+    {
+        CharacterDescriptions = castList;
+
+        ClearCharacterPortraits();
+        characterPortraits = new();
+    
+        foreach(KeyValuePair<string, CharacterDescription> keyValuePair in castList)
+        {
+            string characterName = keyValuePair.Key;
+            CharacterDescription characterDescription = keyValuePair.Value;
+
+            if (characterName.ToLower() == "main character" || characterName.ToLower() == "protagonist" || characterName.ToLower() == "mc")
+            {
+                characterPortraits[characterName] = GenerateCharacterPortrait(CharacterCreationController.Instance.MainCharacterPortait.DisplayName, characterDescription, CharacterCreationController.Instance.MainCharacterPortait.Appearance);
+            }
+            else
+            {
+                characterPortraits[characterName] = GenerateCharacterPortrait(characterName, characterDescription);
+            }
+        }
+    }
+
+    public CharacterPortrait ShowPortrait(string characterName, string moodName)
     {
         if (activePortrait)
         {
             activePortrait.HidePortrait();
         }
 
-        if (Characters.TryGetValue(characterName, out CharacterPortrait characterPortrait))
+        if (characterName.ToLower() == "narrator")
+        {
+            return null;
+        }
+
+        if (characterPortraits.TryGetValue(characterName, out CharacterPortrait characterPortrait))
         {
             activePortrait = characterPortrait;
 
-            //Mood expression = Thesaurus.Instance.GetMoodSynonym(mood);
-            //Enum.TryParse(expressionName, out Mood expression);
+            Enum.TryParse(moodName, true, out Mood mood);
             characterPortrait.ShowPortrait(mood);
 
             return characterPortrait;
@@ -65,13 +129,63 @@ public class CharacterManager : Singleton<CharacterManager>
         return null;
     }
 
-    public void ClearCharacters()
+    public string ListAccessories()
     {
-        foreach (KeyValuePair<string, CharacterPortrait> characterEntry in Characters)
+        string listedAccessories = "none, ";
+
+        foreach(KeyValuePair<string, Accessory> keyValuePair in accessories)
         {
-            Destroy(characterEntry.Value.gameObject);
+            string accessoryDescription = $"'{keyValuePair.Key}'";
+            listedAccessories += $"{accessoryDescription}, ";
         }
 
-        Characters = new Dictionary<string, CharacterPortrait>();
+        listedAccessories = listedAccessories.TrimEnd(',', ' ');
+
+        return listedAccessories;
+    }
+
+    public string ListHairs()
+    {
+        string listedHairs = "none, ";
+
+        foreach(KeyValuePair<string, Hair> keyValuePair in hairs)
+        {
+            string hairDescription = $"'{keyValuePair.Key}'";
+            listedHairs += $"{hairDescription}, ";
+        }
+
+        listedHairs = listedHairs.TrimEnd(',', ' ');
+
+        return listedHairs;
+    }
+
+    public string ListOutfits()
+    {
+        string listedOutfits = "none, ";
+
+        foreach(KeyValuePair<string, Outfit> keyValuePair in outfits)
+        {
+            string outfitDescription = $"'{keyValuePair.Key}'";
+            listedOutfits += $"{outfitDescription}, ";
+        }
+
+        listedOutfits = listedOutfits.TrimEnd(',', ' ');
+
+        return listedOutfits;
+    }
+
+    public string ListFaces()
+    {
+        string listedFaces = "none, ";
+
+        foreach(KeyValuePair<string, Face> keyValuePair in faces)
+        {
+            string faceDescription = $"'{keyValuePair.Key}'";
+            listedFaces += $"{faceDescription}, ";
+        }
+
+        listedFaces = listedFaces.TrimEnd(',', ' ');
+
+        return listedFaces;
     }
 }

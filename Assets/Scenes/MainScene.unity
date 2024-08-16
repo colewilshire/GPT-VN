@@ -2771,7 +2771,6 @@ GameObject:
   - component: {fileID: 373891952}
   - component: {fileID: 373891954}
   - component: {fileID: 373891953}
-  - component: {fileID: 373891955}
   - component: {fileID: 373891956}
   m_Layer: 0
   m_Name: Background
@@ -2837,18 +2836,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 373891951}
   m_CullTransparentMesh: 1
---- !u!114 &373891955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 373891951}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54abb71a0051bae46afe202f6a8091f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &373891956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5562,7 +5549,6 @@ GameObject:
   m_Component:
   - component: {fileID: 805242770}
   - component: {fileID: 805242771}
-  - component: {fileID: 805242772}
   - component: {fileID: 805242773}
   m_Layer: 0
   m_Name: CharacterPortraits
@@ -5603,19 +5589,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterPortaitPrefab: {fileID: 6115015120232068154, guid: c045c4fc654c4d6458dbe00e80d5e8c8, type: 3}
---- !u!114 &805242772
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805242769}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f6053d54978c05408b976ad57773942, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MainCharacter: {fileID: 0}
 --- !u!114 &805242773
 MonoBehaviour:
   m_ObjectHideFlags: 0

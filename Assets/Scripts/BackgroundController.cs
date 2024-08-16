@@ -1,73 +1,61 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BackgroundController : Singleton<BackgroundController>
 {
-    private List<BackgroundImage> backgroundImages = new();
-    private Dictionary<BackgroundTag, List<BackgroundImage>> backgroundDictionary = new();
-    private Dictionary<string, BackgroundImage> backgroundImageCache = new();
-    private Image backgroundImage;
-    public Dictionary<string, BackgroundImage> GeneratedBackgrounds {get; private set;} = new Dictionary<string, BackgroundImage>();
+    private BackgroundImage activeBackground;
+    private Image displayImage;
+    private readonly Dictionary<string, BackgroundImage> backgroundImages = new();
 
     protected override void Awake()
     {
         base.Awake();
 
-        OrganizeBackgroundsByTag();
+        displayImage = GetComponent<Image>();
+        SortBackgroundImages();
     }
 
-    private void OrganizeBackgroundsByTag()
+    private void SortBackgroundImages()
     {
-        backgroundImage = GetComponent<Image>();
-        backgroundImages.AddRange(Resources.LoadAll<BackgroundImage>(""));
+        List<BackgroundImage> unsortedBackgroundImages = Resources.LoadAll<BackgroundImage>("BackgroundImages").ToList();
 
-        TaggedImageUtility.OrganizeImagesByTag(backgroundImages, backgroundDictionary);
-    }
-
-    public BackgroundImage GetBackgroundImageWithTags(List<BackgroundTag> desiredTags)
-    {
-        return TaggedImageUtility.GetImageWithTags<BackgroundTag, BackgroundImage>(desiredTags, backgroundDictionary, backgroundImageCache);
-    }
-
-    public void SetBackground(Sprite sprite)
-    {
-        if (!sprite) return;
-        backgroundImage.sprite = sprite;
-    }
-
-    public void GenerateBackgroundImages(Dictionary<string, List<BackgroundTag>> tagsByBackground)
-    {
-        GeneratedBackgrounds = new Dictionary<string, BackgroundImage>();
-
-        foreach (KeyValuePair<string, List<BackgroundTag>> kvp in tagsByBackground)
+        foreach(BackgroundImage backgroundImage in unsortedBackgroundImages)
         {
-            GeneratedBackgrounds[kvp.Key] = GetBackgroundImageWithTags(kvp.Value);
+            backgroundImages[backgroundImage.Description] = backgroundImage;
         }
     }
 
-    public Sprite GetBackgroundImageFromName(string backgroundName)
+    public void ShowBackground(string backgroundDescription)
     {
-        if (GeneratedBackgrounds.TryGetValue(backgroundName, out BackgroundImage foundImage))
-        {
-            if (foundImage == null) return null;
-            return foundImage.MainImage;
-        }
+        if (backgroundDescription == null) return;
 
-        return null;
+        backgroundDescription = backgroundDescription.ToLower().Trim('\'').Trim();
+
+        if (backgroundImages.TryGetValue(backgroundDescription, out activeBackground))
+        {
+            displayImage.sprite = activeBackground.MainImage;
+        }
+        else
+        {
+            activeBackground = null;
+            displayImage.sprite = null;
+        }
     }
 
-    // public void LoadBackgroundImagesFromSave(SaveData saveData)
-    // {
-    //     GeneratedBackgrounds = new Dictionary<string, BackgroundImage>();
+    public string ListBackgrounds()
+    {
+        string listedBackgrounds = "";
 
-    //     for (int i = 0; i < saveData.BackgroundIndexes.Count; ++i)
-    //     {
-    //         string backgroundIndex = saveData.BackgroundIndexes[i];
-    //         string backgroundName = saveData.BackgroundNames[i];
-    //         BackgroundImage foundImage = Resources.Load<BackgroundImage>($"BackgroundImages/{backgroundName}");
+        foreach(KeyValuePair<string, BackgroundImage> keyValuePair in backgroundImages)
+        {
+            string backgroundDescription = $"'{keyValuePair.Key}'";
+            listedBackgrounds += $"{backgroundDescription}, ";
+        }
 
-    //         GeneratedBackgrounds[backgroundIndex] = foundImage;
-    //     }
-    // }
+        listedBackgrounds = listedBackgrounds.TrimEnd(',', ' ');
+
+        return listedBackgrounds;
+    }
 }

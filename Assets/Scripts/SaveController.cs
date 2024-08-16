@@ -66,7 +66,7 @@ public class SaveController : Singleton<SaveController>
 
         string serializedGenre = JsonSerializer.Serialize(OpenAIController.Instance.Genre, jsonSerializerOptions);
         string serializedSetting = JsonSerializer.Serialize(OpenAIController.Instance.Setting, jsonSerializerOptions);
-        string serializedCharacterDescriptions = JsonSerializer.Serialize(NewCharacterManager.Instance.CharacterDescriptions, jsonSerializerOptions);
+        string serializedCharacterDescriptions = JsonSerializer.Serialize(CharacterManager.Instance.CharacterDescriptions, jsonSerializerOptions);
         string serializedDialogue = JsonSerializer.Serialize(DialogueController.Instance.DialoguePath, jsonSerializerOptions);
         string serializedIndex = JsonSerializer.Serialize(DialogueController.Instance.CurrentLineIndex, jsonSerializerOptions);
         string serializedMessages = JsonSerializer.Serialize(OpenAIController.Instance.Chat.Messages, jsonSerializerOptions);

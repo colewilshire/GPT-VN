@@ -41,7 +41,6 @@ public class OpenAIController : Singleton<OpenAIController>
 
         // Start loading
         StateController.Instance.SetStates(GameState.Loading);
-        CharacterManager.Instance.ClearCharacters();
 
         ChatRequest chatRequest = new()
         {
@@ -65,7 +64,7 @@ public class OpenAIController : Singleton<OpenAIController>
         }
 
         // Interpret chat requests
-        NewCharacterManager.Instance.GenerateCharacterPortraits(castList);
+        CharacterManager.Instance.GenerateCharacterPortraits(castList);
         DialogueController.Instance.StartDialogue(initialDialogueScene);
         SaveController.Instance.Save(Random.Range(0, 10000).ToString()); // Save as Main Character Name - Genre, Setting TODO:
         StateController.Instance.SetStates(GameState.Gameplay);
@@ -77,7 +76,6 @@ public class OpenAIController : Singleton<OpenAIController>
         if (saveData == null) return;
 
         StateController.Instance.SetStates(GameState.Loading);
-        CharacterManager.Instance.ClearCharacters();
 
         ChatRequest chatRequest = new()
         {
@@ -107,7 +105,7 @@ public class OpenAIController : Singleton<OpenAIController>
         Genre = saveData.Genre;
         Setting = saveData.Setting;
 
-        NewCharacterManager.Instance.GenerateCharacterPortraits(saveData.CharacterDescriptions);
+        CharacterManager.Instance.GenerateCharacterPortraits(saveData.CharacterDescriptions);
         StateController.Instance.SetStates(GameState.Gameplay);
         DialogueController.Instance.StartDialogue(new DialogueScene() { DialogueLines = saveData.DialoguePath }, saveData.CurrentLineIndex);
     }
@@ -121,11 +119,11 @@ public class OpenAIController : Singleton<OpenAIController>
             $"The other {numberOfCharacters - 2} characters are up to you to create. Characters other than 'Main Character' and 'Narrator' should have actual human names for their name, not titles. " +
             "Each character in the list should have a name, body type, hair style, face/hair accessory, outfit, and eye color. " +
             $"Body types must be chosen from the following list: 'none', 'feminine', 'masculine'. " +
-            $"Accessories must be chosen from the following list: {NewCharacterManager.Instance.ListAccessories()}. " +
-            $"Hairs must be chosen from the following list: {NewCharacterManager.Instance.ListHairs()}. " +
-            $"Outfits must be chosen from the following list: {NewCharacterManager.Instance.ListOutfits()}. " +
+            $"Accessories must be chosen from the following list: {CharacterManager.Instance.ListAccessories()}. " +
+            $"Hairs must be chosen from the following list: {CharacterManager.Instance.ListHairs()}. " +
+            $"Outfits must be chosen from the following list: {CharacterManager.Instance.ListOutfits()}. " +
             "Chosen outfits and accessories should be appropriate for the story's setting, if possible. For example, in a uniformed setting, all characters of the same geneder and position should be wearing the same uniform. " +
-            $"Eye colors must be chosen from the following list: {NewCharacterManager.Instance.ListFaces()}. " +
+            $"Eye colors must be chosen from the following list: {CharacterManager.Instance.ListFaces()}. " +
             "Format the response as a plain JSON object with only the characters' names as top-level keys'. " +
             "Each entry under a top-level key should be an object with the keys 'BodyType', 'Hair', 'Outfit', 'Accessory', and 'Eyes'. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
@@ -163,7 +161,7 @@ public class OpenAIController : Singleton<OpenAIController>
             "Each line should include the speaking character's name, the text of the dialogue, the speaker's mood, and the background image to be displayed. " +
             "Format the response as a plain JSON object with a top-level key 'DialogueLines'. " +
             "Each entry under 'DialogueLines' should be an object with the keys 'CharacterName', 'DialogueText', 'Mood', and 'BackgroundDescription'." +
-            $"BackgroundsDescriptions should be chosen from the following list: {NewBackgroundController.Instance.ListBackgrounds()}. " +
+            $"BackgroundsDescriptions should be chosen from the following list: {BackgroundController.Instance.ListBackgrounds()}. " +
             "Unless the story calls for a change in location, the BackgroundDescription should not change from one line of dialogue to the next. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
 
