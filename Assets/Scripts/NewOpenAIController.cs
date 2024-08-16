@@ -112,6 +112,8 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
     private async Task<Dictionary<string, CharacterDescription>> GenerateCastList()
     {
+        LoadingScreen.Instance.SetLoadingState(LoadingState.Conversation);
+
         string prompt =
             $"Generate a cast list of {numberOfCharacters} characters for the next scene of a '{Genre}' genre visual novel set in the setting '{Setting}'. " +
             "One of the characters should be named 'Main Character', and serve as the protagonist of the story. " +
@@ -152,6 +154,8 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
     private async Task<DialogueScene> GenerateInitialDialogue()
     {
+        LoadingScreen.Instance.SetLoadingState(LoadingState.Cast);
+
         string prompt =
             $"Generate a script for the next scene of a '{Genre}' genre visual novel set in the setting '{Setting}', consisting of {linesPerScene} lines of dialogue. " +
             "Only a few characters from the cast list should appear in every scene. Some characters should be rarely appearing side characters, and the Main Character and Narrator should appear frequently. " +
@@ -184,10 +188,17 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             return null;
         }
 
+        // initialDialogueScene.DialogueLines.Add(new()
+        // {
+        //     CharacterName = "Main Character",
+        //     DialogueText = "What should I choose?",
+        //     Choice = await GenerateChoice()
+        // });
+
         initialDialogueScene.DialogueLines.Add(new()
         {
-            CharacterName = "Main Character",
-            DialogueText = "What should I choose?",
+            CharacterName = "Narrator",
+            DialogueText = "Main Character made a choice...",
             Choice = await GenerateChoice()
         });
 
@@ -195,7 +206,9 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
     }
 
     private async Task<Choice> GenerateChoice()
-    { 
+    {
+        LoadingScreen.Instance.SetLoadingState(LoadingState.AdditionalDialogue);
+
         string prompt =
             "From where the story left off, offer the player 3 choices of dialogue lines for the Main Character to choose. " +
             "This choice should impact the trajectory of the story. " +
@@ -224,6 +237,8 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
     public async Task<DialogueScene> GenerateAdditionalDialogue(string choiceText = null)
     {
+        LoadingScreen.Instance.SetLoadingState(LoadingState.AdditionalDialogue);
+
         string prompt = "";
 
         if (choiceText != null)

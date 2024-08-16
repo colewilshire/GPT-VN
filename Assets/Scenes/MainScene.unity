@@ -1345,8 +1345,8 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 1920, y: 540}
+  m_Pivot: {x: 0.5, y: 0.25}
 --- !u!114 &203216277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1385,7 +1385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c972cfbbeb70a404c91b674f64fa8da3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  choiceButtonPrefab: {fileID: 3174218943036728074, guid: 627302928f26bfc4daafb7df05a7b893, type: 3}
+  choiceButtonPrefab: {fileID: 3174218943036728074, guid: 281ce55961b48c84dad240c23e2f53be, type: 3}
   customChoiceButtonPrefab: {fileID: 0}
 --- !u!1 &203511795
 GameObject:

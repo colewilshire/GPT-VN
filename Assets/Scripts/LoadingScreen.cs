@@ -6,17 +6,17 @@ public class LoadingScreen : Singleton<LoadingScreen>
 {
     [SerializeField] private TextMeshProUGUI loadingMessage;
     [SerializeField] private ProgressBar progressBar;
-    private Dictionary<LoadingState, string> loadingMessages = new()
+    private readonly Dictionary<LoadingState, string> loadingMessages = new()
     {
-        { LoadingState.Conversation, "Making first-contact..." },
-        { LoadingState.Cast, "Casting characters..." },
-        { LoadingState.Hair, "Styling hair..." },
-        { LoadingState.Outfits, "Sewing outfits..." },
-        { LoadingState.EyeColors, "Putting in colored contacts..." },
-        { LoadingState.Accessories, "Accessorizing..." },
-        { LoadingState.Backgrounds, "Hand-painting backgrounds..." },
-        { LoadingState.Dialogue, "Writing screenplay..." },
-        { LoadingState.AdditionalDialogue, "Publishing sequel direct-to-video..." }
+        { LoadingState.Conversation, "making first contact..." },
+        { LoadingState.Cast, "casting characters..." },
+        // { LoadingState.Hair, "styling hair..." },
+        // { LoadingState.Outfits, "sewing outfits..." },
+        // { LoadingState.EyeColors, "putting in colored contacts..." },
+        // { LoadingState.Accessories, "accessorizing..." },
+        // { LoadingState.Backgrounds, "hand-painting backgrounds..." },
+        { LoadingState.Dialogue, "writing screenplay..." },
+        { LoadingState.AdditionalDialogue, "publishing direct-to-video sequel..." }
     };
     private int statesEllapsed = 0;
 
@@ -36,7 +36,7 @@ public class LoadingScreen : Singleton<LoadingScreen>
         if (state != GameState.Loading) return;
 
         statesEllapsed = 0;
-        SetLoadingState(LoadingState.Conversation);
+        progressBar.SetProgress(0, 0);
     }
 
     public void SetLoadingState(LoadingState state)
@@ -44,7 +44,7 @@ public class LoadingScreen : Singleton<LoadingScreen>
         ++statesEllapsed;
         loadingMessage.text = loadingMessages[state];
 
-        float loadingProgress = (float) statesEllapsed / loadingMessages.Count;
+        float loadingProgress = (float) statesEllapsed / (loadingMessages.Count - 1);
         progressBar.SetProgress(loadingProgress);
     }
 }
