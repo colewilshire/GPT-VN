@@ -22,7 +22,7 @@ public class DialogueChoiceButton : MonoBehaviour
     {
         if (dialogueLine != null)
         {
-            NewDialogueController.Instance.MakeChoice(dialogueLine);
+            DialogueController.Instance.MakeChoice(dialogueLine);
         }
     }
 

@@ -34,7 +34,7 @@ public class MainMenu : Menu
 
     private void OnNewGameButtonClicked()
     {
-        NewOpenAIController.Instance.CreateNewConversation();
+        OpenAIController.Instance.CreateNewConversation();
     }
 
     private void OnLoadGameButtonClicked()

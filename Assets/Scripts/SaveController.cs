@@ -7,7 +7,7 @@ using System.Text.Json;
 using OpenAI_API.Chat;
 using UnityEngine;
 
-public class NewSaveController : Singleton<NewSaveController>
+public class SaveController : Singleton<SaveController>
 {
     [Header("Save Names")]
     [SerializeField] private string quicksaveName = "quicksave";
@@ -64,12 +64,12 @@ public class NewSaveController : Singleton<NewSaveController>
             Converters = { new ChatMessageRoleConverter() }
         };
 
-        string serializedGenre = JsonSerializer.Serialize(NewOpenAIController.Instance.Genre, jsonSerializerOptions);
-        string serializedSetting = JsonSerializer.Serialize(NewOpenAIController.Instance.Setting, jsonSerializerOptions);
+        string serializedGenre = JsonSerializer.Serialize(OpenAIController.Instance.Genre, jsonSerializerOptions);
+        string serializedSetting = JsonSerializer.Serialize(OpenAIController.Instance.Setting, jsonSerializerOptions);
         string serializedCharacterDescriptions = JsonSerializer.Serialize(NewCharacterManager.Instance.CharacterDescriptions, jsonSerializerOptions);
-        string serializedDialogue = JsonSerializer.Serialize(NewDialogueController.Instance.DialoguePath, jsonSerializerOptions);
-        string serializedIndex = JsonSerializer.Serialize(NewDialogueController.Instance.CurrentLineIndex, jsonSerializerOptions);
-        string serializedMessages = JsonSerializer.Serialize(NewOpenAIController.Instance.Chat.Messages, jsonSerializerOptions);
+        string serializedDialogue = JsonSerializer.Serialize(DialogueController.Instance.DialoguePath, jsonSerializerOptions);
+        string serializedIndex = JsonSerializer.Serialize(DialogueController.Instance.CurrentLineIndex, jsonSerializerOptions);
+        string serializedMessages = JsonSerializer.Serialize(OpenAIController.Instance.Chat.Messages, jsonSerializerOptions);
 
         File.WriteAllText(genrePath, serializedGenre, Encoding.Unicode);
         File.WriteAllText(settingPath, serializedSetting, Encoding.Unicode);
@@ -147,6 +147,6 @@ public class NewSaveController : Singleton<NewSaveController>
 
     public void Quickload()
     {
-        NewOpenAIController.Instance.LoadConversationFromSave(quicksaveName);
+        OpenAIController.Instance.LoadConversationFromSave(quicksaveName);
     }
 }

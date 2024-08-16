@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class NewDialogueController : Singleton<NewDialogueController>
+public class DialogueController : Singleton<DialogueController>
 {
     public List<NewDialogueLine> DialoguePath;
     public int CurrentLineIndex = 0;
@@ -43,7 +43,7 @@ public class NewDialogueController : Singleton<NewDialogueController>
         CurrentChoice = null;
 
         StateController.Instance.SetStates(GameState.Loading);
-        DialogueScene newDialogueScene = await NewOpenAIController.Instance.GenerateAdditionalDialogue(chosenLine.DialogueText);
+        DialogueScene newDialogueScene = await OpenAIController.Instance.GenerateAdditionalDialogue(chosenLine.DialogueText);
         AddSceneToDialogue(newDialogueScene);
 
         StateController.Instance.SetStates(GameState.Gameplay);

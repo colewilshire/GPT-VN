@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class NewOpenAIController : Singleton<NewOpenAIController>
+public class OpenAIController : Singleton<OpenAIController>
 {
     [Header("API")]
     [SerializeField] private string apiKey;
@@ -66,14 +66,14 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
         // Interpret chat requests
         NewCharacterManager.Instance.GenerateCharacterPortraits(castList);
-        NewDialogueController.Instance.StartDialogue(initialDialogueScene);
-        NewSaveController.Instance.Save(Random.Range(0, 10000).ToString()); // Save as Main Character Name - Genre, Setting TODO:
+        DialogueController.Instance.StartDialogue(initialDialogueScene);
+        SaveController.Instance.Save(Random.Range(0, 10000).ToString()); // Save as Main Character Name - Genre, Setting TODO:
         StateController.Instance.SetStates(GameState.Gameplay);
     }
 
     public void LoadConversationFromSave(string saveName)
     {
-        NewSaveData saveData = NewSaveController.Instance.LoadSave(saveName);
+        NewSaveData saveData = SaveController.Instance.LoadSave(saveName);
         if (saveData == null) return;
 
         StateController.Instance.SetStates(GameState.Loading);
@@ -109,7 +109,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
         NewCharacterManager.Instance.GenerateCharacterPortraits(saveData.CharacterDescriptions);
         StateController.Instance.SetStates(GameState.Gameplay);
-        NewDialogueController.Instance.StartDialogue(new DialogueScene() { DialogueLines = saveData.DialoguePath }, saveData.CurrentLineIndex);
+        DialogueController.Instance.StartDialogue(new DialogueScene() { DialogueLines = saveData.DialoguePath }, saveData.CurrentLineIndex);
     }
 
     private async Task<Dictionary<string, CharacterDescription>> GenerateCastList()

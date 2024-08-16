@@ -1,4 +1,4 @@
-public class NewChoiceController : Singleton<NewChoiceController>
+public class ChoiceController : Singleton<ChoiceController>
 {
     public Choice CurrentChoice {get; private set;}
 
@@ -10,6 +10,6 @@ public class NewChoiceController : Singleton<NewChoiceController>
 
     public void MakeChoice(NewDialogueLine dialogueLine)
     {
-        NewDialogueController.Instance.MakeChoice(dialogueLine);
+        DialogueController.Instance.MakeChoice(dialogueLine);
     }
 }

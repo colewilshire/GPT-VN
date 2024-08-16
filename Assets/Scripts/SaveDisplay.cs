@@ -31,7 +31,7 @@ public class SaveDisplay : MonoBehaviour
     {
         if (await ConfirmationPrompt.Instance.PromptConfirmation("load this save?"))
         {
-            NewOpenAIController.Instance.LoadConversationFromSave(nameDisplay.text);
+            OpenAIController.Instance.LoadConversationFromSave(nameDisplay.text);
         }
     }
 

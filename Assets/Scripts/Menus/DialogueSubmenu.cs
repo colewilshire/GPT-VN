@@ -25,14 +25,14 @@ public class DialogueSubmenu : Submenu
     {
         base.Start();
 
-        stepForwardButton.onClick.AddListener(NewDialogueController.Instance.StepForward);
-        stepBackwardButton.onClick.AddListener(NewDialogueController.Instance.StepBackward);
-        repeatLineButton.onClick.AddListener(NewDialogueController.Instance.RepeatLine);
+        stepForwardButton.onClick.AddListener(DialogueController.Instance.StepForward);
+        stepBackwardButton.onClick.AddListener(DialogueController.Instance.StepBackward);
+        repeatLineButton.onClick.AddListener(DialogueController.Instance.RepeatLine);
         // stepForwardButton.onClick.AddListener(DialogueController.Instance.StepForward);
         // stepBackwardButton.onClick.AddListener(DialogueController.Instance.StepBackward);
         // repeatLineButton.onClick.AddListener(DialogueController.Instance.RepeatLine);
 
-        saveButton.onClick.AddListener(NewSaveController.Instance.Quicksave);
+        saveButton.onClick.AddListener(SaveController.Instance.Quicksave);
         loadButton.onClick.AddListener(() => StateController.Instance.SetStates(GameState.LoadGameMenu));
         settingsButton.onClick.AddListener(() => StateController.Instance.SetStates(GameState.MainMenu));
     }
@@ -41,14 +41,14 @@ public class DialogueSubmenu : Submenu
     {
         base.Start();
 
-        stepForwardButton.onClick.AddListener(NewDialogueController.Instance.StepForward);
-        stepBackwardButton.onClick.AddListener(NewDialogueController.Instance.StepBackward);
-        repeatLineButton.onClick.AddListener(NewDialogueController.Instance.RepeatLine);
+        stepForwardButton.onClick.AddListener(DialogueController.Instance.StepForward);
+        stepBackwardButton.onClick.AddListener(DialogueController.Instance.StepBackward);
+        repeatLineButton.onClick.AddListener(DialogueController.Instance.RepeatLine);
         // stepForwardButton.onClick.AddListener(DialogueController.Instance.StepForward);
         // stepBackwardButton.onClick.AddListener(DialogueController.Instance.StepBackward);
         // repeatLineButton.onClick.AddListener(DialogueController.Instance.RepeatLine);
 
-        saveButton.onClick.RemoveListener(NewSaveController.Instance.Quicksave);
+        saveButton.onClick.RemoveListener(SaveController.Instance.Quicksave);
         loadButton.onClick.RemoveListener(() => StateController.Instance.SetStates(GameState.LoadGameMenu));
         settingsButton.onClick.RemoveListener(() => StateController.Instance.SetStates(GameState.MainMenu));
     }

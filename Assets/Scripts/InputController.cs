@@ -90,31 +90,31 @@ public class InputController : Singleton<InputController>
     private void OnStepForward(InputAction.CallbackContext context = default)
     {
         if (!inputEnabled) return;
-        NewDialogueController.Instance.StepForward();
+        DialogueController.Instance.StepForward();
     }
 
     private void OnStepBackward(InputAction.CallbackContext context = default)
     {
         if (!inputEnabled) return;
-        NewDialogueController.Instance.StepBackward();
+        DialogueController.Instance.StepBackward();
     }
 
     private void OnRepeatLine(InputAction.CallbackContext context = default)
     {
         if (!inputEnabled) return;
-        NewDialogueController.Instance.RepeatLine();
+        DialogueController.Instance.RepeatLine();
     }
 
     private void OnQuicksave(InputAction.CallbackContext context)
     {
         if (!inputEnabled) return;
-        NewSaveController.Instance.Quicksave();
+        SaveController.Instance.Quicksave();
     }
 
     private void OnQuickload(InputAction.CallbackContext context)
     {
         if (!inputEnabled) return;
-        NewSaveController.Instance.Quickload();
+        SaveController.Instance.Quickload();
     }
 
     private void OnPause(InputAction.CallbackContext context)
