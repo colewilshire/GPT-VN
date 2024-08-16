@@ -52,7 +52,10 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         Chat = api.Chat.CreateConversation(chatRequest);
 
         // Make chat requests
+        LoadingScreen.Instance.SetLoadingState(LoadingState.Conversation, 0);
         Dictionary<string, CharacterDescription> castList = await GenerateCastList();
+
+        LoadingScreen.Instance.SetLoadingState(LoadingState.Conversation, 1);
         DialogueScene initialDialogueScene = await GenerateInitialDialogue();
 
         // Verify requests are good
@@ -65,7 +68,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         // Interpret chat requests
         NewCharacterManager.Instance.GenerateCharacterPortraits(castList);
         NewDialogueController.Instance.StartDialogue(initialDialogueScene);
-        NewSaveController.Instance.Save(Random.Range(0, 10000).ToString());
+        NewSaveController.Instance.Save(Random.Range(0, 10000).ToString()); // Save as Main Character Name - Genre, Setting TODO:
         StateController.Instance.SetStates(GameState.Gameplay);
     }
 
@@ -112,8 +115,6 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
     private async Task<Dictionary<string, CharacterDescription>> GenerateCastList()
     {
-        LoadingScreen.Instance.SetLoadingState(LoadingState.Conversation);
-
         string prompt =
             $"Generate a cast list of {numberOfCharacters} characters for the next scene of a '{Genre}' genre visual novel set in the setting '{Setting}'. " +
             "One of the characters should be named 'Main Character', and serve as the protagonist of the story. " +
@@ -154,8 +155,6 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
     private async Task<DialogueScene> GenerateInitialDialogue()
     {
-        LoadingScreen.Instance.SetLoadingState(LoadingState.Cast);
-
         string prompt =
             $"Generate a script for the next scene of a '{Genre}' genre visual novel set in the setting '{Setting}', consisting of {linesPerScene} lines of dialogue. " +
             "Only a few characters from the cast list should appear in every scene. Some characters should be rarely appearing side characters, and the Main Character and Narrator should appear frequently. " +
@@ -195,10 +194,11 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
         //     Choice = await GenerateChoice()
         // });
 
+        LoadingScreen.Instance.SetLoadingState(LoadingState.Conversation, 2);
         initialDialogueScene.DialogueLines.Add(new()
         {
             CharacterName = "Narrator",
-            DialogueText = "Main Character made a choice...",
+            DialogueText = "Main Character made a choice...",   // Replace main character with their name TODO:
             Choice = await GenerateChoice()
         });
 
@@ -207,8 +207,6 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
     private async Task<Choice> GenerateChoice()
     {
-        LoadingScreen.Instance.SetLoadingState(LoadingState.AdditionalDialogue);
-
         string prompt =
             "From where the story left off, offer the player 3 choices of dialogue lines for the Main Character to choose. " +
             "This choice should impact the trajectory of the story. " +
@@ -237,7 +235,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
 
     public async Task<DialogueScene> GenerateAdditionalDialogue(string choiceText = null)
     {
-        LoadingScreen.Instance.SetLoadingState(LoadingState.AdditionalDialogue);
+        LoadingScreen.Instance.SetLoadingState(LoadingState.AdditionalDialogue, 0);
 
         string prompt = "";
 
@@ -269,6 +267,7 @@ public class NewOpenAIController : Singleton<NewOpenAIController>
             return null;
         }
 
+        LoadingScreen.Instance.SetLoadingState(LoadingState.AdditionalDialogue, 1);
         newDialogueScene.DialogueLines.Add(new()
         {
             CharacterName = "Main Character",
