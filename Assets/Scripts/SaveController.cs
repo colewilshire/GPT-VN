@@ -133,13 +133,19 @@ public class SaveController : Singleton<SaveController>
         foreach (string saveFolderPath in orderedSaveFolderPaths)
         {
             string saveName = Path.GetFileName(saveFolderPath);
-            string screenshotPath = Path.Combine(saveFolderPath, "Screenshot.png");
+            string screenshotPath = Path.Combine(saveFolderPath, screenshotSaveName);
             Sprite screenshot = LoadPNGAsSprite(screenshotPath);
 
             screenshotDictionary[saveName] = screenshot;
         }
 
         return screenshotDictionary;
+    }
+
+    public void DeleteSave(string saveName)
+    {
+        string folderPath = Path.Combine(rootSaveFolderPath, saveName);
+        Directory.Delete(folderPath, true);
     }
 
     public void Quicksave()

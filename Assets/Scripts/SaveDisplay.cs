@@ -39,7 +39,7 @@ public class SaveDisplay : MonoBehaviour
     {
         if (await ConfirmationPrompt.Instance.PromptConfirmation("delete this save?"))
         {
-            //SaveController.Instance.DeleteSave(nameDisplay.text);
+            SaveController.Instance.DeleteSave(nameDisplay.text);
             loadGameSubmenu.ReloadPage();
         }
     }

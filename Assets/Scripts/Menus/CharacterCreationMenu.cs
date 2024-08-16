@@ -58,6 +58,8 @@ public class CharacterCreationMenu : Menu
         characterPortrait.Appearance.Hair = hairs[hairIndex];
         characterPortrait.Appearance.Outfit = outfits[outfitIndex];
         characterPortrait.Appearance.Face = faces[faceIndex];
+
+        SetDefaultAppearance();
     }
 
     protected override void Start()
@@ -96,14 +98,19 @@ public class CharacterCreationMenu : Menu
 
     protected override void ExitMenu()
     {
+        SaveAppearance();
+        // characterPortrait.DisplayName = characterName.text;
+
+        base.ExitMenu();
+    }
+
+    private void SaveAppearance()
+    {
         characterPortrait.Appearance = ScriptableObject.CreateInstance<CharacterAppearance>();
         characterPortrait.Appearance.Accessory = accessories[accessoryIndex];
         characterPortrait.Appearance.Hair = hairs[hairIndex];
         characterPortrait.Appearance.Outfit = outfits[outfitIndex];
         characterPortrait.Appearance.Face = faces[faceIndex];
-        // characterPortrait.DisplayName = characterName.text;
-
-        base.ExitMenu();
     }
 
     private void SetAppearance(int newAcessoryIndex, int newHairIndex, int newOutfitIndex, int newFaceIndex)
@@ -117,6 +124,7 @@ public class CharacterCreationMenu : Menu
     private void SetDefaultAppearance()
     {
         SetAppearance(7, 1, 0, 1);
+        SaveAppearance();
     }
 
     private void SetRandomAppearance()

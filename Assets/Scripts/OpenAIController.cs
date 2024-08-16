@@ -34,21 +34,21 @@ public class OpenAIController : Singleton<OpenAIController>
 
     public async void CreateNewConversation()
     {
-        // Illegal character for Windows filenames
+        // Illegal characters for Windows filenames
         string illegalFilenameCharacters = @"[<>:""/\\|?*]";
 
         // Get user input for genre and setting
         Genre = await InputPrompt.Instance.PromptInput("enter a genre", "romance");
-        Genre = Regex.Replace(Genre, illegalFilenameCharacters, "");
         if (Genre == null) return;
+        Genre = Regex.Replace(Genre, illegalFilenameCharacters, "");
 
         Setting = await InputPrompt.Instance.PromptInput("enter a setting", "high school");
-        Setting = Regex.Replace(Setting, illegalFilenameCharacters, "");
         if (Setting == null) return;
+        Setting = Regex.Replace(Setting, illegalFilenameCharacters, "");
 
         ProtagonistName = await InputPrompt.Instance.PromptInput("name your character", "protagonist");
-        ProtagonistName = Regex.Replace(ProtagonistName, illegalFilenameCharacters, "");
         if (ProtagonistName == null) return;
+        ProtagonistName = Regex.Replace(ProtagonistName, illegalFilenameCharacters, "");
 
         // Start loading
         StateController.Instance.SetStates(GameState.Loading);
@@ -64,7 +64,6 @@ public class OpenAIController : Singleton<OpenAIController>
         // Make chat requests
         LoadingScreen.Instance.StartLoading(LoadingState.Initial);
         Dictionary<string, CharacterDescription> castList = await GenerateCastList();
-
         DialogueScene initialDialogueScene = await GenerateInitialDialogue();
 
         // Verify requests are good
@@ -72,6 +71,24 @@ public class OpenAIController : Singleton<OpenAIController>
         {
             StateController.Instance.SetStates(GameState.MainMenu);
             return;
+        }
+
+        // Overwrite protagonist appearance with custom appearance
+        foreach (KeyValuePair<string, CharacterDescription> kvp in castList)
+        {
+            if (kvp.Key.ToLower() == ProtagonistName.ToLower())
+            {
+                castList[kvp.Key] = new()
+                {
+                    BodyType = "feminine",
+                    Hair = CharacterCreationController.Instance.MainCharacterPortait.Appearance.Hair.Description,
+                    Outfit = CharacterCreationController.Instance.MainCharacterPortait.Appearance.Outfit.Description,
+                    Accessory = CharacterCreationController.Instance.MainCharacterPortait.Appearance.Accessory.Description,
+                    Eyes = CharacterCreationController.Instance.MainCharacterPortait.Appearance.Face.Description
+                };
+
+                break;
+            }
         }
 
         // Interpret chat requests
