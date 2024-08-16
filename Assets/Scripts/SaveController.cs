@@ -14,6 +14,7 @@ public class SaveController : Singleton<SaveController>
     [SerializeField] private string autosaveName = "autosave";
     [SerializeField] private string genreSaveName = "Genre.json";
     [SerializeField] private string settingSaveName = "Setting.json";
+    [SerializeField] private string protagonistNameSaveName = "ProtagonistName.json";
     [SerializeField] private string characterDescriptionsSaveName = "CharacterDescriptions.json";
     [SerializeField] private string dialogueSaveName = "DialoguePath.json";
     [SerializeField] private string indexSaveName = "CurrentDialogueIndex.json";
@@ -52,6 +53,7 @@ public class SaveController : Singleton<SaveController>
     
         string genrePath = Path.Combine(folderPath, genreSaveName);
         string settingPath = Path.Combine(folderPath, settingSaveName);
+        string protagonistNamePath = Path.Combine(folderPath, protagonistNameSaveName);
         string characterDescriptionsPath = Path.Combine(folderPath, characterDescriptionsSaveName);
         string dialoguePath = Path.Combine(folderPath, dialogueSaveName);
         string indexPath = Path.Combine(folderPath, indexSaveName);
@@ -66,6 +68,7 @@ public class SaveController : Singleton<SaveController>
 
         string serializedGenre = JsonSerializer.Serialize(OpenAIController.Instance.Genre, jsonSerializerOptions);
         string serializedSetting = JsonSerializer.Serialize(OpenAIController.Instance.Setting, jsonSerializerOptions);
+        string serializedProtagonistName = JsonSerializer.Serialize(OpenAIController.Instance.ProtagonistName, jsonSerializerOptions);
         string serializedCharacterDescriptions = JsonSerializer.Serialize(CharacterManager.Instance.CharacterDescriptions, jsonSerializerOptions);
         string serializedDialogue = JsonSerializer.Serialize(DialogueController.Instance.DialoguePath, jsonSerializerOptions);
         string serializedIndex = JsonSerializer.Serialize(DialogueController.Instance.CurrentLineIndex, jsonSerializerOptions);
@@ -73,6 +76,7 @@ public class SaveController : Singleton<SaveController>
 
         File.WriteAllText(genrePath, serializedGenre, Encoding.Unicode);
         File.WriteAllText(settingPath, serializedSetting, Encoding.Unicode);
+        File.WriteAllText(protagonistNamePath, serializedProtagonistName, Encoding.Unicode);
         File.WriteAllText(characterDescriptionsPath, serializedCharacterDescriptions, Encoding.Unicode);
         File.WriteAllText(dialoguePath, serializedDialogue, Encoding.Unicode);
         File.WriteAllText(indexPath, serializedIndex, Encoding.Unicode);
@@ -85,6 +89,7 @@ public class SaveController : Singleton<SaveController>
         string folderPath = Path.Combine(rootSaveFolderPath, saveName);
         string genrePath = Path.Combine(folderPath, genreSaveName);
         string settingPath = Path.Combine(folderPath, settingSaveName);
+        string protagonistNamePath = Path.Combine(folderPath, protagonistNameSaveName);
         string characterDescriptionsPath = Path.Combine(folderPath, characterDescriptionsSaveName);
         string dialoguePath = Path.Combine(folderPath, dialogueSaveName);
         string indexPath = Path.Combine(folderPath, indexSaveName);
@@ -92,6 +97,7 @@ public class SaveController : Singleton<SaveController>
 
         string serializedGenre = File.ReadAllText(genrePath);
         string serializedSetting = File.ReadAllText(settingPath);
+        string serializedProtagonistName = File.ReadAllText(protagonistNamePath);
         string serializedCharacterDescriptions = File.ReadAllText(characterDescriptionsPath);
         string serializedDialogue = File.ReadAllText(dialoguePath);
         string serializedIndex = File.ReadAllText(indexPath);
@@ -107,6 +113,7 @@ public class SaveController : Singleton<SaveController>
         {
             Genre = JsonSerializer.Deserialize<string>(serializedGenre, jsonSerializerOptions),
             Setting = JsonSerializer.Deserialize<string>(serializedSetting, jsonSerializerOptions),
+            ProtagonistName = JsonSerializer.Deserialize<string>(serializedProtagonistName, jsonSerializerOptions),
             CharacterDescriptions = JsonSerializer.Deserialize<Dictionary<string, CharacterDescription>>(serializedCharacterDescriptions, jsonSerializerOptions),
             DialoguePath = JsonSerializer.Deserialize<List<DialogueLine>>(serializedDialogue, jsonSerializerOptions),
             CurrentLineIndex = JsonSerializer.Deserialize<int>(serializedIndex, jsonSerializerOptions),

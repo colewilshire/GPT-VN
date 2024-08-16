@@ -5,6 +5,7 @@ using OpenAI_API.Models;
 using Newtonsoft.Json;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 public class OpenAIController : Singleton<OpenAIController>
 {
@@ -21,6 +22,7 @@ public class OpenAIController : Singleton<OpenAIController>
     private OpenAIAPI api;
     public string Genre { get; private set; }
     public string Setting { get; private set; }
+    public string ProtagonistName { get; private set; }
     public Conversation Chat { get; private set; }
 
     protected override void Awake()
@@ -32,12 +34,21 @@ public class OpenAIController : Singleton<OpenAIController>
 
     public async void CreateNewConversation()
     {
+        // Illegal character for Windows filenames
+        string illegalFilenameCharacters = @"[<>:""/\\|?*]";
+
         // Get user input for genre and setting
         Genre = await InputPrompt.Instance.PromptInput("enter a genre", "romance");
+        Genre = Regex.Replace(Genre, illegalFilenameCharacters, "");
         if (Genre == null) return;
 
         Setting = await InputPrompt.Instance.PromptInput("enter a setting", "high school");
+        Setting = Regex.Replace(Setting, illegalFilenameCharacters, "");
         if (Setting == null) return;
+
+        ProtagonistName = await InputPrompt.Instance.PromptInput("name your character", "protagonist");
+        ProtagonistName = Regex.Replace(ProtagonistName, illegalFilenameCharacters, "");
+        if (ProtagonistName == null) return;
 
         // Start loading
         StateController.Instance.SetStates(GameState.Loading);
@@ -66,7 +77,7 @@ public class OpenAIController : Singleton<OpenAIController>
         // Interpret chat requests
         CharacterManager.Instance.GenerateCharacterPortraits(castList);
         DialogueController.Instance.StartDialogue(initialDialogueScene);
-        SaveController.Instance.Save(Random.Range(0, 10000).ToString()); // Save as Main Character Name - Genre, Setting TODO:
+        SaveController.Instance.Save($"{ProtagonistName} - {Setting} {Genre}");
         StateController.Instance.SetStates(GameState.Gameplay);
     }
 
@@ -104,6 +115,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
         Genre = saveData.Genre;
         Setting = saveData.Setting;
+        ProtagonistName = saveData.ProtagonistName;
 
         CharacterManager.Instance.GenerateCharacterPortraits(saveData.CharacterDescriptions);
         StateController.Instance.SetStates(GameState.Gameplay);
@@ -114,9 +126,9 @@ public class OpenAIController : Singleton<OpenAIController>
     {
         string prompt =
             $"Generate a cast list of {numberOfCharacters} characters for the next scene of a '{Genre}' genre visual novel set in the setting '{Setting}'. " +
-            "One of the characters should be named 'Main Character', and serve as the protagonist of the story. " +
+            $"One of the characters should be named '{ProtagonistName}', and serve as the protagonist of the story. " +
             "One of the characters should be named 'Narrator', and serve as the story's narrator. " +
-            $"The other {numberOfCharacters - 2} characters are up to you to create. Characters other than 'Main Character' and 'Narrator' should have actual human names for their name, not titles. " +
+            $"The other {numberOfCharacters - 2} characters are up to you to create. Characters other than 'Narrator' should have actual human names for their name, not titles. " +
             "Each character in the list should have a name, body type, hair style, face/hair accessory, outfit, and eye color. " +
             $"Body types must be chosen from the following list: 'none', 'feminine', 'masculine'. " +
             $"Accessories must be chosen from the following list: {CharacterManager.Instance.ListAccessories()}. " +
@@ -156,7 +168,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
         string prompt =
             $"Generate a script for the next scene of a '{Genre}' genre visual novel set in the setting '{Setting}', consisting of {linesPerScene} lines of dialogue. " +
-            "Only a few characters from the cast list should appear in every scene. Some characters should be rarely appearing side characters, and the Main Character and Narrator should appear frequently. " +
+            $"Only a few characters from the cast list should appear in every scene. Some characters should be rarely appearing side characters, and the protagonist, {ProtagonistName} and Narrator should appear frequently. " +
             "The cast of the story should consist of characters from the previously generated cast list. " +
             "Each line should include the speaking character's name, the text of the dialogue, the speaker's mood, and the background image to be displayed. " +
             "Format the response as a plain JSON object with a top-level key 'DialogueLines'. " +
@@ -189,7 +201,7 @@ public class OpenAIController : Singleton<OpenAIController>
         initialDialogueScene.DialogueLines.Add(new()
         {
             CharacterName = "Narrator",
-            DialogueText = "Main Character made a choice...",   // Replace main character with their name TODO:
+            DialogueText = $"{ProtagonistName} made a choice...",
             Choice = await GenerateChoice()
         });
 
@@ -201,7 +213,7 @@ public class OpenAIController : Singleton<OpenAIController>
         LoadingScreen.Instance.IncrementLoadingMessage();
 
         string prompt =
-            "From where the story left off, offer the player 3 choices of dialogue lines for the Main Character to choose. " +
+            $"From where the story left off, offer the player 3 choices of dialogue lines for the protagonist, {ProtagonistName}, to choose. " +
             "This choice should impact the trajectory of the story. " +
             "Each line should include the speaking character's name, the text of the dialogue, and the speaker's mood. " +
             "Format the response as a plain JSON object with a top-level key 'Choices'. " +
@@ -263,7 +275,7 @@ public class OpenAIController : Singleton<OpenAIController>
         newDialogueScene.DialogueLines.Add(new()
         {
             CharacterName = "Narrator",
-            DialogueText = "Main Character made a choice...",   // Replace main character with their name TODO:
+            DialogueText = $"{ProtagonistName} made a choice...",
             Choice = await GenerateChoice()
         });
 

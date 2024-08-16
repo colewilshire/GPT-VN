@@ -89,7 +89,5 @@ public class CharacterGenerationController : Singleton<CharacterGenerationContro
 
         characterPortrait.name = characterName;
         characterPortrait.SetAppearance(characterAppearance);
-
-        //CharacterManager.Instance.CacheCharacterPortrait(characterPortrait);
     }
 }

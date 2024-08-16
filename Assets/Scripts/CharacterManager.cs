@@ -93,9 +93,9 @@ public class CharacterManager : Singleton<CharacterManager>
             string characterName = keyValuePair.Key;
             CharacterDescription characterDescription = keyValuePair.Value;
 
-            if (characterName.ToLower() == "main character" || characterName.ToLower() == "protagonist" || characterName.ToLower() == "mc")
+            if (characterName.ToLower() == OpenAIController.Instance.ProtagonistName.ToLower())
             {
-                characterPortraits[characterName] = GenerateCharacterPortrait(CharacterCreationController.Instance.MainCharacterPortait.DisplayName, characterDescription, CharacterCreationController.Instance.MainCharacterPortait.Appearance);
+                characterPortraits[characterName] = GenerateCharacterPortrait(OpenAIController.Instance.ProtagonistName, characterDescription, CharacterCreationController.Instance.MainCharacterPortait.Appearance);
             }
             else
             {
