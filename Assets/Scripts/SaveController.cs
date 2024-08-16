@@ -80,7 +80,7 @@ public class SaveController : Singleton<SaveController>
         ScreenCapture.CaptureScreenshot(screenshotPath);
     }
 
-    public NewSaveData LoadSave(string saveName)
+    public SaveData LoadSave(string saveName)
     {
         string folderPath = Path.Combine(rootSaveFolderPath, saveName);
         string genrePath = Path.Combine(folderPath, genreSaveName);
@@ -103,12 +103,12 @@ public class SaveController : Singleton<SaveController>
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             Converters = { new ChatMessageRoleConverter() }
         };
-        NewSaveData saveData = new()
+        SaveData saveData = new()
         {
             Genre = JsonSerializer.Deserialize<string>(serializedGenre, jsonSerializerOptions),
             Setting = JsonSerializer.Deserialize<string>(serializedSetting, jsonSerializerOptions),
             CharacterDescriptions = JsonSerializer.Deserialize<Dictionary<string, CharacterDescription>>(serializedCharacterDescriptions, jsonSerializerOptions),
-            DialoguePath = JsonSerializer.Deserialize<List<NewDialogueLine>>(serializedDialogue, jsonSerializerOptions),
+            DialoguePath = JsonSerializer.Deserialize<List<DialogueLine>>(serializedDialogue, jsonSerializerOptions),
             CurrentLineIndex = JsonSerializer.Deserialize<int>(serializedIndex, jsonSerializerOptions),
             Messages = JsonSerializer.Deserialize<IList<ChatMessage>>(serializedMessages, jsonSerializerOptions)
         };

@@ -8,7 +8,7 @@ public class ChoiceController : Singleton<ChoiceController>
         StateController.Instance.SetSubmenuState(GameState.Choice);
     }
 
-    public void MakeChoice(NewDialogueLine dialogueLine)
+    public void MakeChoice(DialogueLine dialogueLine)
     {
         DialogueController.Instance.MakeChoice(dialogueLine);
     }

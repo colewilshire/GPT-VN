@@ -6,7 +6,7 @@ public class DialogueChoiceButton : MonoBehaviour
 {
     [SerializeField] private TMP_Text dialogueText;
     [SerializeField] private Button button;
-    private NewDialogueLine dialogueLine;
+    private DialogueLine dialogueLine;
 
     private void Awake()
     {
@@ -26,9 +26,9 @@ public class DialogueChoiceButton : MonoBehaviour
         }
     }
 
-    public void SetDialogueLine(NewDialogueLine newDialogueLine)
+    public void SetDialogueLine(DialogueLine DialogueLine)
     {
-        dialogueLine = newDialogueLine;
+        dialogueLine = DialogueLine;
         dialogueText.text = dialogueLine.DialogueText.ToLower();
     }
 }

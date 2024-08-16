@@ -73,7 +73,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
     public void LoadConversationFromSave(string saveName)
     {
-        NewSaveData saveData = SaveController.Instance.LoadSave(saveName);
+        SaveData saveData = SaveController.Instance.LoadSave(saveName);
         if (saveData == null) return;
 
         StateController.Instance.SetStates(GameState.Loading);

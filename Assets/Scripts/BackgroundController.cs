@@ -57,17 +57,17 @@ public class BackgroundController : Singleton<BackgroundController>
         return null;
     }
 
-    public void LoadBackgroundImagesFromSave(SaveData saveData)
-    {
-        GeneratedBackgrounds = new Dictionary<string, BackgroundImage>();
+    // public void LoadBackgroundImagesFromSave(SaveData saveData)
+    // {
+    //     GeneratedBackgrounds = new Dictionary<string, BackgroundImage>();
 
-        for (int i = 0; i < saveData.BackgroundIndexes.Count; ++i)
-        {
-            string backgroundIndex = saveData.BackgroundIndexes[i];
-            string backgroundName = saveData.BackgroundNames[i];
-            BackgroundImage foundImage = Resources.Load<BackgroundImage>($"BackgroundImages/{backgroundName}");
+    //     for (int i = 0; i < saveData.BackgroundIndexes.Count; ++i)
+    //     {
+    //         string backgroundIndex = saveData.BackgroundIndexes[i];
+    //         string backgroundName = saveData.BackgroundNames[i];
+    //         BackgroundImage foundImage = Resources.Load<BackgroundImage>($"BackgroundImages/{backgroundName}");
 
-            GeneratedBackgrounds[backgroundIndex] = foundImage;
-        }
-    }
+    //         GeneratedBackgrounds[backgroundIndex] = foundImage;
+    //     }
+    // }
 }

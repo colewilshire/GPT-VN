@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class NewDialogueLine
+public class DialogueLine
 {
     public string CharacterName { get; set; }
     public string DialogueText { get; set; }

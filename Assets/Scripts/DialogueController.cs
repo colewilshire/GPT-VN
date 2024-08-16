@@ -2,14 +2,14 @@ using System.Collections.Generic;
 
 public class DialogueController : Singleton<DialogueController>
 {
-    public List<NewDialogueLine> DialoguePath;
+    public List<DialogueLine> DialoguePath;
     public int CurrentLineIndex = 0;
     public Choice CurrentChoice;
 
     private void ReadDialogueLine(int lineIndex)
     {
         CurrentLineIndex = lineIndex;
-        NewDialogueLine currentLine = DialoguePath[CurrentLineIndex];
+        DialogueLine currentLine = DialoguePath[CurrentLineIndex];
         CharacterPortrait characterPortrait = NewCharacterManager.Instance.ShowPortrait(currentLine.CharacterName, currentLine.Mood);
         NewBackgroundController.Instance.ShowBackground(currentLine.BackgroundDescription);
         NameDisplayController.Instance.SetDisplayName(characterPortrait != null ? characterPortrait.DisplayName : null ?? currentLine.CharacterName);
@@ -37,7 +37,7 @@ public class DialogueController : Singleton<DialogueController>
         StateController.Instance.SetSubmenuState(GameState.Gameplay);
     }
 
-    public async void MakeChoice(NewDialogueLine chosenLine)
+    public async void MakeChoice(DialogueLine chosenLine)
     {
         DialoguePath[CurrentLineIndex] = chosenLine;
         CurrentChoice = null;
@@ -52,7 +52,7 @@ public class DialogueController : Singleton<DialogueController>
 
     public void AddSceneToDialogue(DialogueScene dialogueScene)
     {
-        foreach (NewDialogueLine dialogueLine in dialogueScene.DialogueLines)
+        foreach (DialogueLine dialogueLine in dialogueScene.DialogueLines)
         {
             DialoguePath.Add(dialogueLine);
         }

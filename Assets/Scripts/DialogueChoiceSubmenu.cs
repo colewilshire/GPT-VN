@@ -29,7 +29,7 @@ public class DialogueChoiceSubmenu : Submenu
 
     private void SpawnChoices()
     {
-        foreach (NewDialogueLine dialogueLine in DialogueController.Instance.CurrentChoice.Choices)
+        foreach (DialogueLine dialogueLine in DialogueController.Instance.CurrentChoice.Choices)
         {
             DialogueChoiceButton choice = Instantiate(choiceButtonPrefab, transform);
 
