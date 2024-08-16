@@ -8,5 +8,7 @@ public enum LoadingState
     Accessories,
     Backgrounds,
     Dialogue,
-    AdditionalDialogue
+    AdditionalDialogue,
+    Initial,
+    Additional
 }
