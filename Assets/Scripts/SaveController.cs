@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using OpenAI_API.Chat;
+using OpenAI.Chat;
 using UnityEngine;
 
 public class SaveController : Singleton<SaveController>
@@ -63,7 +63,7 @@ public class SaveController : Singleton<SaveController>
         {
             WriteIndented = true,
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            Converters = { new ChatMessageRoleConverter() }
+            //Converters = { new ChatMessageJsonConverter() }
         };
 
         string serializedGenre = JsonSerializer.Serialize(OpenAIController.Instance.Genre, jsonSerializerOptions);
@@ -72,7 +72,7 @@ public class SaveController : Singleton<SaveController>
         string serializedCharacterDescriptions = JsonSerializer.Serialize(CharacterManager.Instance.CharacterDescriptions, jsonSerializerOptions);
         string serializedDialogue = JsonSerializer.Serialize(DialogueController.Instance.DialoguePath, jsonSerializerOptions);
         string serializedIndex = JsonSerializer.Serialize(DialogueController.Instance.CurrentLineIndex, jsonSerializerOptions);
-        string serializedMessages = JsonSerializer.Serialize(OpenAIController.Instance.Chat.Messages, jsonSerializerOptions);
+        string serializedMessages = JsonSerializer.Serialize(OpenAIController.Instance.Messages, jsonSerializerOptions);
 
         File.WriteAllText(genrePath, serializedGenre, Encoding.Unicode);
         File.WriteAllText(settingPath, serializedSetting, Encoding.Unicode);
@@ -107,7 +107,7 @@ public class SaveController : Singleton<SaveController>
         {
             WriteIndented = true,
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            Converters = { new ChatMessageRoleConverter() }
+            //Converters = { new ChatMessageJsonConverter() }
         };
         SaveData saveData = new()
         {
@@ -117,7 +117,7 @@ public class SaveController : Singleton<SaveController>
             CharacterDescriptions = JsonSerializer.Deserialize<Dictionary<string, CharacterDescription>>(serializedCharacterDescriptions, jsonSerializerOptions),
             DialoguePath = JsonSerializer.Deserialize<List<DialogueLine>>(serializedDialogue, jsonSerializerOptions),
             CurrentLineIndex = JsonSerializer.Deserialize<int>(serializedIndex, jsonSerializerOptions),
-            Messages = JsonSerializer.Deserialize<IList<ChatMessage>>(serializedMessages, jsonSerializerOptions)
+            Messages = JsonSerializer.Deserialize<List<ChatMessage>>(serializedMessages, jsonSerializerOptions)
         };
 
         return saveData;

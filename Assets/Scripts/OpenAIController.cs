@@ -1,11 +1,13 @@
+using System.ClientModel;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenAI_API;
-using OpenAI_API.Chat;
-using OpenAI_API.Models;
+using System.Text.RegularExpressions;
+//using OpenAI_API;
+//using OpenAI_API.Chat;
+//using OpenAI_API.Models;
+using OpenAI.Chat;
 using Newtonsoft.Json;
 using UnityEngine;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 public class OpenAIController : Singleton<OpenAIController>
 {
@@ -19,17 +21,19 @@ public class OpenAIController : Singleton<OpenAIController>
     [Header("Debug")]
     [SerializeField] private string finishedPrompt = "";
 
-    private OpenAIAPI api;
+    //private OpenAIAPI api;
+    private ChatClient client;
     public string Genre { get; private set; }
     public string Setting { get; private set; }
     public string ProtagonistName { get; private set; }
-    public Conversation Chat { get; private set; }
+    //public Conversation Chat { get; private set; }
+    public List<ChatMessage> Messages = new();
 
     protected override void Awake()
     {
         base.Awake();
 
-        api = new OpenAIAPI(apiKey);
+        client = new ChatClient("gpt-4o", apiKey);
     }
 
     public async void CreateNewConversation()
@@ -53,13 +57,13 @@ public class OpenAIController : Singleton<OpenAIController>
         // Start loading
         StateController.Instance.SetStates(GameState.Loading);
 
-        ChatRequest chatRequest = new()
-        {
-            Model = Model.GPT4o,
-            Temperature = 1,
-            MaxTokens = 4096
-        };
-        Chat = api.Chat.CreateConversation(chatRequest);
+        // ChatRequest chatRequest = new()
+        // {
+        //     Model = Model.GPT4o,
+        //     Temperature = 1,
+        //     MaxTokens = 4096
+        // };
+        // Chat = api.Chat.CreateConversation(chatRequest);
 
         // Make chat requests
         LoadingScreen.Instance.StartLoading(LoadingState.Initial);
@@ -105,30 +109,47 @@ public class OpenAIController : Singleton<OpenAIController>
 
         StateController.Instance.SetStates(GameState.Loading);
 
-        ChatRequest chatRequest = new()
-        {
-            Model = Model.GPT4o,
-            Temperature = 1,
-            MaxTokens = 4096
-        };
+        // ChatRequest chatRequest = new()
+        // {
+        //     Model = Model.GPT4o,
+        //     Temperature = 1,
+        //     MaxTokens = 4096
+        // };
 
-        Chat = api.Chat.CreateConversation(chatRequest);
+        // Chat = api.Chat.CreateConversation(chatRequest);
 
-        foreach(ChatMessage message in saveData.Messages)
-        {
-            if (message.Role == ChatMessageRole.System)
-            {
-                Chat.AppendSystemMessage(message.Content);
-            }
-            else if (message.Role == ChatMessageRole.Assistant)
-            {
-                Chat.AppendExampleChatbotOutput(message.Content);
-            }
-            else
-            {
-                Chat.AppendUserInput(message.Content);
-            }
-        }
+        // foreach(ChatMessage message in saveData.Messages)
+        // {
+        //     if (message.Role == ChatMessageRole.System)
+        //     {
+        //         messages.Add(new SystemChatMessage(message.Content));
+        //     }
+        //     else if (message.Role == ChatMessageRole.Assistant)
+        //     {
+        //         messages.Add(new AssistantChatMessage(message.Content));
+        //     }
+        //     else
+        //     {
+        //         messages.Add(new UserChatMessage(message.Content));
+        //     }
+        // }
+
+        // foreach(ChatMessage message in saveData.Messages)
+        // {
+        //     if (message.GetType() == typeof(SystemChatMessage))
+        //     {
+        //         Messages.Add(new SystemChatMessage(message.Content));
+        //     }
+        //     else if (message.GetType() == typeof(AssistantChatMessage))
+        //     {
+        //         Messages.Add(new AssistantChatMessage(message.Content));
+        //     }
+        //     else
+        //     {
+        //         Messages.Add(new UserChatMessage(message.Content));
+        //     }
+        // }
+        Messages = saveData.Messages;
 
         Genre = saveData.Genre;
         Setting = saveData.Setting;
@@ -157,10 +178,15 @@ public class OpenAIController : Singleton<OpenAIController>
             "Each entry under a top-level key should be an object with the keys 'BodyType', 'Hair', 'Outfit', 'Accessory', and 'Eyes'. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
 
-        Chat.AppendSystemMessage(prompt);
+        //Chat.AppendSystemMessage(prompt);
+        Messages.Add(new SystemChatMessage(prompt));
         finishedPrompt += prompt;
 
-        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
+        //string assistantResponse = await Chat.GetResponseFromChatbotAsync();
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages);
+        Messages.Add(new AssistantChatMessage(result));
+
+        string assistantResponse = result.Value.Content[0].Text;
         string extractedJson = ExtractJson(assistantResponse);
         Dictionary<string, CharacterDescription> characterDescriptions;
 
@@ -194,13 +220,18 @@ public class OpenAIController : Singleton<OpenAIController>
             "Unless the story calls for a change in location, the BackgroundDescription should not change from one line of dialogue to the next. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
 
-        Chat.AppendSystemMessage(prompt);
+        //Chat.AppendSystemMessage(prompt);
+        Messages.Add(new SystemChatMessage(prompt));
         finishedPrompt += prompt;
 
         DialogueScene initialDialogueScene;
         string extractedJson;
 
-        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
+        //string assistantResponse = await Chat.GetResponseFromChatbotAsync();
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages);
+        Messages.Add(new AssistantChatMessage(result));
+
+        string assistantResponse = result.Value.Content[0].Text;
         extractedJson = ExtractJson(assistantResponse);
 
         Debug.Log(assistantResponse);
@@ -237,10 +268,15 @@ public class OpenAIController : Singleton<OpenAIController>
             "Each entry under 'Choices' should be an object with the keys 'CharacterName', 'DialogueText', and 'Mood'. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
 
-        Chat.AppendSystemMessage(prompt);
+        //Chat.AppendSystemMessage(prompt);
+        Messages.Add(new SystemChatMessage(prompt));
         finishedPrompt += prompt;
 
-        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
+        //string assistantResponse = await Chat.GetResponseFromChatbotAsync();
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages);
+        Messages.Add(new AssistantChatMessage(result));
+
+        string assistantResponse = result.Value.Content[0].Text;
         string extractedJson = ExtractJson(assistantResponse);
         Choice choice = JsonConvert.DeserializeObject<Choice>(extractedJson);
 
@@ -269,10 +305,15 @@ public class OpenAIController : Singleton<OpenAIController>
         prompt +=
             $"From where the story last left off, continue the visual novel's script with {linesPerScene} more lines of dialogue. ";
 
-        Chat.AppendSystemMessage(prompt);
+        //Chat.AppendSystemMessage(prompt);
+        Messages.Add(new SystemChatMessage(prompt));
         finishedPrompt += prompt;
 
-        string assistantResponse = await Chat.GetResponseFromChatbotAsync();
+        //string assistantResponse = await Chat.GetResponseFromChatbotAsync();
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages);
+        Messages.Add(new AssistantChatMessage(result));
+
+        string assistantResponse = result.Value.Content[0].Text;
         string extractedJson = ExtractJson(assistantResponse);
 
         DialogueScene newDialogueScene;
