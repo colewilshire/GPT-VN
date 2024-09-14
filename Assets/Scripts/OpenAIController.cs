@@ -24,7 +24,7 @@ public class OpenAIController : Singleton<OpenAIController>
     public string Genre { get; private set; }
     public string Setting { get; private set; }
     public string ProtagonistName { get; private set; }
-    public Dictionary<string, ChatMessageRole> MessageDictionary;
+    public List<KeyValuePair<ChatMessageRole, string>> MessageDictionary;
 
     protected override void Awake()
     {
@@ -104,19 +104,19 @@ public class OpenAIController : Singleton<OpenAIController>
         Messages = new();
         MessageDictionary = new();
 
-        foreach(KeyValuePair<string, ChatMessageRole> kvp in saveData.Messages)
+        foreach(KeyValuePair<ChatMessageRole, string> kvp in saveData.Messages)
         {
-            if (kvp.Value == ChatMessageRole.System)
+            if (kvp.Key == ChatMessageRole.System)
             {
-                Messages.Add(new SystemChatMessage(kvp.Key));
+                Messages.Add(new SystemChatMessage(kvp.Value));
             }
-            else if (kvp.Value == ChatMessageRole.Assistant)
+            else if (kvp.Key == ChatMessageRole.Assistant)
             {
-                Messages.Add(new AssistantChatMessage(kvp.Key));
+                Messages.Add(new AssistantChatMessage(kvp.Value));
             }
             else
             {
-                Messages.Add(new UserChatMessage(kvp.Key));
+                Messages.Add(new UserChatMessage(kvp.Value));
             }
         }
 
@@ -149,7 +149,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
         //Chat.AppendSystemMessage(prompt);
         Messages.Add(new SystemChatMessage(prompt));
-        MessageDictionary.Add(prompt, ChatMessageRole.System);
+        MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
         finishedPrompt += prompt;
 
         //string assistantResponse = await Chat.GetResponseFromChatbotAsync();
@@ -157,7 +157,7 @@ public class OpenAIController : Singleton<OpenAIController>
         Messages.Add(new AssistantChatMessage(result));
 
         string assistantResponse = result.Value.Content[0].Text;
-        MessageDictionary.Add(assistantResponse, ChatMessageRole.Assistant);
+        MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
 
         string extractedJson = ExtractJson(assistantResponse);
         Dictionary<string, CharacterDescription> characterDescriptions;
@@ -194,7 +194,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
         //Chat.AppendSystemMessage(prompt);
         Messages.Add(new SystemChatMessage(prompt));
-        MessageDictionary.Add(prompt, ChatMessageRole.System);
+        MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
         finishedPrompt += prompt;
 
         DialogueScene initialDialogueScene;
@@ -205,7 +205,7 @@ public class OpenAIController : Singleton<OpenAIController>
         Messages.Add(new AssistantChatMessage(result));
 
         string assistantResponse = result.Value.Content[0].Text;
-        MessageDictionary.Add(assistantResponse, ChatMessageRole.Assistant);
+        MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
 
         extractedJson = ExtractJson(assistantResponse);
 
@@ -245,7 +245,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
         //Chat.AppendSystemMessage(prompt);
         Messages.Add(new SystemChatMessage(prompt));
-        MessageDictionary.Add(prompt, ChatMessageRole.System);
+        MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
         finishedPrompt += prompt;
 
         //string assistantResponse = await Chat.GetResponseFromChatbotAsync();
@@ -253,7 +253,7 @@ public class OpenAIController : Singleton<OpenAIController>
         Messages.Add(new AssistantChatMessage(result));
 
         string assistantResponse = result.Value.Content[0].Text;
-        MessageDictionary.Add(assistantResponse, ChatMessageRole.Assistant);
+        MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
 
         string extractedJson = ExtractJson(assistantResponse);
         Choice choice = JsonConvert.DeserializeObject<Choice>(extractedJson);
@@ -285,7 +285,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
         //Chat.AppendSystemMessage(prompt);
         Messages.Add(new SystemChatMessage(prompt));
-        MessageDictionary.Add(prompt, ChatMessageRole.System);
+        MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
         finishedPrompt += prompt;
 
         //string assistantResponse = await Chat.GetResponseFromChatbotAsync();
@@ -293,7 +293,7 @@ public class OpenAIController : Singleton<OpenAIController>
         Messages.Add(new AssistantChatMessage(result));
 
         string assistantResponse = result.Value.Content[0].Text;
-        MessageDictionary.Add(assistantResponse, ChatMessageRole.Assistant);
+        MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
 
         string extractedJson = ExtractJson(assistantResponse);
 

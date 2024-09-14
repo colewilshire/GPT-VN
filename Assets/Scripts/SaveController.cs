@@ -116,7 +116,7 @@ public class SaveController : Singleton<SaveController>
             CharacterDescriptions = JsonSerializer.Deserialize<Dictionary<string, CharacterDescription>>(serializedCharacterDescriptions, jsonSerializerOptions),
             DialoguePath = JsonSerializer.Deserialize<List<DialogueLine>>(serializedDialogue, jsonSerializerOptions),
             CurrentLineIndex = JsonSerializer.Deserialize<int>(serializedIndex, jsonSerializerOptions),
-            Messages = JsonSerializer.Deserialize<Dictionary<string, ChatMessageRole>>(serializedMessages, jsonSerializerOptions)
+            Messages = JsonSerializer.Deserialize<List<KeyValuePair<ChatMessageRole, string>>>(serializedMessages, jsonSerializerOptions)
         };
 
         return saveData;
