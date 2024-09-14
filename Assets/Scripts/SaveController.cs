@@ -64,7 +64,6 @@ public class SaveController : Singleton<SaveController>
         {
             WriteIndented = true,
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            //Converters = { new ChatMessageJsonConverter() }
         };
 
         string serializedGenre = JsonSerializer.Serialize(OpenAIController.Instance.Genre, jsonSerializerOptions);
@@ -108,7 +107,6 @@ public class SaveController : Singleton<SaveController>
         {
             WriteIndented = true,
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            //Converters = { new ChatMessageJsonConverter() }
         };
         SaveData saveData = new()
         {

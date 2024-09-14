@@ -1,15 +1,10 @@
-using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-//using OpenAI_API;
-//using OpenAI_API.Chat;
-//using OpenAI_API.Models;
 using OpenAI.Chat;
 using Newtonsoft.Json;
 using UnityEngine;
-using UnityEditor.VersionControl;
 
 public class OpenAIController : Singleton<OpenAIController>
 {
@@ -23,14 +18,12 @@ public class OpenAIController : Singleton<OpenAIController>
     [Header("Debug")]
     [SerializeField] private string finishedPrompt = "";
 
-    //private OpenAIAPI api;
     private ChatClient client;
     private List<ChatMessage> Messages;
 
     public string Genre { get; private set; }
     public string Setting { get; private set; }
     public string ProtagonistName { get; private set; }
-    //public Conversation Chat { get; private set; }
     public Dictionary<string, ChatMessageRole> MessageDictionary;
 
     protected override void Awake()
@@ -61,13 +54,6 @@ public class OpenAIController : Singleton<OpenAIController>
         // Start loading
         StateController.Instance.SetStates(GameState.Loading);
 
-        // ChatRequest chatRequest = new()
-        // {
-        //     Model = Model.GPT4o,
-        //     Temperature = 1,
-        //     MaxTokens = 4096
-        // };
-        // Chat = api.Chat.CreateConversation(chatRequest);
         Messages = new();
         MessageDictionary = new();
 
@@ -115,32 +101,8 @@ public class OpenAIController : Singleton<OpenAIController>
 
         StateController.Instance.SetStates(GameState.Loading);
 
-        // ChatRequest chatRequest = new()
-        // {
-        //     Model = Model.GPT4o,
-        //     Temperature = 1,
-        //     MaxTokens = 4096
-        // };
         Messages = new();
         MessageDictionary = new();
-
-        // Chat = api.Chat.CreateConversation(chatRequest);
-
-        // foreach(ChatMessage message in saveData.Messages)
-        // {
-        //     if (message.Role == ChatMessageRole.System)
-        //     {
-        //         messages.Add(new SystemChatMessage(message.Content));
-        //     }
-        //     else if (message.Role == ChatMessageRole.Assistant)
-        //     {
-        //         messages.Add(new AssistantChatMessage(message.Content));
-        //     }
-        //     else
-        //     {
-        //         messages.Add(new UserChatMessage(message.Content));
-        //     }
-        // }
 
         foreach(KeyValuePair<string, ChatMessageRole> kvp in saveData.Messages)
         {
