@@ -9,5 +9,5 @@ public class SaveData
     public Dictionary<string, CharacterDescription> CharacterDescriptions;
     public List<DialogueLine> DialoguePath;
     public int CurrentLineIndex;
-    public List<ChatMessage> Messages;
+    public Dictionary<string, ChatMessageRole> Messages;
 }

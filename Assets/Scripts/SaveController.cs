@@ -1,7 +1,8 @@
-using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using OpenAI.Chat;
@@ -72,7 +73,7 @@ public class SaveController : Singleton<SaveController>
         string serializedCharacterDescriptions = JsonSerializer.Serialize(CharacterManager.Instance.CharacterDescriptions, jsonSerializerOptions);
         string serializedDialogue = JsonSerializer.Serialize(DialogueController.Instance.DialoguePath, jsonSerializerOptions);
         string serializedIndex = JsonSerializer.Serialize(DialogueController.Instance.CurrentLineIndex, jsonSerializerOptions);
-        string serializedMessages = JsonSerializer.Serialize(OpenAIController.Instance.Messages, jsonSerializerOptions);
+        string serializedMessages = JsonSerializer.Serialize(OpenAIController.Instance.MessageDictionary, jsonSerializerOptions);
 
         File.WriteAllText(genrePath, serializedGenre, Encoding.Unicode);
         File.WriteAllText(settingPath, serializedSetting, Encoding.Unicode);
@@ -117,7 +118,7 @@ public class SaveController : Singleton<SaveController>
             CharacterDescriptions = JsonSerializer.Deserialize<Dictionary<string, CharacterDescription>>(serializedCharacterDescriptions, jsonSerializerOptions),
             DialoguePath = JsonSerializer.Deserialize<List<DialogueLine>>(serializedDialogue, jsonSerializerOptions),
             CurrentLineIndex = JsonSerializer.Deserialize<int>(serializedIndex, jsonSerializerOptions),
-            Messages = JsonSerializer.Deserialize<List<ChatMessage>>(serializedMessages, jsonSerializerOptions)
+            Messages = JsonSerializer.Deserialize<Dictionary<string, ChatMessageRole>>(serializedMessages, jsonSerializerOptions)
         };
 
         return saveData;
