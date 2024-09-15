@@ -4221,6 +4221,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   apiKey: 
+  model: gpt-4o-2024-08-06
   linesPerScene: 10
   numberOfCharacters: 5
   finishedPrompt: 

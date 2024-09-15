@@ -10,13 +10,14 @@ public class OpenAIController : Singleton<OpenAIController>
 {
     [Header("API")]
     [SerializeField] private string apiKey;
+    [SerializeField] private string model;  // On 10/2, the default version of GPT-4o will be updated to gpt-4o-2024-08-06. I will need to update the model name to "gpt-4o"
 
     [Header("Story Settings")]
     [SerializeField] private int linesPerScene = 10;
     [SerializeField] private int numberOfCharacters = 5;
 
     [Header("Debug")]
-    [SerializeField] private string finishedPrompt = "";
+    [SerializeField] private string finishedPrompt;
 
     private ChatClient client;
     private List<ChatMessage> Messages;
@@ -30,7 +31,7 @@ public class OpenAIController : Singleton<OpenAIController>
     {
         base.Awake();
 
-        client = new ChatClient("gpt-4o", apiKey);
+        client = new ChatClient(model, apiKey);
     }
 
     public async void CreateNewConversation()
@@ -60,6 +61,9 @@ public class OpenAIController : Singleton<OpenAIController>
         // Make chat requests
         LoadingScreen.Instance.StartLoading(LoadingState.Initial);
         Dictionary<string, CharacterDescription> castList = await GenerateCastList();
+
+        Debug.Log(castList);
+
         DialogueScene initialDialogueScene = await GenerateInitialDialogue();
 
         // Verify requests are good
@@ -76,6 +80,7 @@ public class OpenAIController : Singleton<OpenAIController>
             {
                 castList[kvp.Key] = new()
                 {
+                    Name = ProtagonistName,
                     BodyType = "feminine",
                     Hair = CharacterCreationController.Instance.MainCharacterPortait.Appearance.Hair.Description,
                     Outfit = CharacterCreationController.Instance.MainCharacterPortait.Appearance.Outfit.Description,
@@ -142,39 +147,85 @@ public class OpenAIController : Singleton<OpenAIController>
             $"Hairs must be chosen from the following list: {CharacterManager.Instance.ListHairs()}. " +
             $"Outfits must be chosen from the following list: {CharacterManager.Instance.ListOutfits()}. " +
             "Chosen outfits and accessories should be appropriate for the story's setting, if possible. For example, in a uniformed setting, all characters of the same geneder and position should be wearing the same uniform. " +
-            $"Eye colors must be chosen from the following list: {CharacterManager.Instance.ListFaces()}. " +
-            "Format the response as a plain JSON object with only the characters' names as top-level keys'. " +
-            "Each entry under a top-level key should be an object with the keys 'BodyType', 'Hair', 'Outfit', 'Accessory', and 'Eyes'. " +
-            "Do not include any additional formatting or markers such as markdown code block markers.";
+            $"Eye colors must be chosen from the following list: {CharacterManager.Instance.ListFaces()}. ";// +
+            //"Format the response as a plain JSON object. " + // with only the characters' names as top-level keys'. " +
+            //"Each entry should be an object with the keys 'Name', 'BodyType', 'Hair', 'Outfit', 'Accessory', and 'Eyes'. " +
+            //"Do not include any additional formatting or markers such as markdown code block markers.";
 
-        //Chat.AppendSystemMessage(prompt);
         Messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
         finishedPrompt += prompt;
 
-        //string assistantResponse = await Chat.GetResponseFromChatbotAsync();
-        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages);
+        ChatCompletionOptions options = new()
+        {
+            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+                name: "character_descriptions",
+                jsonSchema: System.BinaryData.FromString(
+                    "{\n" +
+                    "  \"type\": \"object\",\n" +
+                    "  \"properties\": {\n" +
+                    "    \"CharacterDescriptions\": {\n" +
+                    "      \"type\": \"array\",\n" +
+                    "      \"items\": {\n" +
+                    "        \"type\": \"object\",\n" +
+                    "        \"properties\": {\n" +
+                    "          \"Name\": { \"type\": \"string\" },\n" +
+                    "          \"BodyType\": { \"type\": \"string\" },\n" +
+                    "          \"Hair\": { \"type\": \"string\" },\n" +
+                    "          \"Outfit\": { \"type\": \"string\" },\n" +
+                    "          \"Accessory\": { \"type\": \"string\" },\n" +
+                    "          \"Eyes\": { \"type\": \"string\" }\n" +
+                    "        },\n" +
+                    "        \"required\": [\"Name\", \"BodyType\", \"Hair\", \"Outfit\", \"Accessory\", \"Eyes\"],\n" +
+                    "        \"additionalProperties\": false\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  },\n" +
+                    "  \"required\": [\"CharacterDescriptions\"],\n" +
+                    "  \"additionalProperties\": false\n" +
+                    "}"
+                ),
+                strictSchemaEnabled: true
+            )
+        };
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages, options);
+        string refusal = result.Value.Content[0].Refusal;
+
+        if (refusal != null)
+        {
+            Debug.Log(refusal);
+            return await GenerateCastList();
+        }
+
         Messages.Add(new AssistantChatMessage(result));
 
         string assistantResponse = result.Value.Content[0].Text;
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
 
-        string extractedJson = ExtractJson(assistantResponse);
-        Dictionary<string, CharacterDescription> characterDescriptions;
+        //string extractedJson = ExtractJson(assistantResponse);
+        //Dictionary<string, CharacterDescription> characterDescriptions;
 
         Debug.Log(assistantResponse);
 
-        try
+        // try
+        // {
+        //     characterDescriptions = JsonConvert.DeserializeObject<Dictionary<string, CharacterDescription>>(extractedJson);
+        // }
+        // catch
+        // {
+        //     Debug.Log("Error generating usable response.");
+        //     return null;
+        // }
+        //Dictionary<string, CharacterDescription> characterDescriptions = JsonConvert.DeserializeObject<Dictionary<string, CharacterDescription>>(assistantResponse);
+        Dictionary<string, List<CharacterDescription>> characterDescriptions = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, List<CharacterDescription>>>(assistantResponse);
+        Dictionary<string, CharacterDescription> formattedCharacterDescriptions = new();
+
+        foreach (CharacterDescription characterDescription in characterDescriptions["CharacterDescriptions"])
         {
-            characterDescriptions = JsonConvert.DeserializeObject<Dictionary<string, CharacterDescription>>(extractedJson);
-        }
-        catch
-        {
-            Debug.Log("Error generating usable response.");
-            return null;
+            formattedCharacterDescriptions[characterDescription.Name] = characterDescription;
         }
 
-        return characterDescriptions;
+        return formattedCharacterDescriptions;
     }
 
     private async Task<DialogueScene> GenerateInitialDialogue()
