@@ -326,7 +326,7 @@ public class OpenAIController : Singleton<OpenAIController>
                 strictSchemaEnabled: true
             )
         };
-        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages);
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages, options);
         string refusal = result.Value.Content[0].Refusal;
 
         if (refusal != null)
