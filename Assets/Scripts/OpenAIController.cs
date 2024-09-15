@@ -1,3 +1,4 @@
+using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -61,17 +62,7 @@ public class OpenAIController : Singleton<OpenAIController>
         // Make chat requests
         LoadingScreen.Instance.StartLoading(LoadingState.Initial);
         Dictionary<string, CharacterDescription> castList = await GenerateCastList();
-
-        Debug.Log(castList);
-
         DialogueScene initialDialogueScene = await GenerateInitialDialogue();
-
-        // Verify requests are good
-        if (castList == null || initialDialogueScene == null)
-        {
-            StateController.Instance.SetStates(GameState.MainMenu);
-            return;
-        }
 
         // Overwrite protagonist appearance with custom appearance
         foreach (KeyValuePair<string, CharacterDescription> kvp in castList)
@@ -147,10 +138,7 @@ public class OpenAIController : Singleton<OpenAIController>
             $"Hairs must be chosen from the following list: {CharacterManager.Instance.ListHairs()}. " +
             $"Outfits must be chosen from the following list: {CharacterManager.Instance.ListOutfits()}. " +
             "Chosen outfits and accessories should be appropriate for the story's setting, if possible. For example, in a uniformed setting, all characters of the same geneder and position should be wearing the same uniform. " +
-            $"Eye colors must be chosen from the following list: {CharacterManager.Instance.ListFaces()}. ";// +
-            //"Format the response as a plain JSON object. " + // with only the characters' names as top-level keys'. " +
-            //"Each entry should be an object with the keys 'Name', 'BodyType', 'Hair', 'Outfit', 'Accessory', and 'Eyes'. " +
-            //"Do not include any additional formatting or markers such as markdown code block markers.";
+            $"Eye colors must be chosen from the following list: {CharacterManager.Instance.ListFaces()}. ";
 
         Messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
@@ -160,7 +148,7 @@ public class OpenAIController : Singleton<OpenAIController>
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
                 name: "character_descriptions",
-                jsonSchema: System.BinaryData.FromString(
+                jsonSchema: BinaryData.FromString(
                     "{\n" +
                     "  \"type\": \"object\",\n" +
                     "  \"properties\": {\n" +
@@ -202,21 +190,8 @@ public class OpenAIController : Singleton<OpenAIController>
         string assistantResponse = result.Value.Content[0].Text;
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
 
-        //string extractedJson = ExtractJson(assistantResponse);
-        //Dictionary<string, CharacterDescription> characterDescriptions;
-
         Debug.Log(assistantResponse);
 
-        // try
-        // {
-        //     characterDescriptions = JsonConvert.DeserializeObject<Dictionary<string, CharacterDescription>>(extractedJson);
-        // }
-        // catch
-        // {
-        //     Debug.Log("Error generating usable response.");
-        //     return null;
-        // }
-        //Dictionary<string, CharacterDescription> characterDescriptions = JsonConvert.DeserializeObject<Dictionary<string, CharacterDescription>>(assistantResponse);
         Dictionary<string, List<CharacterDescription>> characterDescriptions = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, List<CharacterDescription>>>(assistantResponse);
         Dictionary<string, CharacterDescription> formattedCharacterDescriptions = new();
 
@@ -237,40 +212,63 @@ public class OpenAIController : Singleton<OpenAIController>
             $"Only a few characters from the cast list should appear in every scene. Some characters should be rarely appearing side characters, and the protagonist, {ProtagonistName} and Narrator should appear frequently. " +
             "The cast of the story should consist of characters from the previously generated cast list. " +
             "Each line should include the speaking character's name, the text of the dialogue, the speaker's mood, and the background image to be displayed. " +
-            "Format the response as a plain JSON object with a top-level key 'DialogueLines'. " +
-            "Each entry under 'DialogueLines' should be an object with the keys 'CharacterName', 'DialogueText', 'Mood', and 'BackgroundDescription'." +
+            "Format the response as a plain JSON object with a top-level key 'Dialogue'. " +
+            "Each entry under 'Dialogue' should be an object with the keys 'CharacterName', 'DialogueText', 'Mood', and 'BackgroundDescription'." +
             $"BackgroundsDescriptions should be chosen from the following list: {BackgroundController.Instance.ListBackgrounds()}. " +
             "Unless the story calls for a change in location, the BackgroundDescription should not change from one line of dialogue to the next. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
 
-        //Chat.AppendSystemMessage(prompt);
         Messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
         finishedPrompt += prompt;
 
-        DialogueScene initialDialogueScene;
-        string extractedJson;
+        ChatCompletionOptions options = new()
+        {
+            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+                name: "dialogue",
+                jsonSchema: BinaryData.FromString(
+                    "{\n" +
+                    "  \"type\": \"object\",\n" +
+                    "  \"properties\": {\n" +
+                    "    \"DialogueLines\": {\n" +
+                    "      \"type\": \"array\",\n" +
+                    "      \"items\": {\n" +
+                    "        \"type\": \"object\",\n" +
+                    "        \"properties\": {\n" +
+                    "          \"CharacterName\": { \"type\": \"string\" },\n" +
+                    "          \"DialogueText\": { \"type\": \"string\" },\n" +
+                    "          \"Mood\": { \"type\": \"string\" },\n" +
+                    "          \"BackgroundDescription\": { \"type\": \"string\" }\n" +
+                    "        },\n" +
+                    "        \"required\": [\"CharacterName\", \"DialogueText\", \"Mood\", \"BackgroundDescription\"],\n" +
+                    "        \"additionalProperties\": false\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  },\n" +
+                    "  \"required\": [\"DialogueLines\"],\n" +
+                    "  \"additionalProperties\": false\n" +
+                    "}"
+                ),
+                strictSchemaEnabled: true
+            )
+        };
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages, options);
+        string refusal = result.Value.Content[0].Refusal;
 
-        //string assistantResponse = await Chat.GetResponseFromChatbotAsync();
-        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages);
+        if (refusal != null)
+        {
+            Debug.Log(refusal);
+            return await GenerateAdditionalDialogue();
+        }
+
         Messages.Add(new AssistantChatMessage(result));
 
         string assistantResponse = result.Value.Content[0].Text;
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
 
-        extractedJson = ExtractJson(assistantResponse);
-
         Debug.Log(assistantResponse);
 
-        try
-        {
-            initialDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(extractedJson);
-        }
-        catch
-        {
-            Debug.Log("Error generating usable response.");
-            return null;
-        }
+        DialogueScene initialDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(assistantResponse);
 
         initialDialogueScene.DialogueLines.Add(new()
         {
@@ -294,28 +292,57 @@ public class OpenAIController : Singleton<OpenAIController>
             "Each entry under 'Choices' should be an object with the keys 'CharacterName', 'DialogueText', and 'Mood'. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
 
-        //Chat.AppendSystemMessage(prompt);
         Messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
         finishedPrompt += prompt;
 
-        //string assistantResponse = await Chat.GetResponseFromChatbotAsync();
+        ChatCompletionOptions options = new()
+        {
+            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+                name: "choice",
+                jsonSchema: BinaryData.FromString(
+                    "{\n" +
+                    "  \"type\": \"object\",\n" +
+                    "  \"properties\": {\n" +
+                    "    \"Choices\": {\n" +
+                    "      \"type\": \"array\",\n" +
+                    "      \"items\": {\n" +
+                    "        \"type\": \"object\",\n" +
+                    "        \"properties\": {\n" +
+                    "          \"CharacterName\": { \"type\": \"string\" },\n" +
+                    "          \"DialogueText\": { \"type\": \"string\" },\n" +
+                    "          \"Mood\": { \"type\": \"string\" },\n" +
+                    "          \"BackgroundDescription\": { \"type\": \"string\" }\n" +
+                    "        },\n" +
+                    "        \"required\": [\"CharacterName\", \"DialogueText\", \"Mood\", \"BackgroundDescription\"],\n" +
+                    "        \"additionalProperties\": false\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  },\n" +
+                    "  \"required\": [\"Choices\"],\n" +
+                    "  \"additionalProperties\": false\n" +
+                    "}"
+                ),
+                strictSchemaEnabled: true
+            )
+        };
         ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages);
+        string refusal = result.Value.Content[0].Refusal;
+
+        if (refusal != null)
+        {
+            Debug.Log(refusal);
+            return await GenerateChoice();
+        }
+
         Messages.Add(new AssistantChatMessage(result));
 
         string assistantResponse = result.Value.Content[0].Text;
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
 
-        string extractedJson = ExtractJson(assistantResponse);
-        Choice choice = JsonConvert.DeserializeObject<Choice>(extractedJson);
+        Choice choice = JsonConvert.DeserializeObject<Choice>(assistantResponse);
 
         Debug.Log(assistantResponse);
-
-        if (choice == null)
-        {
-            Debug.Log("Error generating usable response. Retrying.");
-            return await GenerateChoice();
-        }
 
         return choice;
     }
@@ -334,34 +361,59 @@ public class OpenAIController : Singleton<OpenAIController>
         prompt +=
             $"From where the story last left off, continue the visual novel's script with {linesPerScene} more lines of dialogue. ";
 
-        //Chat.AppendSystemMessage(prompt);
         Messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
         finishedPrompt += prompt;
 
-        //string assistantResponse = await Chat.GetResponseFromChatbotAsync();
-        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages);
+        ChatCompletionOptions options = new()
+        {
+            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+                name: "dialogue",
+                jsonSchema: BinaryData.FromString(
+                    "{\n" +
+                    "  \"type\": \"object\",\n" +
+                    "  \"properties\": {\n" +
+                    "    \"DialogueLines\": {\n" +
+                    "      \"type\": \"array\",\n" +
+                    "      \"items\": {\n" +
+                    "        \"type\": \"object\",\n" +
+                    "        \"properties\": {\n" +
+                    "          \"CharacterName\": { \"type\": \"string\" },\n" +
+                    "          \"DialogueText\": { \"type\": \"string\" },\n" +
+                    "          \"Mood\": { \"type\": \"string\" },\n" +
+                    "          \"BackgroundDescription\": { \"type\": \"string\" }\n" +
+                    "        },\n" +
+                    "        \"required\": [\"CharacterName\", \"DialogueText\", \"Mood\", \"BackgroundDescription\"],\n" +
+                    "        \"additionalProperties\": false\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  },\n" +
+                    "  \"required\": [\"DialogueLines\"],\n" +
+                    "  \"additionalProperties\": false\n" +
+                    "}"
+                ),
+                strictSchemaEnabled: true
+            )
+        };
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages, options);
+        string refusal = result.Value.Content[0].Refusal;
+
+        if (refusal != null)
+        {
+            Debug.Log(refusal);
+            return await GenerateAdditionalDialogue();
+        }
+
         Messages.Add(new AssistantChatMessage(result));
 
         string assistantResponse = result.Value.Content[0].Text;
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
 
-        string extractedJson = ExtractJson(assistantResponse);
-
         DialogueScene newDialogueScene;
 
         Debug.Log(assistantResponse);
 
-        try
-        {
-            newDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(extractedJson);
-        }
-        catch
-        {
-            Debug.Log("Error generating usable response.");
-            return null;
-        }
-
+        newDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(assistantResponse);
         newDialogueScene.DialogueLines.Add(new()
         {
             CharacterName = "Narrator",
@@ -370,19 +422,5 @@ public class OpenAIController : Singleton<OpenAIController>
         });
 
         return newDialogueScene;
-    }
-
-    private string ExtractJson(string rawData)
-    {
-        int startIndex = rawData.IndexOf('{');
-        int endIndex = rawData.LastIndexOf('}');
-
-        if (startIndex == -1 || endIndex == -1 || endIndex < startIndex)
-        {
-            return null;
-        }
-
-        string extractedJson = rawData.Substring(startIndex, endIndex - startIndex + 1);
-        return extractedJson;
     }
 }
