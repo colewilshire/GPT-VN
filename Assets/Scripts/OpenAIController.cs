@@ -21,7 +21,7 @@ public class OpenAIController : Singleton<OpenAIController>
     [SerializeField] private string finishedPrompt;
 
     private ChatClient client;
-    private List<ChatMessage> Messages;
+    private List<ChatMessage> messages;
 
     public string Genre { get; private set; }
     public string Setting { get; private set; }
@@ -56,7 +56,7 @@ public class OpenAIController : Singleton<OpenAIController>
         // Start loading
         StateController.Instance.SetStates(GameState.Loading);
 
-        Messages = new();
+        messages = new();
         MessageDictionary = new();
 
         // Make chat requests
@@ -97,22 +97,22 @@ public class OpenAIController : Singleton<OpenAIController>
 
         StateController.Instance.SetStates(GameState.Loading);
 
-        Messages = new();
+        messages = new();
         MessageDictionary = new();
 
         foreach(KeyValuePair<ChatMessageRole, string> kvp in saveData.Messages)
         {
             if (kvp.Key == ChatMessageRole.System)
             {
-                Messages.Add(new SystemChatMessage(kvp.Value));
+                messages.Add(new SystemChatMessage(kvp.Value));
             }
             else if (kvp.Key == ChatMessageRole.Assistant)
             {
-                Messages.Add(new AssistantChatMessage(kvp.Value));
+                messages.Add(new AssistantChatMessage(kvp.Value));
             }
             else
             {
-                Messages.Add(new UserChatMessage(kvp.Value));
+                messages.Add(new UserChatMessage(kvp.Value));
             }
         }
 
@@ -140,7 +140,7 @@ public class OpenAIController : Singleton<OpenAIController>
             "Chosen outfits and accessories should be appropriate for the story's setting, if possible. For example, in a uniformed setting, all characters of the same geneder and position should be wearing the same uniform. " +
             $"Eye colors must be chosen from the following list: {CharacterManager.Instance.ListFaces()}. ";
 
-        Messages.Add(new SystemChatMessage(prompt));
+        messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
         finishedPrompt += prompt;
 
@@ -176,7 +176,7 @@ public class OpenAIController : Singleton<OpenAIController>
                 strictSchemaEnabled: true
             )
         };
-        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages, options);
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages, options);
         string refusal = result.Value.Content[0].Refusal;
 
         if (refusal != null)
@@ -185,7 +185,7 @@ public class OpenAIController : Singleton<OpenAIController>
             return await GenerateCastList();
         }
 
-        Messages.Add(new AssistantChatMessage(result));
+        messages.Add(new AssistantChatMessage(result));
 
         string assistantResponse = result.Value.Content[0].Text;
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
@@ -218,7 +218,7 @@ public class OpenAIController : Singleton<OpenAIController>
             "Unless the story calls for a change in location, the BackgroundDescription should not change from one line of dialogue to the next. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
 
-        Messages.Add(new SystemChatMessage(prompt));
+        messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
         finishedPrompt += prompt;
 
@@ -252,7 +252,7 @@ public class OpenAIController : Singleton<OpenAIController>
                 strictSchemaEnabled: true
             )
         };
-        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages, options);
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages, options);
         string refusal = result.Value.Content[0].Refusal;
 
         if (refusal != null)
@@ -261,7 +261,7 @@ public class OpenAIController : Singleton<OpenAIController>
             return await GenerateAdditionalDialogue();
         }
 
-        Messages.Add(new AssistantChatMessage(result));
+        messages.Add(new AssistantChatMessage(result));
 
         string assistantResponse = result.Value.Content[0].Text;
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
@@ -292,7 +292,7 @@ public class OpenAIController : Singleton<OpenAIController>
             "Each entry under 'Choices' should be an object with the keys 'CharacterName', 'DialogueText', and 'Mood'. " +
             "Do not include any additional formatting or markers such as markdown code block markers.";
 
-        Messages.Add(new SystemChatMessage(prompt));
+        messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
         finishedPrompt += prompt;
 
@@ -326,7 +326,7 @@ public class OpenAIController : Singleton<OpenAIController>
                 strictSchemaEnabled: true
             )
         };
-        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages, options);
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages, options);
         string refusal = result.Value.Content[0].Refusal;
 
         if (refusal != null)
@@ -335,7 +335,7 @@ public class OpenAIController : Singleton<OpenAIController>
             return await GenerateChoice();
         }
 
-        Messages.Add(new AssistantChatMessage(result));
+        messages.Add(new AssistantChatMessage(result));
 
         string assistantResponse = result.Value.Content[0].Text;
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
@@ -361,7 +361,7 @@ public class OpenAIController : Singleton<OpenAIController>
         prompt +=
             $"From where the story last left off, continue the visual novel's script with {linesPerScene} more lines of dialogue. ";
 
-        Messages.Add(new SystemChatMessage(prompt));
+        messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
         finishedPrompt += prompt;
 
@@ -395,7 +395,7 @@ public class OpenAIController : Singleton<OpenAIController>
                 strictSchemaEnabled: true
             )
         };
-        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(Messages, options);
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages, options);
         string refusal = result.Value.Content[0].Refusal;
 
         if (refusal != null)
@@ -404,7 +404,7 @@ public class OpenAIController : Singleton<OpenAIController>
             return await GenerateAdditionalDialogue();
         }
 
-        Messages.Add(new AssistantChatMessage(result));
+        messages.Add(new AssistantChatMessage(result));
 
         string assistantResponse = result.Value.Content[0].Text;
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.Assistant, assistantResponse));
