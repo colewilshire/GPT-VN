@@ -56,8 +56,8 @@ public class OpenAIController : Singleton<OpenAIController>
         // Start loading
         StateController.Instance.SetStates(GameState.Loading);
 
-        messages = new();
-        MessageDictionary = new();
+        messages = new List<ChatMessage>();
+        MessageDictionary = new List<KeyValuePair<ChatMessageRole, string>>();
 
         // Make chat requests
         LoadingScreen.Instance.StartLoading(LoadingState.Initial);
@@ -67,9 +67,9 @@ public class OpenAIController : Singleton<OpenAIController>
         // Overwrite protagonist appearance with custom appearance
         foreach (KeyValuePair<string, CharacterDescription> kvp in castList)
         {
-            if (kvp.Key.ToLower() == ProtagonistName.ToLower())
+            if (kvp.Key.Equals(ProtagonistName, StringComparison.OrdinalIgnoreCase))
             {
-                castList[kvp.Key] = new()
+                castList[kvp.Key] = new CharacterDescription()
                 {
                     Name = ProtagonistName,
                     BodyType = "feminine",
@@ -97,10 +97,10 @@ public class OpenAIController : Singleton<OpenAIController>
 
         StateController.Instance.SetStates(GameState.Loading);
 
-        messages = new();
-        MessageDictionary = new();
+        messages = new List<ChatMessage>();
+        MessageDictionary = new List<KeyValuePair<ChatMessageRole, string>>();
 
-        foreach(KeyValuePair<ChatMessageRole, string> kvp in saveData.Messages)
+        foreach (KeyValuePair<ChatMessageRole, string> kvp in saveData.Messages)
         {
             if (kvp.Key == ChatMessageRole.System)
             {
@@ -127,18 +127,20 @@ public class OpenAIController : Singleton<OpenAIController>
 
     private async Task<Dictionary<string, CharacterDescription>> GenerateCastList()
     {
-        string prompt =
-            $"Generate a cast list of {numberOfCharacters} characters for the next scene of a '{Genre}' genre visual novel set in the setting '{Setting}'. " +
-            $"One of the characters should be named '{ProtagonistName}', and serve as the protagonist of the story. " +
-            "One of the characters should be named 'Narrator', and serve as the story's narrator. " +
-            $"The other {numberOfCharacters - 2} characters are up to you to create. Characters other than 'Narrator' should have actual human names for their name, not titles. " +
-            "Each character in the list should have a name, body type, hair style, face/hair accessory, outfit, and eye color. " +
-            $"Body types must be chosen from the following list: 'none', 'feminine', 'masculine'. " +
-            $"Accessories must be chosen from the following list: {CharacterManager.Instance.ListAccessories()}. " +
-            $"Hairs must be chosen from the following list: {CharacterManager.Instance.ListHairs()}. " +
-            $"Outfits must be chosen from the following list: {CharacterManager.Instance.ListOutfits()}. " +
-            "Chosen outfits and accessories should be appropriate for the story's setting, if possible. For example, in a uniformed setting, all characters of the same geneder and position should be wearing the same uniform. " +
-            $"Eye colors must be chosen from the following list: {CharacterManager.Instance.ListFaces()}. ";
+        string accessoriesList = CharacterManager.Instance.ListAccessories();
+        string hairsList = CharacterManager.Instance.ListHairs();
+        string outfitsList = CharacterManager.Instance.ListOutfits();
+        string facesList = CharacterManager.Instance.ListFaces();
+
+        string prompt = PromptDefinitions.GetGenerateCastListPrompt(
+            numberOfCharacters,
+            Genre,
+            Setting,
+            ProtagonistName,
+            accessoriesList,
+            hairsList,
+            outfitsList,
+            facesList);
 
         messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
@@ -148,34 +150,11 @@ public class OpenAIController : Singleton<OpenAIController>
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
                 name: "character_descriptions",
-                jsonSchema: BinaryData.FromString(
-                    "{\n" +
-                    "  \"type\": \"object\",\n" +
-                    "  \"properties\": {\n" +
-                    "    \"CharacterDescriptions\": {\n" +
-                    "      \"type\": \"array\",\n" +
-                    "      \"items\": {\n" +
-                    "        \"type\": \"object\",\n" +
-                    "        \"properties\": {\n" +
-                    "          \"Name\": { \"type\": \"string\" },\n" +
-                    "          \"BodyType\": { \"type\": \"string\" },\n" +
-                    "          \"Hair\": { \"type\": \"string\" },\n" +
-                    "          \"Outfit\": { \"type\": \"string\" },\n" +
-                    "          \"Accessory\": { \"type\": \"string\" },\n" +
-                    "          \"Eyes\": { \"type\": \"string\" }\n" +
-                    "        },\n" +
-                    "        \"required\": [\"Name\", \"BodyType\", \"Hair\", \"Outfit\", \"Accessory\", \"Eyes\"],\n" +
-                    "        \"additionalProperties\": false\n" +
-                    "      }\n" +
-                    "    }\n" +
-                    "  },\n" +
-                    "  \"required\": [\"CharacterDescriptions\"],\n" +
-                    "  \"additionalProperties\": false\n" +
-                    "}"
-                ),
+                jsonSchema: BinaryData.FromString(JsonSchemaDefinitions.CharacterDescriptionsSchema),
                 strictSchemaEnabled: true
             )
         };
+
         ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages, options);
         string refusal = result.Value.Content[0].Refusal;
 
@@ -207,16 +186,14 @@ public class OpenAIController : Singleton<OpenAIController>
     {
         LoadingScreen.Instance.IncrementLoadingMessage();
 
-        string prompt =
-            $"Generate a script for the next scene of a '{Genre}' genre visual novel set in the setting '{Setting}', consisting of {linesPerScene} lines of dialogue. " +
-            $"Only a few characters from the cast list should appear in every scene. Some characters should be rarely appearing side characters, and the protagonist, {ProtagonistName} and Narrator should appear frequently. " +
-            "The cast of the story should consist of characters from the previously generated cast list. " +
-            "Each line should include the speaking character's name, the text of the dialogue, the speaker's mood, and the background image to be displayed. " +
-            "Format the response as a plain JSON object with a top-level key 'Dialogue'. " +
-            "Each entry under 'Dialogue' should be an object with the keys 'CharacterName', 'DialogueText', 'Mood', and 'BackgroundDescription'." +
-            $"BackgroundsDescriptions should be chosen from the following list: {BackgroundController.Instance.ListBackgrounds()}. " +
-            "Unless the story calls for a change in location, the BackgroundDescription should not change from one line of dialogue to the next. " +
-            "Do not include any additional formatting or markers such as markdown code block markers.";
+        string backgroundsList = BackgroundController.Instance.ListBackgrounds();
+
+        string prompt = PromptDefinitions.GetGenerateInitialDialoguePrompt(
+            Genre,
+            Setting,
+            linesPerScene,
+            ProtagonistName,
+            backgroundsList);
 
         messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
@@ -226,32 +203,11 @@ public class OpenAIController : Singleton<OpenAIController>
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
                 name: "dialogue",
-                jsonSchema: BinaryData.FromString(
-                    "{\n" +
-                    "  \"type\": \"object\",\n" +
-                    "  \"properties\": {\n" +
-                    "    \"DialogueLines\": {\n" +
-                    "      \"type\": \"array\",\n" +
-                    "      \"items\": {\n" +
-                    "        \"type\": \"object\",\n" +
-                    "        \"properties\": {\n" +
-                    "          \"CharacterName\": { \"type\": \"string\" },\n" +
-                    "          \"DialogueText\": { \"type\": \"string\" },\n" +
-                    "          \"Mood\": { \"type\": \"string\" },\n" +
-                    "          \"BackgroundDescription\": { \"type\": \"string\" }\n" +
-                    "        },\n" +
-                    "        \"required\": [\"CharacterName\", \"DialogueText\", \"Mood\", \"BackgroundDescription\"],\n" +
-                    "        \"additionalProperties\": false\n" +
-                    "      }\n" +
-                    "    }\n" +
-                    "  },\n" +
-                    "  \"required\": [\"DialogueLines\"],\n" +
-                    "  \"additionalProperties\": false\n" +
-                    "}"
-                ),
+                jsonSchema: BinaryData.FromString(JsonSchemaDefinitions.DialogueSchema),
                 strictSchemaEnabled: true
             )
         };
+
         ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages, options);
         string refusal = result.Value.Content[0].Refusal;
 
@@ -270,7 +226,7 @@ public class OpenAIController : Singleton<OpenAIController>
 
         DialogueScene initialDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(assistantResponse);
 
-        initialDialogueScene.DialogueLines.Add(new()
+        initialDialogueScene.DialogueLines.Add(new DialogueLine()
         {
             CharacterName = "Narrator",
             DialogueText = $"{ProtagonistName} made a choice...",
@@ -284,13 +240,7 @@ public class OpenAIController : Singleton<OpenAIController>
     {
         LoadingScreen.Instance.IncrementLoadingMessage();
 
-        string prompt =
-            $"From where the story left off, offer the player 3 choices of dialogue lines for the protagonist, {ProtagonistName}, to choose. " +
-            "This choice should impact the trajectory of the story. " +
-            "Each line should include the speaking character's name, the text of the dialogue, and the speaker's mood. " +
-            "Format the response as a plain JSON object with a top-level key 'Choices'. " +
-            "Each entry under 'Choices' should be an object with the keys 'CharacterName', 'DialogueText', and 'Mood'. " +
-            "Do not include any additional formatting or markers such as markdown code block markers.";
+        string prompt = PromptDefinitions.GetGenerateChoicePrompt(ProtagonistName);
 
         messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
@@ -300,32 +250,11 @@ public class OpenAIController : Singleton<OpenAIController>
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
                 name: "choice",
-                jsonSchema: BinaryData.FromString(
-                    "{\n" +
-                    "  \"type\": \"object\",\n" +
-                    "  \"properties\": {\n" +
-                    "    \"Choices\": {\n" +
-                    "      \"type\": \"array\",\n" +
-                    "      \"items\": {\n" +
-                    "        \"type\": \"object\",\n" +
-                    "        \"properties\": {\n" +
-                    "          \"CharacterName\": { \"type\": \"string\" },\n" +
-                    "          \"DialogueText\": { \"type\": \"string\" },\n" +
-                    "          \"Mood\": { \"type\": \"string\" },\n" +
-                    "          \"BackgroundDescription\": { \"type\": \"string\" }\n" +
-                    "        },\n" +
-                    "        \"required\": [\"CharacterName\", \"DialogueText\", \"Mood\", \"BackgroundDescription\"],\n" +
-                    "        \"additionalProperties\": false\n" +
-                    "      }\n" +
-                    "    }\n" +
-                    "  },\n" +
-                    "  \"required\": [\"Choices\"],\n" +
-                    "  \"additionalProperties\": false\n" +
-                    "}"
-                ),
+                jsonSchema: BinaryData.FromString(JsonSchemaDefinitions.ChoiceSchema),
                 strictSchemaEnabled: true
             )
         };
+
         ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages, options);
         string refusal = result.Value.Content[0].Refusal;
 
@@ -351,15 +280,7 @@ public class OpenAIController : Singleton<OpenAIController>
     {
         LoadingScreen.Instance.StartLoading(LoadingState.Additional);
 
-        string prompt = "";
-
-        if (choiceText != null)
-        {
-            prompt += $"The player chose the dialogue option \"{choiceText}\". ";
-        }
-
-        prompt +=
-            $"From where the story last left off, continue the visual novel's script with {linesPerScene} more lines of dialogue. ";
+        string prompt = PromptDefinitions.GetGenerateAdditionalDialoguePrompt(choiceText, linesPerScene);
 
         messages.Add(new SystemChatMessage(prompt));
         MessageDictionary.Add(new KeyValuePair<ChatMessageRole, string>(ChatMessageRole.System, prompt));
@@ -369,32 +290,11 @@ public class OpenAIController : Singleton<OpenAIController>
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
                 name: "dialogue",
-                jsonSchema: BinaryData.FromString(
-                    "{\n" +
-                    "  \"type\": \"object\",\n" +
-                    "  \"properties\": {\n" +
-                    "    \"DialogueLines\": {\n" +
-                    "      \"type\": \"array\",\n" +
-                    "      \"items\": {\n" +
-                    "        \"type\": \"object\",\n" +
-                    "        \"properties\": {\n" +
-                    "          \"CharacterName\": { \"type\": \"string\" },\n" +
-                    "          \"DialogueText\": { \"type\": \"string\" },\n" +
-                    "          \"Mood\": { \"type\": \"string\" },\n" +
-                    "          \"BackgroundDescription\": { \"type\": \"string\" }\n" +
-                    "        },\n" +
-                    "        \"required\": [\"CharacterName\", \"DialogueText\", \"Mood\", \"BackgroundDescription\"],\n" +
-                    "        \"additionalProperties\": false\n" +
-                    "      }\n" +
-                    "    }\n" +
-                    "  },\n" +
-                    "  \"required\": [\"DialogueLines\"],\n" +
-                    "  \"additionalProperties\": false\n" +
-                    "}"
-                ),
+                jsonSchema: BinaryData.FromString(JsonSchemaDefinitions.DialogueSchema),
                 strictSchemaEnabled: true
             )
         };
+
         ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages, options);
         string refusal = result.Value.Content[0].Refusal;
 
@@ -414,7 +314,7 @@ public class OpenAIController : Singleton<OpenAIController>
         Debug.Log(assistantResponse);
 
         newDialogueScene = JsonConvert.DeserializeObject<DialogueScene>(assistantResponse);
-        newDialogueScene.DialogueLines.Add(new()
+        newDialogueScene.DialogueLines.Add(new DialogueLine()
         {
             CharacterName = "Narrator",
             DialogueText = $"{ProtagonistName} made a choice...",
